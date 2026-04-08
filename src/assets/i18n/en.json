@@ -1,0 +1,38 @@
+{
+  "sample": {
+    "heading" : "Graphs, Tables and More",
+    "heading-description": "Goal is to have Custom components (if absolutely necessary and cannot be found in Kendo library) + Library components look similar",
+    "dashboard": {
+      "header" : "Dashboard"
+    },
+    "table": {
+      "header" : "Tables"
+    },
+    "input-field": {
+      "header" : "Input Fields",
+      "text-box": "Text Box",
+      "dropdown-combo-box": "Dropdown Combo Box",
+      "numeric-text-box": "Numeric Text Box",
+      "date-time-picker": "Date and Time Picker",
+      "radio-button": "Radio button",
+      "check-box": "Check box",
+      "description": "Description"
+    }
+
+  },
+  "common": {
+    "block-ui": {
+      "loading-message": "Loading"
+    }
+  },
+  "mobile-menu": {
+    "home": "Home",
+    "menu": "Menu",
+    "account": "Account"
+  },
+  "mobile-user-profile": {
+    "title": "Account",
+    "label_darkmode": "Dark Mode",
+    "label_language": "Language"
+  }
+}

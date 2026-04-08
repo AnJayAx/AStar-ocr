@@ -1,0 +1,47 @@
+<div>
+
+  <div class="row">
+
+    <div class="col-12">
+      <app-view-heading
+        [title]="'RFID Tag Example'"
+      ></app-view-heading>
+    </div>
+    <div class="col-12 vh-50 overflow-scroll">
+      <p *ngFor="let item of testvalue"> {{item}} </p>
+    </div>
+    <div class="col-12 mb-3">
+      Status : {{status}}
+    </div>
+    <div class="col-12">
+      <button class="me-3" kendoButton [primary]="true" (click)="connect()">Connect</button>
+      <button class="me-3" kendoButton [primary]="true" (click)="test1()">Test 1</button>
+      <button kendoButton [primary]="true" (click)="test2()">Test 2</button>
+      
+      <button kendoButton (click)="clearTags()">Clear Tags</button>
+    </div>
+  </div>
+
+  <div class="mt-4">
+    Configure power level:
+    <kendo-buttongroup selection="single" width="100%" style="margin-right: 1rem;">
+      <button kendoButton type="button" *ngFor="let level of powerLevels"
+        [toggleable]="true" 
+        [selected]="isButtonHighlighted(level)" 
+        (click)="onSelectPowerLevel(level)"
+        [ngClass]="{'toggled': isButtonHighlighted(level) }"
+      >{{ level }}</button>
+    </kendo-buttongroup>
+  </div>
+
+  <div class="mt-4">
+    <!-- <p>Locationing: {{ locationRes }}</p>
+    <h3 class="my-0">{{ distance }}</h3> -->
+    <app-location-bar 
+      [locationingID]="testLocationingEPCId"
+    ></app-location-bar>
+      <!-- (distanceUpdated)="onDistanceUpdated($event)"
+      (statusUpdated)="onLocationingStatusUpdated($event)" -->
+  </div>
+
+</div>

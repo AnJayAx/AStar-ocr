@@ -1,0 +1,123 @@
+<form id="mobileContainer" runat="server" >
+    <style>
+        html, body, #mobileContainer { height: 100%; }
+        body { margin: 0; padding: 0; }
+    </style>
+      <div class="col-xs-12 col-sm-6 col-lg-3 example-col">
+        <span class="k-icon wifi"></span>
+      </div>
+
+      <div class="row d-flex justify-content-center">
+        <p class="k-block d-flex justify-content-center">
+          <button kendoButton fillMode="outline" id="onlineLogin" [selected]="onlineSelected"
+          (click)="switchMode('online')">
+            Online Mode
+          </button>
+          <button
+            kendoButton
+            fillMode="outline" id="offlineLogin"
+            (click)="switchMode('offline')" [selected]="offlineSelected"
+          >
+            Offline Mode
+          </button>
+        </p>
+      </div>
+  
+      <form class="k-form" [formGroup]="loginForm" class="loginForm">
+        <div class="col-12 mt-2 d-flex justify-content-center">
+          <kendo-formfield>
+            <legend class="k-form-legend">Username</legend>
+            <input
+              formControlName="username"
+              kendoTextBox
+              required
+              [placeholder]="'Username'"
+              #username
+              class = "form-control"
+              tabindex="1"
+            />
+          </kendo-formfield>
+        </div>
+
+        <div class="col-12 mt-2 d-flex justify-content-center">
+          <kendo-formfield>
+            <legend class="k-form-legend">Password</legend>
+            <input
+              formControlName="password"
+              kendoTextBox
+              required
+              [placeholder]="'Password'"
+              type="password"
+              #password
+              class = "form-control"
+              tabindex="2"
+            />
+          </kendo-formfield>
+        </div>
+    </form>
+    <div class="mt-3 d-flex justify-content-center">
+        <button kendoButton look="outline" (click)="loginAuthentication(username.value, password.value)" tabindex="3">
+            Login
+        </button>
+    </div>
+    <div *ngIf="loginFailed">
+      <p class="error">Incorrect username or password!</p>
+    </div>
+    <div class="mt-3 d-flex justify-content-center">
+        <button kendoButton look="clear" (click)="forgotPassword()">Forgot your password?</button>
+    </div>
+    <div class="mt-3 d-flex justify-content-center">
+        <button kendoButton look="clear">华语</button>
+        <button kendoButton look="clear" (click)="setUrl()">Set URL</button>
+        <button kendoButton look="clear" (click)="openDownloadDataPage()">Download Data</button>
+    </div>
+</form>
+<kendo-dialog title="Set URL"
+*ngIf="setUrlDialogOpen"
+(close)="closeSetUrl()"
+[minWidth]="250" class="col-12">
+<form class="k-form" [formGroup]="IpAddressForm" class="IpAddressForm">
+  <div class="col-12 mt-2 d-flex justify-content-center">
+    <kendo-formfield>
+      <legend class="k-form-legend">IP Address</legend>
+      <input
+        formControlName="ipAddress"
+        kendoTextBox
+        [placeholder]="'IP Address'"
+        #ipAddress
+      />
+    </kendo-formfield>
+  </div>
+
+  <div class="col-12 mt-2 d-flex justify-content-center">
+    <kendo-formfield>
+      <legend class="k-form-legend">Port</legend>
+      <input
+        formControlName="port"
+        kendoTextBox
+        [placeholder]="'Port'"
+        #port
+      />
+    </kendo-formfield>
+  </div>
+</form>
+<!--
+  <div>
+    <div id="ipAddress">
+      <div>
+        <kendo-label text="IP Address"></kendo-label>
+      </div>
+      <input [placeholder] = "'IP Address'" kendoTextBox/>
+    </div>
+    <div id="Port">
+      <div>
+        <kendo-label text="Port"></kendo-label>
+      </div>
+      <input [placeholder]="'Port'" kendoTextBox/>
+    </div>
+  </div>
+  -->
+  <kendo-dialog-actions>
+    <button kendoButton (click)="saveUrl()">Save</button>
+  </kendo-dialog-actions>
+</kendo-dialog>

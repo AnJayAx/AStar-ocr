@@ -1,0 +1,24 @@
+@import "its-variables";
+@import "variables";
+
+.float-container {
+    @include float-container;
+}
+
+.page-title {
+    @include page-title
+}
+
+.mergeto-item {
+    &-balance {
+        @include item-card-balance;
+    }
+    &-fieldname {
+        font-size: smaller;
+        font-weight: bolder;
+        color: #515151;
+    }
+    &-fieldvalue {
+        font-size: larger;
+    }
+}

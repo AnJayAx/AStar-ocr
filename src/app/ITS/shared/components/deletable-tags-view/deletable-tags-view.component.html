@@ -1,0 +1,64 @@
+<kendo-listview #listview
+    [kendoListViewBinding]="viewTags"
+    containerClass="k-d-flex k-flex-col k-flex-nowrap"
+    [style.height.%]="100"
+>
+    <ng-template kendoListViewHeaderTemplate>
+        <div class="d-flex justify-content-between align-items-center list-header">
+            <ng-container *ngIf="!isExpanded">
+                <strong>
+                    <app-sm-indicator [sm]="'s'" *ngIf="smIndicatorType === 's'"></app-sm-indicator>
+                    <app-sm-indicator [sm]="'m'" *ngIf="smIndicatorType === 'm'"></app-sm-indicator>
+                    Tag IDs:
+                </strong>
+                <fa-icon *ngIf="!hideList()" [icon]="expandIcon" (click)="onExpand()"></fa-icon>
+            </ng-container>
+            <ng-container *ngIf="isExpanded">
+                <div class="d-flex justify-content-between">
+                    <kendo-textbox
+                        placeholder="Search tags..."
+                        (valueChange)="handleFilterChange($event, listview)"
+                    ><ng-template kendoTextBoxPrefixTemplate><span class="k-icon k-i-search"></span></ng-template>
+                    </kendo-textbox>
+
+                    <span class="d-flex align-items-stretch">
+                        <button kendoButton (click)="onSelectionBtnClick()">{{ selectionText }}</button>&nbsp;
+                        <button kendoButton class="delete-btn" (click)="onTagsDelete()">
+                            <fa-icon [icon]="faTrashIcon"></fa-icon>
+                        </button>
+                    </span>
+                </div>
+
+                <div class="row" *ngIf="searchIsEmpty()">
+                    <div class="no-results-wrapper">
+                        No search items found.
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+        <div *ngIf="hideList()" class="no-results-wrapper">
+            No tags found.
+        </div>
+    </ng-template>
+    <ng-template [ngIf]="!searchIsEmpty()" kendoListViewItemTemplate let-dataItem="dataItem">
+        <div class="list-item">
+            <span class="checkbox-wrapper" *ngIf="isExpanded">
+                <input type="checkbox" kendoCheckBox
+                    [value]="dataItem"
+                    [checked]="isSelectedItem(dataItem)"
+                    class="item-checkbox"
+                    (click)="onSelectItem($event, dataItem)"
+                />
+            </span>
+            <span class="epc">{{ dataItem }}</span>
+            <span class="icon">
+                <fa-icon [icon]="faTrashIcon" (click)="onTagDelete(dataItem)"></fa-icon>
+            </span>
+        </div>
+    </ng-template>
+    <ng-template kendoListViewFooterTemplate>
+        <div class="decorated-footer">
+            <span class="decorated-footer-text">End of List</span>
+        </div>
+    </ng-template>
+</kendo-listview>    

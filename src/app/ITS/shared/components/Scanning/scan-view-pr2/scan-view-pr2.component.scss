@@ -1,0 +1,12 @@
+@import "its-variables";
+
+.float {
+    @include float;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.float-container {
+    @include float-container;
+    margin-bottom: 10%;
+}

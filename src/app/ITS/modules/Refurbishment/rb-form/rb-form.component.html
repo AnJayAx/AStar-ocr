@@ -1,0 +1,99 @@
+<div class="container-fluid">
+    <div class="row mt-2">
+        <app-deletable-tags-view
+            style="max-height: 30vh"
+            [isExpanded]="false"
+            [tags]="refurbishTags"
+            (dialogExpanded)="toggleExpandedDialog($event)"
+            (tagDeleted)="onDeleteTags([$event])"
+            (tagsDeleted)="onDeleteTags($event)"
+        ></app-deletable-tags-view>
+    </div>
+
+    <div class="row mt-4">
+        <form class="k-form" [formGroup]="refurbishForm">
+            <fieldset class="k-form-fieldset">
+                <kendo-formfield>
+                    <legend class="k-form-legend compulsory-field">Refurbish Option*</legend>
+                    <kendo-dropdownlist
+                        formControlName="refurbishOption"
+                        required
+                        #refurbishOption
+                        [filterable]="true"
+                        [data]="viewRefurbishOptions"
+                        [value]="refurbishForm.controls['refurbishOption'].value"
+                        (filterChange)="handleFilter($event)"
+                    >
+                        <ng-template kendoDropDownListNoDataTemplate>
+                            <div class="options-no-data-wrapper">
+                                <h4>No data found.</h4>
+                                <p *ngIf="filterRefurbishOption" class="prompt">Add new refurbish option: "{{ filterRefurbishOption }}" ?</p>
+                                <br/>
+                                <button class="mt-2" *ngIf="filterRefurbishOption" kendoButton (click)="addNew()" [primary]="true"><strong>Add New Option</strong></button>
+                            </div>
+                        </ng-template>
+                        <ng-template kendoDropDownListItemTemplate let-dataItem>
+                            <div class="d-flex justify-content-between">
+                                <span>{{ dataItem }}</span>
+                                <button kendoButton (click)="deleteAddedOption(dataItem)" *ngIf="!initialRefurbishOptions.includes(dataItem)"><fa-icon [icon]="deleteIcon"></fa-icon></button>
+                            </div>
+                        </ng-template>
+                    </kendo-dropdownlist>
+                </kendo-formfield>
+
+                <div class="mt-4">
+                    <legend class="k-form-legend compulsory-field">Verify Pass/Fail*</legend>
+                        <kendo-buttongroup class="d-flex" selection="single">
+                            <button kendoButton
+                                class="flex-btn"
+                                [class.pass-toggled]="isPassFailBtnHighlighted('pass')"
+                                [toggleable]="true"
+                                (click)="onPassFailChange('pass')"
+                            ><fa-icon [icon]="passIcon"></fa-icon>&nbsp;&nbsp;Pass</button>
+                            <button kendoButton
+                                class="flex-btn"
+                                [class.fail-toggled]="isPassFailBtnHighlighted('fail')"
+                                [toggleable]="true"
+                                (click)="onPassFailChange('fail')"
+                            ><fa-icon [icon]="failIcon"></fa-icon>&nbsp;&nbsp;Not Pass</button>
+                        </kendo-buttongroup>
+                </div>
+
+                <kendo-formfield class="mt-4">
+                    <legend class="k-form-legend" [class.compulsory-field]="passFail === 'fail'">Remarks<span *ngIf="passFail === 'fail'">*</span></legend>
+                    <kendo-textarea
+                        formControlName="remark"
+                        #remark
+                        placeholder="Enter remarks..."
+                        [rows]="3"
+                    ></kendo-textarea>
+                </kendo-formfield>
+            </fieldset>
+        </form>
+    </div>
+
+    <div class="row mt-4">
+        <button kendoButton [primary]="true" (click)="pressSubmit()" [disabled]="refurbishForm.invalid || refurbishScanItems.length<1">Submit</button>
+    </div>
+</div>
+
+<ng-container *ngIf="showExpandedDialog" class="container-fluid vh-100">
+    <kendo-dialog class="p-0" [style.width.%]="100" [style.height.%]="100" (close)="toggleExpandedDialog(false)">
+        <app-deletable-tags-view 
+            [isExpanded]="true"
+            [tags]="refurbishTags"
+            (tagDeleted)="onDeleteTags([$event])"
+            (tagsDeleted)="onDeleteTags($event)"
+        ></app-deletable-tags-view>
+        <kendo-dialog-actions>
+            <button kendoButton [primary]="true" [style.width.%]="100" (click)="toggleExpandedDialog(false)">Done</button>
+        </kendo-dialog-actions>
+    </kendo-dialog>
+</ng-container>
+
+<div *ngIf="showSubmissionPanel" class="container-fluid" style="min-height: 100%">
+    <app-submission-dialog 
+      [dialogTitle]="'Submit Refurbishment'" 
+      (closeSelected)="onClose($event)"
+    ></app-submission-dialog>
+</div>

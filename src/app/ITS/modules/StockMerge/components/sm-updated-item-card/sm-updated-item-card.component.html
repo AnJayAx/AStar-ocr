@@ -1,0 +1,21 @@
+<div class="item">
+    <div class="item-details">
+        <div class="item-name">
+            <span class="custom-marker" [class.bg-m]="SM === 'M'">{{ sanitizeNullString(SM) }}</span>{{ item.Asset_No }}
+        </div>
+        <div>
+            <span class="item-category">{{ sanitizeNullString(item.Category) }}</span>&nbsp;
+            <app-item-status-indicator [statusName]="item.Asset_StatusName"></app-item-status-indicator>
+        </div>
+        <div>{{ sanitizeNullString(item.Description) }}</div>
+        <div class="item-location">{{ sanitizeNullString(item.Asset_LocationLocation) }}</div>
+        <div class="item-epc">{{ item.EPC_ID }}</div>
+    </div>
+    <div class="item-flex d-flex flex-column justify-content-between">
+        <div>
+            <span class="item-balance">
+                {{ sanitizeNullString(this.item.LastBal?.toFixed(2)) }}
+            </span>
+        </div>
+    </div>
+</div>

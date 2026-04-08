@@ -1,0 +1,6 @@
+<app-scan-view
+  [inclBackBtn]="false"
+  [selectMode]="'single'"
+  (confirmed)="onConfirm($event)"
+  [filterOut]="[{ property: 'Asset_Status_ID', value: 1000003 }]"
+></app-scan-view>

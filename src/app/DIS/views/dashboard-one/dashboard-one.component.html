@@ -1,0 +1,136 @@
+<div>
+  <div class="row">
+    <div class="col-12">
+      <app-view-heading
+        [title]="'sample.dashboard.header' | translate"
+      ></app-view-heading>
+
+    </div>
+  </div>
+  <div class="row">
+   <div class="col-12 col-xl-6 col-xxl-4 mb-3 mb-xl-0">
+     <div class="row h-100">
+        <div class="col-6">
+          <app-indicator-custom-sample
+            [name]="'Machine #1'"
+            [group]="'Machine Group #1'"
+            [callout]="'69%'"
+            [details]="['Start: 20210420 11:11AM', 'End: 20210420 11:11AM']"
+
+          ></app-indicator-custom-sample>
+        </div>
+        <div class="col-6">
+          <app-indicator-custom-sample
+            [name]="'Machine #2'"
+            [group]="'Machine Group #2'"
+            [callout]="'96%'"
+            [details]="['Start: 20210420 11:11AM', 'End: 20210420 11:11AM']"
+            [nextRouteLink]="'/dashboard-three'"
+          ></app-indicator-custom-sample> <!--if you dont require nextRouteLink, you can remove it to prevent it from linking to other pages-->
+        </div>
+        <div class="mt-3 col-6">
+          <app-indicator-custom-sample
+            [name]="'Machine #1'"
+            [group]="'Machine Group #1'"
+            [callout]="'69%'"
+            [details]="['Start: 20210420 11:11AM', 'End: 20210420 11:11AM']"
+            [nextRouteLink]="'/dashboard-two'"
+          ></app-indicator-custom-sample>
+        </div>
+        <div class="mt-3 col-6">
+          <app-indicator-custom-sample
+            [name]="'Machine #2'"
+            [group]="'Machine Group #2'"
+            [callout]="'96%'"
+            [details]="['Start: 20210420 11:11AM', 'End: 20210420 11:11AM']"
+            [nextRouteLink]="'/dashboard-three'"
+          ></app-indicator-custom-sample>
+        </div>
+      </div>
+   </div>
+    <div class="col-12 col-xl-6 col-xxl-8 ">
+      <section class="chart" >
+        <div style="text-align:center; position: relative;">
+          <h3 style="display: inline-block;">Unit sold</h3>
+          <p style="position: absolute; display: block; top: 0; right: 0;" (click)="Navigateto('/dashboard-three')" class="next-option k-icon k-i-arrow-chevron-right">
+          </p>
+        </div>
+
+        <kendo-chart class="vh-60 vh-lg-60 vh-xl-50 vh-xxl-40 " >
+          <kendo-chart-category-axis>
+            <kendo-chart-category-axis-item
+              [categories]="['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul']"
+              [title]="{ text: 'Months' }"
+            >
+            </kendo-chart-category-axis-item>
+          </kendo-chart-category-axis>
+          <kendo-chart-series>
+            <kendo-chart-series-item
+              type="line"
+              [data]="[123, 276, 310, 212, 240, 156, 98]"
+            >
+            </kendo-chart-series-item>
+            <kendo-chart-series-item
+              type="line"
+              [data]="[165, 210, 287, 144, 190, 167, 212]"
+            >
+            </kendo-chart-series-item>
+            <kendo-chart-series-item
+              type="line"
+              [data]="[56, 140, 195, 46, 123, 78, 95]"
+            >
+            </kendo-chart-series-item>
+          </kendo-chart-series>
+        </kendo-chart>
+      </section>
+    </div>
+  </div>
+
+  <div class="row mt-4">
+    <div class="col-12 col-xl-4">
+      <section class="chart">
+        <kendo-chart class="vh-60 vh-lg-40 vh-xl-30">
+          <kendo-chart-title text="Units sold"></kendo-chart-title>
+          <kendo-chart-category-axis>
+            <kendo-chart-category-axis-item
+              [categories]="['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul']"
+              [title]="{ text: 'Months' }"
+            >
+            </kendo-chart-category-axis-item>
+          </kendo-chart-category-axis>
+          <kendo-chart-series>
+            <kendo-chart-series-item
+              type="area"
+              [data]="[123, 276, 310, 212, 240, 156, 98]"
+            >
+            </kendo-chart-series-item>
+            <kendo-chart-series-item
+              type="area"
+              [data]="[165, 210, 287, 144, 190, 167, 212]"
+            >
+            </kendo-chart-series-item>
+            <kendo-chart-series-item
+              type="area"
+              [data]="[56, 140, 195, 46, 123, 78, 95]"
+            >
+            </kendo-chart-series-item>
+          </kendo-chart-series>
+        </kendo-chart>
+      </section>
+    </div>
+    <div class="col-12 col-xl-8 mt-4 mt-xl-0">
+      <kendo-grid [data]="data" class="vh-60 vh-lg-40 vh-xl-30"
+                  [pageSize]="20"
+                  [skip]="0"
+                  [sortable]="true"
+                  [pageable]="true">
+        <kendo-grid-column
+          *ngFor="let colname of ['ProductID', 'ProductName', 'QuantityPerUnit']"
+          [field]="colname"
+
+        ></kendo-grid-column>
+      </kendo-grid>
+    </div>
+  </div>
+</div>
+

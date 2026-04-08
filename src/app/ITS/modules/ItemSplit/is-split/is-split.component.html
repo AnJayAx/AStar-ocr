@@ -1,0 +1,92 @@
+<div class="container-fluid float-container">
+    <div>
+        <app-item-display-card [tagItem]="splitItem"></app-item-display-card>
+    </div>
+
+    <hr />
+
+    <div class="row">
+        <span class="col d-flex flex-column">
+            <strong>Serialize:</strong>
+            <app-custom-switch
+                [isToggled]="isSerialized" 
+                (toggled)="onSerializeToggleChange($event)"
+            ></app-custom-switch>
+        </span>
+        <span class="col d-flex flex-column">
+            <strong class="compulsory-field">*Checkout Qty:</strong>
+            <kendo-numerictextbox
+                [spinners]="false"
+                [autoCorrect]="true"
+                [readonly]="isSerialized"
+                [format]="'n3'"
+                [max]="getMax()"
+                [value]="getDisplayCheckoutQty()"
+                (valueChange)="onCheckoutQtyChange($event)"
+            ></kendo-numerictextbox>
+        </span>
+    </div>
+    
+    <div class="mt-2">
+        <app-scanmode-buttongroup></app-scanmode-buttongroup>
+    </div>
+
+    <div *ngIf="isSerialized" class="row mt-2">
+        <app-deletable-tags-view
+            style="max-height: 40vh"
+            [isExpanded]="false"
+            [tags]="serializedTags"
+            [smIndicatorType]="'s'"
+            (dialogExpanded)="toggleExpandedDialog($event)"
+            (tagDeleted)="onDeleteTags([$event])"
+            (tagsDeleted)="onDeleteTags($event)"
+        ></app-deletable-tags-view>
+    </div>
+
+    <div *ngIf="!isSerialized" class="mt-2">
+        <div class="single-tag-card">
+            <span class="header"><app-sm-indicator [sm]="'m'"></app-sm-indicator><strong>Tag ID:</strong></span>
+            <span class="content-wrapper">
+                <ng-container *ngIf="nonSerializedTag">{{ nonSerializedTag }}</ng-container>
+                <ng-container *ngIf="!nonSerializedTag">No tag scanned.</ng-container>
+            </span>
+        </div>
+    </div>
+
+    <div class="float">
+        <app-clearscan-btn (clicked)="onClear($event)"></app-clearscan-btn>
+        <app-startscan-btn></app-startscan-btn>
+        <button kendoButton (click)="onClickConfirm()" [primary]="true" [disabled]="confirmBtnDisabled()">Confirm</button>
+    </div>
+</div>
+
+<ng-container *ngIf="showExpandedDialog" class="container-fluid vh-100">
+    <kendo-dialog class="p-0" title="Scanned Tags" [style.width.%]="100" [style.height.%]="100" (close)="toggleExpandedDialog(false)">
+        <app-deletable-tags-view 
+            [isExpanded]="true"
+            [tags]="serializedTags"
+            [smIndicatorType]="'s'"
+            (tagDeleted)="onDeleteTags([$event])"
+            (tagsDeleted)="onDeleteTags($event)"
+        ></app-deletable-tags-view>
+        <div class="mt-2 d-flex">
+            <button kendoButton [primary]="true" [style.width.%]="100" (click)="toggleExpandedDialog(false)">Done</button>
+        </div>
+    </kendo-dialog>
+</ng-container>
+
+<ng-container *ngIf="showRepackPanel">
+    <app-is-repack-dialog
+        [selectedRepackEPC]="splitItem.EPC_ID"
+        [repackQty]="getRepackQty()"
+        [repackEPCs]="getSplitTags()"
+        (closed)="onRepackClose($event)"
+    ></app-is-repack-dialog>
+</ng-container>
+
+<ng-container *ngIf="showSubmissionPanel">
+    <app-submission-dialog
+        [dialogTitle]="'Submit Item Split'"
+        (closeSelected)="onSubmissionClose($event)"
+    ></app-submission-dialog>
+</ng-container>

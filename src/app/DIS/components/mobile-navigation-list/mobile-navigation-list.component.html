@@ -1,0 +1,26 @@
+<!--<kendo-tabstrip >-->
+<!--  <kendo-tabstrip-tab-->
+<!--    *ngFor="let item of items; let i = index"-->
+<!--    [title]="item.group"-->
+<!--    [selected]="i == selected"-->
+<!--    [disabled]="item.disabled"-->
+<!--  >-->
+<div class="row mt-4" *ngFor="let item of items; let i = index" [title]="item.group" >
+  <div class="row"><h3>{{item.group}}</h3></div>
+<!--  <ng-template kendoTabContent>-->
+    <div class="menu-list-wrapper text-center">
+      <div class="menu-list-item" *ngFor="let menuitem of item.items" (click)="navigate(menuitem)" >
+        <div class="menu-item-bg">
+          <kendo-icon [name]="menuitem.icon" ></kendo-icon>
+        </div>
+
+        <h5 class="menu-list-item-text">{{ menuitem.name }}</h5>
+
+      </div>
+    </div>
+
+<!--  </ng-template>-->
+</div>
+
+<!--  </kendo-tabstrip-tab>-->
+<!--</kendo-tabstrip>-->

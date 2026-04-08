@@ -1,0 +1,29 @@
+<div style="width: 80vw">
+    <span class="d-flex justify-content-start">
+        <p><strong>RFID power level:</strong></p>
+    </span>
+    <span class="d-flex justify-content-center">
+        <kendo-buttongroup selection="single" width="100%" style="margin-right: 1rem;">
+            <button kendoButton type="button" *ngFor="let level of powerLevels; index as i"
+                [toggleable]="true" 
+                [selected]="isPowerLevelBtnHighlighted(level)" 
+                (click)="onSelectPowerLevel(level)"
+                [ngClass]="{'toggled': isPowerLevelBtnHighlighted(level) }"
+            >{{ i+1 }}</button>
+        </kendo-buttongroup>
+    </span>
+
+    <span class="d-flex justify-content-start mt-4">
+        <p><strong>Beeper volume:</strong></p>
+    </span>
+    <span class="d-flex justify-content-center">
+        <kendo-buttongroup selection="single" width="100%" style="margin-right: 1rem;">
+            <button kendoButton type="button" *ngFor="let volume of beeperVolumes; index as i"
+                [toggleable]="true" 
+                [selected]="isBeeperVolumeBtnHighlighted(volume)" 
+                (click)="onSelectVolume(volume)"
+                [ngClass]="{'toggled': isBeeperVolumeBtnHighlighted(volume) }"
+            >{{ volume }}</button>
+        </kendo-buttongroup>
+    </span>
+</div>

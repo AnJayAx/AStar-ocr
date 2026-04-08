@@ -1,0 +1,51 @@
+@import "its-variables";
+
+.flow-card {
+    margin: 0.5rem 0.1rem;
+    outline: 1px solid lightgrey;
+
+    .top {
+        padding: 0.8rem 0.5rem;
+        background-color: white;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        .datetime {
+            margin-left: 0.5rem;
+            flex: 3;
+            display: flex;
+            flex-direction: column;        
+        }
+        .pic {
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+    }
+    .main {
+        padding: 0.8rem 0.5rem;
+        display: flex;
+        .stat {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+    }
+    .bottom {
+        padding: 0.8rem 0.5rem;
+        background-color: white;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+    }
+}
+
+fa-icon {
+    color: grey;
+}
+
+.info-text {
+    color: $list-item-text;
+}

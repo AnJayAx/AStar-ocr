@@ -1,0 +1,40 @@
+<div class="container-fluid vh-100">
+    <h4>ITS</h4>
+    <form class="k-form">
+        <fieldset class="k-form-fieldset">
+            <kendo-label text="Valid EPC Prefixes"></kendo-label>
+            <div *ngIf="epcPrefixDataItems.length > 0">
+                <kendo-chiplist class="chip-wrapper" selection="multiple" (remove)="onRemoveChip($event)">
+                    <kendo-chip class="chip-item" *ngFor="let chip of epcPrefixDataItems" [label]="chip.label + '***'" [removable]="true"></kendo-chip>
+                </kendo-chiplist>
+            </div>
+
+            <div class="mt-2 d-flex justify-content-around">
+                <kendo-textbox style="padding: 0" [clearButton]="true" [value]="newPrefix" (valueChange)="onNewPrefixChange($event)">
+                </kendo-textbox>
+                <div class="d-flex justify-content-center px-2">
+                    <button kendoButton class="add-btn" (click)="onAddChip()">
+                        Add&nbsp;<kendo-svg-icon [icon]="plusIcon" style="color: white;"></kendo-svg-icon>
+                    </button>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+    <div class="mt-2 d-flex justify-content-end align-items-center">
+        <app-custom-switch
+            [isToggled]="isValidEpcPrefixesEnabled"
+            (toggled)="onToggleValidEpcPrefixes()"
+        ></app-custom-switch>
+        &nbsp;
+        <strong>{{ validEpcPrefixesToggledText }}</strong>
+    </div>
+
+    <h4 class="mt-2">Environment</h4>
+    <app-set-url-form></app-set-url-form>
+
+    <hr />
+
+    <div class="d-flex justify-content-center align-items-center" style="margin-bottom: 2rem;">
+        {{ appVersion }}
+    </div>
+</div>

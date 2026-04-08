@@ -1,0 +1,13 @@
+<div class="navbar">
+    <div class="navcontainer">
+         <button kendoButton *ngFor="let entry of filterRouteMap"
+            id="{{ entry.filter }}"
+            class="col navitem" 
+            [ngClass]="selectedId === entry.filter ? 'toggled' : ''"
+            (click)="onClick(entry.filter)"
+            routerLink="{{ entry.path }}"
+        >{{ entry.filter }}</button>
+    </div>
+</div>
+
+<router-outlet></router-outlet>

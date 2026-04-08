@@ -1,0 +1,110 @@
+<div class="float-container">
+    <div class="mt-2 d-flex justify-content-between align-items-center">
+        <h3 class="px-1 m-0">SKU:<span class="sku-display">{{ selectedSku }}</span></h3>
+        <app-reload-btn 
+            [componentType]="reloadComponent"
+            [elementRef]="reloadElemRef"
+            (clicked)="onReloadClicked($event)"
+        ></app-reload-btn>
+    </div>
+    <div class="mt-2">
+        <app-scanmode-buttongroup></app-scanmode-buttongroup>
+    </div>
+    <div class="mt-2 d-flex align-items-center">
+        <span class="d-flex align-items-center"><fa-icon [icon]="locationIcon" style="color: grey"></fa-icon>&nbsp;Location:</span>&nbsp;
+        &nbsp;
+        <span style="flex: 2">
+            <app-location-search-dropdown
+                [setDefaultItem]="true"
+                [selectedLocation]="location"
+                (selectedLocationChanged)="onSelectedLocationChanged($event)"
+            ></app-location-search-dropdown>
+        </span>
+        &nbsp;
+        <button kendoButton (click)="onClearLocation()">Clear</button>
+    </div>
+
+    <kendo-listview #listview
+        *ngIf="dataList.length > 0"
+        [kendoListViewBinding]="viewDataList"
+        containerClass="k-d-flex k-flex-col k-flex-nowrap"
+    >
+        <ng-template kendoListViewHeaderTemplate>
+            <div class="mt-2 px-2" style="border-bottom: 1px solid black; padding-bottom: 0.5rem;">
+                <span class="d-flex justify-content-between align-items-center">
+                    <span>
+                        <h4 class="mt-0 mb-0">Results</h4>
+                        <span class="list-header-subtitle">Last Balance Total:&nbsp;<strong>{{ itemListTotal }}</strong></span> 
+                    </span>
+                    <span class="d-flex flex-column align-items-center">
+                        <fa-icon [icon]="validIcon" *ngIf="isItemScanListValid" class="valid-icon"></fa-icon>
+                        <fa-icon [icon]="invalidIcon" *ngIf="!isItemScanListValid" class="invalid-icon"></fa-icon>
+                    </span>
+                </span>
+                
+            </div>
+            <div class="d-flex align-items-center justify-content-between" style="padding: 8px;">
+                <span style="display: flex; align-items: stretch;">
+                    <button kendoButton (click)="onSelectionBtnClick()" class="selection-btn">{{ selectionText }}</button>
+                    <button kendoButton class="delete-btn" [disabled]="selectedItems.length === 0"><span class="k-icon k-i-trash" (click)="onDeleteSelection()"></span></button>
+                </span>
+                <span>
+                    <kendo-textbox
+                        [style.width.%]="100"
+                        [clearButton]="true"
+                        placeholder="Search..."
+                        (valueChange)="handleFilterChange($event, listview)"
+                    ><ng-template kendoTextBoxPrefixTemplate><span class="k-icon k-i-search"></span></ng-template>
+                    </kendo-textbox>
+                </span>
+            </div>
+        </ng-template>
+        <ng-template kendoListViewItemTemplate let-dataItem="dataItem" let-index="index">
+            <app-pt-item-card
+                [item]="dataItem"
+                [isSelected]="isSelectedItem(dataItem)"
+                (itemRemoved)="onDeleteItem($event)"
+                (itemClicked)="onClickItem($event)"
+            ></app-pt-item-card>
+        </ng-template>
+        <ng-template kendoListViewFooterTemplate>
+            <div class="decorated-footer">
+                <span class="decorated-footer-text">End of List</span>
+            </div>
+        </ng-template>
+    </kendo-listview>
+
+    <div *ngIf="dataList.length > 0 && viewDataList.length === 0" class="mt-2 d-flex justify-content-center">
+        No results found.
+    </div>
+    <div *ngIf="dataList.length === 0" class="mt-2 d-flex justify-content-center">
+        <hr/>
+        <i>Scan one or more tags to continue</i>
+    </div>
+
+    <div class="float">
+        <app-clearscan-btn (clicked)="onClear($event)"></app-clearscan-btn>
+        <app-startscan-btn></app-startscan-btn>
+        <button kendoButton (click)="onClickConfirm()" [primary]="true" [disabled]="confirmBtnDisabled">Confirm</button>
+    </div>
+</div>
+
+<app-pt-qc-dialog
+    *ngIf="showQcPanel"
+    [operationId]="selectedOperationId"
+    (qcDialogClosed)="onCloseQcDialog($event)"
+></app-pt-qc-dialog>
+
+<app-pt-bom-scan
+    *ngIf="showBomPanel"
+    [operationId]="selectedOperationId"
+    (bomDialogClosed)="onCloseBomPanel($event)"
+></app-pt-bom-scan>
+
+<app-submission-dialog
+    *ngIf="showSubmissionPanel"
+    [dialogTitle]="'Submit Operation Traveler'"
+    [transactionNo]=""
+    (closeSelected)="onCloseSubmissionPanel($event)"
+></app-submission-dialog>
+

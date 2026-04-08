@@ -1,0 +1,13 @@
+<kendo-dropdownlist *ngIf="!!viewCategoriesList"
+    #cat
+    [filterable]="true"
+    [disabled]="disabled"
+    [required]="isRequired"
+    [data]="viewCategoriesList"
+    [value]="selectedCategory"
+    textField="Name"
+    valueField="Category_ID"
+    (valueChange)="onCategoryChange($event)"
+    (filterChange)="handleFilter($event)"
+    (blur)="onTouched()"
+></kendo-dropdownlist>

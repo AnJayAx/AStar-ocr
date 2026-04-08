@@ -1,0 +1,67 @@
+@import "its-variables";
+@import "variables";
+
+.float {
+    @include float;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.float-container {
+    @include float-container;
+}
+
+.packing-dialog {
+    min-width: 300px;
+    width: 90%;
+    // max-width: 100%;
+
+    min-height: 460px;
+    height: 80%;
+    // max-height: 90%;
+}
+
+.empty-list-wrapper {
+    padding: 2rem 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.decorated-footer {
+    @include decorated-footer;
+
+    .decorated-footer-text {
+        @include decorated-footer-text
+    }
+}
+
+.picking-type-indicator {
+    border-radius: 5px;
+    padding: 0.2rem 0.5rem;
+    background-color: black;
+    color: white;
+    font-weight: bolder;
+}
+
+.custom-title {
+    font-weight: bolder;
+    text-align: center;
+    white-space: nowrap;
+    overflow: auto;
+}
+.icon-container {
+    text-align: center;
+    .icon {
+        font-size: x-large;
+    }
+}
+.green-check {
+    color: $success;
+}
+.red-cross {
+    color: $error;
+}
+
+.grow-9 { flex-grow: 9; }
+.grow-1 { flex-grow: 1; }

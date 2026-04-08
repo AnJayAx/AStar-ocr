@@ -1,0 +1,20 @@
+.tagitem-container {
+    display: flex;
+    overflow-x: hidden;
+
+    .checkbox-wrapper {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        background-color: white;
+
+        .item-checkbox {
+            margin: 0.5rem;
+            border: 1px solid black;
+        }
+    }
+
+    .card-wrapper {
+        flex-grow: 8;
+    }
+}

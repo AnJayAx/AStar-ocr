@@ -1,0 +1,19 @@
+<h1>From HelloWorld plugin</h1>
+<p>{{ msg | json }}</p>
+
+<!-- <h1>From DWUtilities plugin</h1>
+
+<p>Active profile</p>
+<p>{{ activeProfile | json }}</p>
+
+<p>Profile list</p>
+<p>{{ profileList | json }}</p> -->
+
+<button kendoButton (click)="softScanToggle()">Toggle Scan</button>
+
+<h1>TEST barcode plugin</h1>
+<span *ngFor="let barcode of (barcodeList$ | async)">
+    {{ barcode }}
+</span>
+
+<p><strong>Is camera valid?:</strong>&nbsp;{{ cameraValid }}</p>

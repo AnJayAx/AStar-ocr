@@ -1,0 +1,62 @@
+<!-- <div class="Login">
+  <kendo-card class="Login__card">
+    <kendo-card-header class="Login__card-header">
+      <img class="Login__logo" src="assets/img/logo_2.png" alt="SIMTech Logo" />
+      <h2>Login to access apps.</h2>
+    </kendo-card-header>
+    <kendo-card-body class="Login__card-body">
+      <form [formGroup]="form">
+        <div class="Login__field">
+          <kendo-formfield>
+            <kendo-label [for]="email" text="Email"></kendo-label>
+            <kendo-textbox
+              formControlName="email"
+              #email
+              required
+              [clearButton]="true"
+              [style.width]="'20rem'"
+            ></kendo-textbox>
+            <kendo-formerror>Error: Valid email is required.</kendo-formerror>
+          </kendo-formfield>
+        </div>
+        <div class="Login__field">
+          <kendo-formfield>
+            <kendo-label [for]="password" text="Password"> </kendo-label>
+            <kendo-textbox
+              formControlName="password"
+              #password
+              required
+              [clearButton]="true"
+              type="password"
+              [style.width]="'20rem'"
+            >
+              <ng-template kendoTextBoxSuffixTemplate>
+                <button
+                  kendoButton
+                  look="clear"
+                  icon="eye"
+                  (click)="toggleVisibility()"
+                ></button>
+              </ng-template>
+            </kendo-textbox>
+            <kendo-formerror>Error: Password is required.</kendo-formerror>
+          </kendo-formfield>
+        </div>
+        <p class="Login__error">{{ error }}</p>
+        <div class="Login__actions">
+          <div>
+            <button kendoButton (click)="(null)">
+              Create account
+            </button>
+            <button kendoButton look="clear" (click)="(null)">
+              Forgot password?
+            </button>
+          </div>
+          <button kendoButton [primary]="true" (click)="login()" type="submit">
+            {{ isLoggedIn() ? "Switch user" : "Login" }}
+          </button>
+        </div>
+      </form>
+    </kendo-card-body>
+  </kendo-card>
+</div> -->

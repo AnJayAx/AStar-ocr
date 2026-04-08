@@ -1,0 +1,81 @@
+@import "its-variables";
+
+$category-color: #6a5acd;
+.item-container {
+    @include item-card;
+
+    .details-wrapper {
+        flex-grow: 3;
+
+        .title {
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+
+            .sm-indicator {
+                @include sm-indicator-nobg;
+                background-color: $s-indicator-bgcolor;
+            }
+            .sm-indicator.bg-m {
+                background-color: $m-indicator-bgcolor;
+            }
+
+            .name {
+                @include item-card-name;
+            }
+        }
+
+        .subtitle {
+            margin-bottom: 0.1rem;
+
+            .category {
+                font-size: 0.8rem;
+                background-color: $category-color;
+                color: white;
+                border-radius: 8px;
+                padding: 0.3rem 0.5rem;
+            }
+            .description {
+                font-size: 1rem;
+            }
+        }
+
+        .location {
+            font-size: 1rem;
+        }
+
+        .epc {
+            @include item-card-epc;
+        }
+        
+        .balance {
+            color: green;
+        }
+    }
+
+    .stats-wrapper {
+        flex-grow: 1;
+
+        .picking-numeric-textbox {
+            padding: 0;
+        }
+
+        .qty {
+            font-size: 0.9rem;
+            color: $pl-qty-color;
+        }
+    }
+}
+
+.numerictextbox-wrapper:nth-child(1) {
+    outline: 1.5px solid #F1EFEF;
+}
+kendo-numerictextbox > input {
+    font-size: 1.1rem;
+    padding: 0rem;
+}
+
+.selected-item {
+    @include selected-item
+}
+

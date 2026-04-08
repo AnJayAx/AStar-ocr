@@ -1,0 +1,23 @@
+@import "variables";
+
+.navbar {
+    margin: 0 auto;          
+    display: flex;
+    width: 100%;
+
+    .navcontainer {
+        flex-grow: 1;
+        overflow-x: scroll;
+        white-space: nowrap;
+        overflow-y: hidden;
+
+        .navitem {
+            border-radius: 15px;
+            margin: 0 2px;
+        }
+        .navitem:active {
+            background-color: $primary;
+            color: white;
+        }
+    }
+}

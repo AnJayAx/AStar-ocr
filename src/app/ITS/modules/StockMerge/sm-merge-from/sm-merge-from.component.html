@@ -1,0 +1,46 @@
+<div class="container-fluid float-container">
+
+    <div class="mt-2">
+        <div>
+            <span style="font-size: larger"><u>Item to merge into:</u></span>
+        </div>
+        <kendo-card width="auto">
+            <kendo-card-header class="p-2">
+                <app-sm-indicator [sm]="mergeToItem.IsIndividual"></app-sm-indicator>
+                &nbsp;
+                <span><strong>{{ mergeToItem.EPC_ID }}</strong></span>
+            </kendo-card-header>
+            <kendo-card-body style="padding: 0.5rem 1rem;">
+                <div class="d-flex justify-content-between">
+                    <span style="margin-right: 0.1rem">
+                        <div><span class="mergeto-item-fieldname">Batch. No:</span>&nbsp;<strong class="mergeto-item-fieldvalue">{{ mergeToItem.BatchNo?.length > 0 ? mergeToItem.BatchNo : '-' }}</strong></div>
+                        <div><span class="mergeto-item-fieldname">Description:</span>&nbsp;<strong class="mergeto-item-fieldvalue">{{ mergeToItem.Description?.length > 0 ? mergeToItem.Description : '-' }}</strong></div>
+                    </span>
+                    <span class="d-flex align-items-center">
+                        <div class="mergeto-item-balance">{{ mergeToItem.LastBal.toFixed(2) }}</div>
+                    </span>
+                </div>
+            </kendo-card-body>
+        </kendo-card>
+    </div>
+
+    <hr/>
+
+    <div class="d-flex justify-content-center">
+        <span class="d-flex align-items-center page-title">
+            <strong>Merge From</strong>
+        </span>
+    </div>
+
+    <div class="mt-2">
+        <app-scan-view
+            [selectMode]="'multiple'"
+            [inclBackBtn]="false"
+            [continueOrConfirm]="'continue'"
+            [filterOut]="STOCKMERGE_FILTEROUT"
+            [filterByAnd]="STOCKMERGE_FILTERIN"
+            (confirmed)="onConfirm($event)"
+        ></app-scan-view>
+    </div>
+
+</div>

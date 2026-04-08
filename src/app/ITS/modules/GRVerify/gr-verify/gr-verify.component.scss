@@ -1,0 +1,22 @@
+@import "variables";
+@import "its-variables";
+
+.float {
+    @include float;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.float-container {
+    @include float-container;
+    margin-bottom: 10%;
+}
+
+.verified-icon {
+    color: $success;
+    font-size: 1rem;
+}
+
+.popup-btn {
+    margin-right: 0.5rem;
+}

@@ -1,0 +1,38 @@
+<div class="item-container">
+    <div class="details-wrapper">
+        <div class="title">
+            <span class="sm-indicator" [ngClass]="{ 'bg-m': isM }">{{ item.SM }}</span>&nbsp;
+            <span class="name">{{ item.Asset_ID }}</span>
+        </div>
+        <div class="subtitle">
+            <span class="category">{{ item.Category }}</span>
+            -
+            <span class="description">{{ item.Description }}</span>
+        </div>
+        <div class="epc">
+            {{ item.EPC_ID }}
+        </div>
+    </div>
+    <app-custom-indicator *ngIf="itemIsPending()" [type]="IndicatorType.ExclamationCircle" [colour]="IndicatorColour.Red"></app-custom-indicator>
+    <div class="stats-wrapper">
+        <div class="picking-numeric-textbox">
+            <ng-container *ngIf="isM">
+                <kendo-numerictextbox [spinners]="false"
+                    class="rv-numeric-textbox"
+                    [disabled]="mQtyIsDisabled()"
+                    [min]="0" [max]="max"
+                    [format]="n3"
+                    [value]="verifiedQty"
+                    [autoCorrect]="true"
+                    (valueChange)="onVerifiedQtyChange($event)"
+                ></kendo-numerictextbox>
+            </ng-container>
+            <ng-container *ngIf="!isM" style="width: 60px;">
+                <strong>{{ verifiedQty }}</strong>
+            </ng-container>
+        </div>
+        <div class="qty">
+            {{ item.Qty.toFixed(2) }}
+        </div>
+    </div>
+</div>

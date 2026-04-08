@@ -1,0 +1,37 @@
+export interface IItemMaster {
+  // "Item_Master_ID": number;
+  // "Display_ID": string;
+  // "Creator": string;
+  // "Creation_Time": string;
+  // "Edit_Time": string;
+  // "Availability": number;
+  // "Status": string;
+  // "SKU": string;
+  // "Name": string;
+  // "Length": number;
+  // "Width": number;
+  // "Height": number;
+  // "Volume": number;
+  // "Weight": number;
+  // "UOM": string;
+  // "Remarks": string;
+  // "ExpirationMonths": number;
+  "Item_Master_ID": number;
+  "Display_ID": string;
+  "Creator": string;
+  "Creation_Time": string;
+  "Edit_Time": string;
+  "Availability": number;
+  "Status": string;
+  "SKU": string;
+  "Name": string;
+  "Length": number;
+  "Width": number;
+  "Height": number;
+  "Volume": number;
+  "Weight": number;
+  "UOM": string;
+  "Remarks": string;
+  "ExpirationMonths": number;
+  "LWHUOM": string;
+}

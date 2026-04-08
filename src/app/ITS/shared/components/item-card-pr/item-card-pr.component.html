@@ -1,0 +1,58 @@
+<div class="item" [class.bg-darker]="index%2 == 0" [class.selected-item]="isSelected">
+    <div class="item-details" (click)="onSelect()">
+        <div class="item-name">
+            <app-sm-indicator [sm]="SM"></app-sm-indicator>
+            {{ item.Asset_No }}
+        </div>
+        <div>
+            <span class="item-category">{{ sanitizeNullString(item.Category) }}</span>&nbsp;
+            <app-item-status-indicator [statusName]="item.Asset_StatusName"></app-item-status-indicator>
+        </div>
+        <div>{{ sanitizeNullString(item.Description) }}</div>
+        <div class="item-location">{{ sanitizeNullString(item.Asset_LocationLocation) }}</div>
+        <div class="item-epc">{{ item.EPC_ID }}</div>
+    </div>
+    <div class="item-flex d-flex flex-column justify-content-between">
+        <div>
+            <span class="item-balance" *ngIf="(!isEditable && SM === 'M') || SM === 'S'">
+                {{ sanitizeNullString(sLastBal) }}
+            </span>
+            <span *ngIf="isEditable && SM === 'M'">
+                <span class="numerictextbox-wrapper">
+                    <kendo-numerictextbox
+                        *ngIf="isMaxEnabled"
+                        [spinners]="false"
+                        [style.width.%]="100"
+                        [format]="n3"
+                        (focus)="onFocus()"
+                        [autoCorrect]="true"
+                        [(ngModel)]="item.Remarks6"
+                        [min]="0" [max]="max"
+                        (valueChange)="onLastBalChange()"                      
+                    ></kendo-numerictextbox>
+                    <kendo-numerictextbox
+                        *ngIf="!isMaxEnabled"
+                        [spinners]="false"
+                        [style.width.%]="100"
+                        [format]="n3"
+                        (focus)="onFocus()"
+                        [autoCorrect]="true"
+                        [(ngModel)]="item.Remarks6"
+                        [min]="0"
+                        [max]="max"
+                        (valueChange)="onLastBalChange($event)"
+                    ></kendo-numerictextbox>
+                </span>
+                <br/>
+                <span class="item-balance-m">{{ sanitizeNullString(sLastBal) }}</span>
+                <span style="float: right;" class="inline-group"> Of <span class="item-balance-m">{{ sanitizeNullString(max) }}</span></span>
+                <br/><span class="item-balance-m">{{ sanitizeNullString(item.LastBal) }}</span>
+            </span>
+        </div>
+    </div>
+
+
+    <div class="item-bin-indicator" (click)="onRemove()" *ngIf="!isDeletionDisabled">
+        <fa-icon [icon]="binIcon"></fa-icon>
+    </div>
+</div>

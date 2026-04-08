@@ -1,0 +1,57 @@
+<!--<div class="Notifications" (clickOutside)="onClick('none')">-->
+<!--  <button-->
+<!--    class="Notifications__button"-->
+<!--    kendoButton-->
+<!--    look="flat"-->
+<!--    #notificationsAnchor-->
+<!--    (click)="onClick('notifications')"-->
+<!--  >-->
+<!--    <kendo-icon [name]="'bell'"></kendo-icon>-->
+<!--    <kendo-badge-->
+<!--      shape="dot"-->
+<!--      themeColor="error"-->
+<!--      *ngIf="notifications?.length > 0"-->
+<!--    ></kendo-badge>-->
+<!--  </button>-->
+<!--  &lt;!&ndash; Popup possible when notifications available. &ndash;&gt;-->
+<!--  <kendo-popup-->
+<!--    class="Notifications__popup"-->
+<!--    [anchor]="notificationsAnchor"-->
+<!--    *ngIf="currentMenu === 'notifications' && notifications?.length > 0"-->
+<!--  >-->
+<!--    <kendo-card width="auto" class="Notifications__card">-->
+<!--      <kendo-card-body class="Notification" *ngFor="let n of notifications">-->
+<!--        &lt;!&ndash; ngStyle used here as the color is dynamic depending on data response. Inline style should be considered sparingly. &ndash;&gt;-->
+<!--        <span-->
+<!--          class="Notification__indicator"-->
+<!--          [ngStyle]="{ background: assignColor(n.status) }"-->
+<!--        ></span>-->
+<!--        <p class="Notification__content">{{ n.content }}</p>-->
+<!--        <div class="Notification__action" (click)="onNotificationClick(n.id)">-->
+<!--          <kendo-icon [name]="'check'"></kendo-icon>-->
+<!--        </div>-->
+<!--      </kendo-card-body>-->
+<!--    </kendo-card>-->
+<!--  </kendo-popup>-->
+<!--</div>-->
+<div class="row">
+  <div class="col-12">
+    <h2>Notifications</h2>
+<!--    <app-view-heading-->
+<!--      [title]="'Notifications' | translate"-->
+<!--    ></app-view-heading>-->
+  </div>
+  <div class="mybtn-right">
+    <button kendoButton (click)="onButtonClick()" class="clear-button">Clear All</button>
+  </div>
+  <div class="row">
+    <ul class="notifications-list">
+      <li *ngFor="let n of notifications">
+        <!--    <button [class.selected]="hero === selectedHero" type="button" (click)="onSelect(hero)">-->
+        <span class="k-icon k-i-warning k-icon-16"></span>
+        <a><span class="msg-content">{{n.content}}</span></a>
+        <!--    </button>-->
+      </li>
+    </ul>
+  </div>
+</div>

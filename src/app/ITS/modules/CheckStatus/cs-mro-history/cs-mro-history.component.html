@@ -1,0 +1,30 @@
+<div class="vh-50 d-flex justify-content-center align-items-center" *ngIf="noMroRecordsFound(); else showRecords"> 
+    <h4>No MRO Records Found.</h4>
+</div>
+<ng-template #showRecords>
+    <div class="container-fluid mt-2">
+        <kendo-listview #listview
+            [kendoListViewBinding]="mroRecords"
+            containerClass="k-d-flex k-flex-col k-flex-nowrap"
+        >
+        <ng-template kendoListViewHeaderTemplate>
+            <span class="d-flex justify-content-end p-2">
+                <span style="font-size: 0.9rem;"><strong>{{ mroRecords?.length }}</strong> record(s) found.</span>
+            </span>
+        </ng-template>
+        <ng-template kendoListViewItemTemplate let-dataItem="dataItem" let-index="index">
+                <div class="mro-card">
+                    <div class="top">
+                        <fa-icon [icon]="dateIcon"></fa-icon>
+                        <span class="info-text"><strong>{{ getDateFromDateS(dataItem.MRODateS) }}</strong></span>
+                        <span class="info-text">{{ getTimeFromDateS(dataItem.MRODateS) }}</span>
+                    </div>
+                    <div class="main">
+                        <fa-icon [icon]="descriptionIcon"></fa-icon>
+                        <span class="info-text">{{ dataItem.MRO_Description.length>0? dataItem.MRO_Description : '-' }}</span>
+                    </div>                
+                </div>
+            </ng-template>
+        </kendo-listview>
+    </div>
+</ng-template>

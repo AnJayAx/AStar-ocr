@@ -1,0 +1,6 @@
+@import "its-variables";
+@import "variables";
+
+.page-title {
+    @include page-title
+}

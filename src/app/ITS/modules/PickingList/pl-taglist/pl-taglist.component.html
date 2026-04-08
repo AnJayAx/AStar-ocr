@@ -1,0 +1,30 @@
+<div class="container-fluid" style="min-height: 100%">
+    <div class="row mt-2">
+        <kendo-listview
+            [data]="tagItems"
+            containerClass="k-d-flex k-flex-col k-flex-nowrap"
+            style="padding: 0;"
+        >
+            <ng-template kendoListViewHeaderTemplate>
+                <div class="py-2 px-1" style="display: flex; align-items: stretch;">
+                    <button kendoButton (click)="onSelectionBtnClick()" style="margin-right: 0.1rem">{{ selectionText }}</button>
+                    <button kendoButton style="background-color: red; color: white; margin-right: 0.1rem;"><span class="k-icon k-i-trash" (click)="onDeleteSelection()"></span></button>    
+                </div>
+            </ng-template>
+            <ng-template kendoListViewItemTemplate let-dataItem="dataItem" let-index="'index">
+                <div class="tagitem-container mb-2">
+                    <span class="card-wrapper">
+                        <app-pl-tagitem-card [item]="dataItem" 
+                            [isSelected]="isSelectedItem(dataItem)"
+                            (itemClicked)="onClickItem($event, dataItem)"
+                        ></app-pl-tagitem-card>
+                    </span>
+                </div>
+            </ng-template>
+        </kendo-listview>
+    </div>
+
+    <div class="row mt-4">
+        <button kendoButton [primary]="true" (click)="onDone()">Done</button>
+    </div>
+</div>

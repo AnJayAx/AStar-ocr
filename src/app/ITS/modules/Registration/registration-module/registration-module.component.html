@@ -1,0 +1,179 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <!-- TO DO: add back the scanner icon with bracode selected by default -->
+      <app-scanmode-buttongroup [isDisabled]="true" *ngIf="false"></app-scanmode-buttongroup>
+      <form class="w-100 k-form" [formGroup]="registerForm">
+        <fieldset class="k-form-fieldset">
+          <div>
+            <kendo-formfield>
+              <legend class="k-form-legend compulsory-field">
+                {{ formfieldTitlesDictionary["Ref_No"] }}*
+              </legend>
+              <div class="input-btn-row d-flex">
+                <input
+                  formControlName="refNo"
+                  kendoTextBox
+                  required
+                  #refNo
+                  class="form-control"
+                  (blur)="onFieldExit('refNo')"
+                />
+
+                <button
+                  kendoButton
+                  type="button"
+                  (click)="redirectToOCR()"
+                  [primary]="true"
+                >
+                  <fa-icon [icon]="eyeIcon"></fa-icon>
+                </button>
+              </div>
+              <kendo-formerror>Error: S/N is required</kendo-formerror>
+            </kendo-formfield>
+          </div>
+          <!-- SAP S/N -->
+          <div>
+            <kendo-formfield>
+              <legend class="k-form-legend compulsory-field">
+                {{ formfieldTitlesDictionary["UOM"] }}*
+              </legend>
+             <div class="input-btn-row d-flex">
+             <input
+               formControlName="sapSN"
+               kendoTextBox
+               #sapSN
+               class="form-control"
+               placeholder="Auto-filled (if found), or key in manually"
+             />
+            </div>
+           </kendo-formfield>
+          </div>
+
+          <div>
+            <kendo-formfield>
+              <legend class="k-form-legend compulsory-field">
+                {{ formfieldTitlesDictionary["BatchNo"] }}*
+              </legend>
+              <div class="input-btn-row d-flex">
+                <kendo-dropdownlist
+                  *ngIf="partNoList.length > 0"
+                  formControlName="batchNo"
+                  required
+                  #batchNo
+                  allowCustom="true"
+                  [data]="partNoList"
+                  (blur)="onFieldExit('batchNo')"
+                >
+                </kendo-dropdownlist>
+                <input
+                  *ngIf="partNoList.length == 0"
+                  formControlName="batchNo"
+                  kendoTextBox
+                  required
+                  #batchNo
+                  class="form-control"
+                  (blur)="onFieldExit('batchNo')"
+                />
+              </div>
+              <kendo-formerror>Error: PartNo is required</kendo-formerror>
+            </kendo-formfield>
+          </div>
+          <!-- TO DO: add the Order No -->
+          <div>
+            <kendo-formfield>
+              <legend class="k-form-legend compulsory-field">
+                {{ formfieldTitlesDictionary["SKU"] }}*
+              </legend>
+              <div class="input-btn-row d-flex">
+                <input
+                  formControlName="SKU"
+                  kendoTextBox
+                  required
+                  #SKU
+                  class="form-control"
+                  (blur)="onFieldExit('SKU')"
+                />
+                <button
+                  kendoButton
+                  type="button"
+                  (click)="registerTags()"
+                  [primary]="true"
+                  [disabled]="isBusy"
+                >
+                  Register
+                </button>
+              </div>
+              <kendo-formerror>Error: Order No is required</kendo-formerror>
+            </kendo-formfield>
+          </div>
+        </fieldset>
+        <!-- TODO: display for wheel hub set -->
+        <div class="mt-4">
+          <div class="d-flex">
+            <legend class="k-form-legend d-flex justify-content-between">
+              Register Item List:
+              <label
+                >Select all
+                <input
+                  type="checkbox"
+                  [checked]="isAllSelected"
+                  kendoCheckBox
+                  (change)="toggle($event.target.checked)"
+                />
+              </label>
+            </legend>
+          </div>
+          <div *ngIf="displayTags">
+            <div
+              *ngFor="let item of registerItems; let idx = index"
+              class="card m-2 p-2 row"
+              [class.selected-item]="selectedSet.has(idx)"
+              (click)="selectResult(idx)"
+            >
+              <div>
+                <!-- make this slightly bigger; this is the name -->
+                {{ idx + 1 }}) {{ item.Description }}
+              </div>
+              <div>
+                <!-- make this slightly bigger -->
+                {{ item.RFID_Number }}
+              </div>
+
+              <div>
+                Printed:
+                <span
+                  class="badge"
+                  [ngClass]="getStatusBadge(item.Print_Status)"
+                >
+                  {{ getPrintStatusLabel(item.Print_Status) }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-4">
+          <div class="d-flex justify-content-evenly">
+            <button
+              kendoButton
+              type="button"
+              [primary]="false"
+              (click)="cancelAll()"
+            >
+              Cancel
+            </button>
+
+            <button
+              kendoButton
+              [primary]="true"
+              [disabled]="!displayTags || isBusy"
+              (click)="printTags()"
+            >
+              Print
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,20 @@
+<!--<div class="mobile-navigation">-->
+<!--  <div class="mobile-navigation-item text-center" [ngClass]="current == 'home' ? 'active': ''" (click)="menuClick('home')" [routerLink]="'./form-filling'">-->
+<!--    <span class="k-icon k-i-home k-icon-xl"></span><br>-->
+<!--    {{'mobile-menu.' | translate}}-->
+<!--  </div>-->
+<!--  <div class="mobile-navigation-item  text-center"  [ngClass]="current == 'menu' ? 'active': ''" (click)="menuClick('menu')" [routerLink]="'./mobile-navigation-list'">-->
+<!--    <span class="k-icon k-i-layout-2-by-2 k-icon-xl"></span><br>-->
+<!--    {{'mobile-menu.menu' | translate}}-->
+<!--  </div>-->
+<!--  <div class="mobile-navigation-item  text-center"  [ngClass]="current == 'account' ? 'active': ''" (click)="menuClick('account')">-->
+<!--    <span class="k-icon k-i-user k-icon-xl"></span><br>-->
+<!--    {{'mobile-menu.account' | translate}}-->
+<!--  </div>-->
+<!--</div>-->
+<kendo-bottomnavigation class="mobile-navigation"
+  [items]="items"
+  (select)="onSelect($event)"
+>
+
+</kendo-bottomnavigation>

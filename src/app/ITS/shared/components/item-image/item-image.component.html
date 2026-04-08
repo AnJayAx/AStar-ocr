@@ -1,0 +1,3 @@
+<kendo-loader *ngIf="isLoading && !imageUrl"></kendo-loader>
+<img *ngIf="!isLoading && imageUrl"[src]="imageUrl" alt="Item Image" height="150" width="150"/>
+

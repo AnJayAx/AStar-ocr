@@ -1,0 +1,67 @@
+@import "its-variables";
+
+.item-container {
+    @include item-card;
+    margin-bottom: 0.5rem;
+
+    .details-wrapper {
+        flex-grow: 4;
+
+        .title {
+            margin-bottom: 1rem;
+
+            .sm-indicator {
+                @include sm-indicator-nobg;
+                background-color: $s-indicator-bgcolor;
+            }
+            .sm-indicator.bg-m {
+                background-color: $m-indicator-bgcolor;
+            }
+
+            .name {
+                @include item-card-name;
+            }
+        }
+
+        .subtitle {
+            .category {
+                font-size: 1rem;
+            }
+            .description {
+                font-size: 1rem;
+            }
+        }
+    
+        .epc {
+            @include item-card-epc;
+        }
+        
+    }
+
+    .stats-wrapper {
+        flex-grow: 1;
+
+        .picking-numeric-textbox {
+            padding: 0;
+            text-align: right;
+        }
+
+        .qty {
+            font-size: 0.9rem;
+            color: $pl-qty-color;
+            text-align: center;
+            font-weight:bolder;
+        }
+    }
+
+}
+
+.rv-numeric-textbox {
+    padding: 0;
+    width: 50px;
+    outline: 1px solid lightgray;  
+}
+
+.picking-numeric-textbox {
+    font-size: x-large;
+}

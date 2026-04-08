@@ -1,0 +1,85 @@
+
+@import "its-variables";
+@import "variables";
+
+.item {
+    display: flex;
+    height: fit-content;
+    padding: 0.8rem;
+    border-top: solid;
+    border-color: #ecebeb;
+    border-width: thin;
+    background-color: white;
+    border: 1px solid lightgrey;
+    margin-bottom: 0.3rem;
+
+    position: relative;
+
+    &-details {
+        flex: 5;
+    }
+    &-ctls {
+        flex: 2;
+    }
+    &-property {
+        font-size: 0.8rem;
+        color: darkgray;
+    }
+    &-value {
+        font-size: 1.2rem;;
+        color: $list-item-text;
+        font-weight: bolder;
+
+        &-op-ac {
+            font-size: 1rem;
+            border-radius: 5%;
+            padding: 0.1rem 0.2rem;
+            background-color: blueviolet;
+            color: white;
+        }
+        &-op-text {
+            font-size: 1rem;
+            border-radius: 5%;
+            padding: 0.1rem 0.2rem;
+            background-color: chartreuse;
+            color: black;
+        }
+    }
+    &-epc {
+        font-size: 1rem;
+        color: goldenrod;
+    }
+    &-balance {
+        color: #656565;
+        font-size: 1.1rem;
+        font-weight: bolder;
+        text-align: right;
+        
+        &-container {
+            width: 100%;
+            text-align: end;
+            padding: 0 0.5rem;
+        }
+        
+        &-m {
+            color: #656565;
+            font-size: 1.1rem;
+            font-weight: bolder;
+        }
+    }
+    &-bin-indicator {
+        position: absolute;
+        right: 0;
+        bottom: 5%;
+        padding: 3px 10px;
+        font-size: 1.2rem;
+        color: $error;
+    }
+}
+.selected-item {
+    @include selected-item
+}
+
+.numerictextbox-container:nth-child(1) {
+    outline: 1px solid lightgray;
+}

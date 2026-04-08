@@ -1,0 +1,48 @@
+<kendo-dialog
+    (close)="closeBomDialog(DialogCloseEventType.Cancel)"
+    [minWidth]="300"
+    class="p-0"
+>
+    <kendo-dialog-titlebar>
+        <div class="d-flex flex-column">
+            <h4 class="my-0">Scan RM BOM</h4>
+            <div><span class="subtitle-property">Op. ID:</span>&nbsp;<span class="subtitle">{{ operationId }}</span></div>
+        </div>
+    </kendo-dialog-titlebar>
+    <div>
+        <kendo-listview *ngIf="inputBom.length > 0 && outputBom.length > 0"
+            [kendoListViewBinding]="inputBom"
+            containerClass="k-d-flex k-flex-col k-flex-nowrap"
+        >
+            <ng-template kendoListViewItemTemplate let-dataItem="dataItem" let-index="index">
+                <div class="bom-card">
+                    <div class="sku">{{ dataItem.SKU }}</div>
+                    <div class="bom-item">
+                        <span class="epc">
+                            <kendo-textbox
+                                [style.width.%]="100"
+                                [clearButton]="true"
+                                placeholder="Scan an EPC ID..."
+                                [value]="outputBom[index].EPCID"
+                                [readonly]="true"
+                            ></kendo-textbox>
+                        </span>
+                        <button kendoButton (click)="onClearEpc(index)">Clear</button>
+                    </div>        
+                </div>
+            </ng-template>
+        </kendo-listview>
+
+        <div *ngIf="!!operationId && inputBom.length === 0" class="mt-4 d-flex justify-content-center">
+            No bom found.
+        </div>
+    </div>
+    <kendo-dialog-actions>
+        <span class="px-2"><app-scanmode-buttongroup></app-scanmode-buttongroup></span>
+        <div class="d-flex justify-content-around">
+            <button kendoButton (click)="closeBomDialog(DialogCloseEventType.Cancel)">Cancel</button>
+            <app-startscan-btn></app-startscan-btn>
+            <button kendoButton [primary]="true" (click)="onClickConfirm()" [disabled]="confirmBtnDisabled">Confirm</button>
+        </div>
+    </kendo-dialog-actions>
+</kendo-dialog>

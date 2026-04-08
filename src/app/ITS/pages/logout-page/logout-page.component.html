@@ -1,0 +1,19 @@
+<ng-container *ngIf="isLoggedOut; else notLoggedOut">
+    <div class="container-fluid">
+        <h1>Logged Out</h1>
+        <div class="vh-50 d-flex flex-column justify-content-center">
+            <span style="text-align: center"><h3>You have logged out. Click 'LOGIN' to log in again.</h3></span>
+            <span class="mt-4" style="text-align: center;"><button kendoButton [primary]="true" (click)="nav()">LOGIN</button></span>
+        </div>
+    </div>
+</ng-container>
+
+<ng-template #notLoggedOut>
+    <div class="container-fluid">
+        <h1>Redirecting...</h1>
+        <div class="vh-50 d-flex flex-column justify-content-center">
+            <span style="text-align: center;"><h3>You are being logged out. Please wait.</h3></span>
+            <span class="mt-4" style="text-align: center;"><kendo-loader [type]="infinite-spinner"></kendo-loader></span>              
+        </div>
+    </div>
+</ng-template>

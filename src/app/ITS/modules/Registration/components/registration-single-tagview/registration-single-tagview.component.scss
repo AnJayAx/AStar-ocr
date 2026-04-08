@@ -1,0 +1,41 @@
+@import "variables";
+
+.tagview-block {
+    display: flex;
+    padding: 1rem 1rem;
+    border: $border-100;
+    border-radius: $border-radius;
+    background: $white;
+}
+
+.checkbox-wrapper {
+    flex: 1;
+    margin-right: 1rem;
+}
+
+.tagname-wrapper {
+    flex: 5;
+
+    .tagname {
+        font-size: $font-size-sm;
+        word-wrap: normal;
+        margin: 0;
+    }
+}
+
+.delete-wrapper {
+    flex: 2;
+
+    .k-i-trash {
+        font-size: 2rem;
+        margin-left: 1rem;
+        color:firebrick;
+    }
+}
+
+
+
+.selectTag {
+    padding-top: 15px;
+    align-self: flex-start;
+}

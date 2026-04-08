@@ -1,0 +1,39 @@
+<div class="item" [class.selected-item]="isSelected" *ngIf="!!item">
+    <span class="item-details" (click)="onSelect()">
+        <div>
+            <app-sm-indicator [sm]="SM"></app-sm-indicator>
+            <span class="item-value">{{ item.SKU?.length > 0 ? item.SKU : '-' }}</span>
+        </div>
+        <div><span class="item-property">BN:</span>&nbsp;<span class="item-value">{{ item.BatchNo?.length > 0 ? item.BatchNo : '-' }}</span></div>
+        <div><span class="item-property">CO:</span>&nbsp;<span class="item-value">{{ CoOpId }}</span></div>
+        <div><span class="item-property">NO:</span>&nbsp;<span class="item-value">{{ NoOpId }}</span></div>
+        <div><span class="item-epc">{{ item.EPC_ID }}</span></div>
+    </span>
+    <span class="d-flex flex-column justify-content-between item-ctls">
+        <div>
+            <div *ngIf="SM === 'S'" class="item-balance-container">
+                <span class="item-balance">{{ sanitizeNullString(sLastBal) }}</span>
+            </div>
+            <span *ngIf="SM === 'M'">
+                <span class="numerictextbox-container">
+                    <kendo-numerictextbox
+                    [spinners]="false"
+                    [style.width.%]="100"
+                    [format]="n3"
+                    [autoCorrect]="true"
+                    [(ngModel)]="item.LastBal"
+                    [min]="0" [max]="max"
+                    (valueChange)="onLastBalChange()"
+                    ></kendo-numerictextbox>
+                </span>
+                <br/>
+                <div class="item-balance-container">
+                    <span class="item-balance-m">{{ sanitizeNullString(sLastBal) }}</span>
+                </div>
+            </span>
+        </div>
+        <div class="item-bin-indicator" (click)="onRemove()">
+            <fa-icon [icon]="binIcon"></fa-icon>
+        </div>    
+    </span>
+</div>

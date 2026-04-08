@@ -1,0 +1,44 @@
+<div *ngIf="!showSubmissionPanel" class="menu-wrapper">
+    <div class="row">
+        <span class="col-10"><app-scanmode-buttongroup></app-scanmode-buttongroup></span>
+        <span class="col-2 d-flex justify-content-start align-items-center p-0">
+            <button kendoButton (click)="refresh()"><span class="k-icon k-i-reload"></span></button>
+        </span>
+    </div>
+
+    <div class="mt-2 tiles">
+        <div class="tile" *ngFor="let item of menuItems" 
+            [ngStyle]="{'color': item.fontColor, 'background-color': item.bgColor }"
+            (click)="navigateTo(item.statFilter, item.detailsPageLink)"
+        >
+            <div class="header">{{ item.statName }}</div>
+            <div class="main">{{ item.statNumber }}</div>
+            <div class="footer" *ngIf="item.statusCode === 1">
+                <span class="k-icon k-i-warning k-icon-xl k-color-error"></span>                
+            </div>      
+            <div class="footer" *ngIf="item.statusCode === 2">
+                <app-sm-indicator [sm]="'m'"></app-sm-indicator>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="float col-12">
+    <div class="checkbox-container">
+        <input type="checkbox" kendoCheckBox (click)="onToggleFoundItems()" [(ngModel)]="foundItemsLoaded" style="margin-right: 0.5rem; border: 1px solid black; font-size: x-large;" />
+        <strong class="my-0" (click)="onToggleFoundItems()" style="font-size: larger;">Load Found Items</strong>
+    </div>
+    <div class="buttons-container">
+        <app-clearscan-btn (clicked)="onClear($event)"></app-clearscan-btn>
+        <app-startscan-btn></app-startscan-btn>
+        <button kendoButton class="submit-btn" (click)="onClickSubmit()">Submit</button>
+    </div>
+</div>
+
+<div *ngIf="showSubmissionPanel && !isScanning" class="container-fluid" style="min-height: 100%;">
+    <app-submission-dialog 
+        [dialogTitle]="'Submit Stock Take'" 
+        [transactionNo]="transactionNo"
+        (closeSelected)="onClose($event)"
+    ></app-submission-dialog>
+</div>

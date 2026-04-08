@@ -1,0 +1,110 @@
+<div class="container-fluid float-container vh-90 mb-4">
+    <div class="mt-2 section-container">
+        <div class="section-container-header"><strong><span class="highlighted">{{ mergeFromItems.length }}</span>&nbsp;item(s) to be merged and scrapped:</strong></div>
+        <div class="sm-list-container">
+            <kendo-listview #listview
+                [kendoListViewBinding]="viewMergeFromItems"
+                containerClass="k-d-flex k-flex-col k-flex-nowrap"
+                [style.height.%]="100" [style.width.%]="100"
+            >
+                <ng-template kendoListViewHeaderTemplate>
+                    <div class="d-flex">
+                        <kendo-textbox 
+                            [style.width.%]="100" 
+                            [(ngModel)]="searchTerm"
+                            placeholder="Search items..."
+                            (valueChange)="handleFilterChange($event)"
+                        ><ng-template kendoTextBoxPrefixTemplate><span class="k-icon k-i-search"></span></ng-template>
+                        </kendo-textbox>
+                        &nbsp;
+                        <button kendoButton (click)="onClearSearchFilter()">Clear</button>
+                    </div>
+                    <div class="row" *ngIf="searchIsEmpty()">
+                        <div class="empty-list-wrapper">
+                            No search items found.
+                        </div>
+                    </div>
+                </ng-template>
+                <ng-template kendoListViewItemTemplate let-dataItem="dataItem">
+                    <app-item-card
+                        [item]="dataItem"
+                        [showDefaultDeleteMsg]="false"
+                        [isDeletionDisabled]="mergeFromItems.length === 1"
+                        (itemRemoved)="onDeleteMergeFromItem(dataItem)"
+                    ></app-item-card>
+                </ng-template>
+            </kendo-listview>
+        </div>
+    </div>
+
+    <div class="mt-2 mb-2 d-flex justify-content-center">
+        <span class="d-flex align-items-center">
+            <fa-icon [icon]="plusIcon" class="page-icon"></fa-icon>
+        </span>
+    </div>
+
+    <div class="section-container">
+        <div class="section-container-header"><strong>Item to merge into:</strong></div>
+        <div>
+            <app-item-card
+                [item]="mergeToItem"
+                [isSelectable]="false"
+                [isDeletionDisabled]="true"
+            ></app-item-card>
+        </div>
+    </div>
+
+    <!-- <hr/> -->
+    <div class="mt-2 mb-2 d-flex justify-content-center">
+        <span class="d-flex align-items-center">
+            <fa-icon [icon]="equalsIcon" class="page-icon"></fa-icon>
+        </span>
+    </div>
+
+    <div class="section-container">
+        <div class="section-container-header"><strong>Updated merged item:</strong></div>
+        <div>
+            <app-sm-updated-item-card
+                [item]="updatedMergedItem"
+            ></app-sm-updated-item-card>
+        </div>
+    </div>
+
+    <div class="mt-4 d-flex">
+        <button kendoButton [primary]="true" (click)="onClickConfirm()" [style.width.%]="100">Confirm</button>
+    </div>
+</div>
+
+<div *ngIf="showRemarksPanel" class="container-fluid" style="min-height: 100%;">
+    <kendo-dialog
+        (close)="onCloseRemarksPanel(DialogCloseEventType.Cancel)"
+        [minWidth]="300"
+    >
+        <div>
+            <div class="d-flex justify-content-start"><strong>Remarks</strong>&nbsp;(<i>optional</i>):</div>
+            <div class="mt-2">
+                <kendo-textarea
+                    style="height: 100px;"
+                    [(ngModel)]="stockMergeRemarks"
+                    placeholder="Enter remarks..."
+                    [rows]="3"
+                    resizable="vertical"
+                ></kendo-textarea>
+            </div>
+            <kendo-dialog-actions>
+                <span class="d-flex align-items-center">
+                    <button kendoButton (click)="onCloseRemarksPanel(DialogCloseEventType.Cancel)">Cancel</button>
+                    <button kendoButton (click)="onCloseRemarksPanel(DialogCloseEventType.Confirm)" [primary]="true">Continue</button>
+                </span>
+            </kendo-dialog-actions>
+        </div>
+    </kendo-dialog>
+</div>
+
+<div *ngIf="showSubmissionPanel" class="container-fluid" style="min-height: 100%;">
+    <!-- [transactionNo]="" -->
+    <app-submission-dialog
+        [dialogTitle]="'Submit Stock Merge'"
+        (closeSelected)="onClose($event)"
+    ></app-submission-dialog>
+</div>

@@ -1,0 +1,11 @@
+<div class="container-fluid">
+    <div>
+        <h3>Environment Setup</h3>
+    </div>
+    <div class="mt-4">
+        <app-set-url-form (formValidated)="onFormValidation($event)"></app-set-url-form>
+    </div>
+    <div class="mt-2 row-cols-1">
+        <button kendoButton [primary]="true" (click)="continue()" [disabled]="!isSetupCompleted">LOGIN <fa-icon [icon]="continueIcon"></fa-icon></button>
+    </div>
+</div>

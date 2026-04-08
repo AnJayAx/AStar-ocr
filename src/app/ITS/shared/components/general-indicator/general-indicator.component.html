@@ -1,0 +1,23 @@
+<div class="d-flex Indicator" [ngClass]="{size : true}">
+  <div class="top-half d-flex justify-content-space-around">
+    <div class="col-2 checkbox-alignment">
+      <input type="checkbox" #select kendoCheckBox (change)="toggle($event)" [checked]="soloSelected"/>
+    </div>
+    <div class="Indicator__title">
+      <div>
+          <h3 class="Indicator__name">{{ SM }}-{{assetNo}}</h3>   gy
+      </div>
+    </div>
+  </div>
+  <div class="d-flex bottom-half justify-content-space-around">
+    <div class="col-9">
+      <p class="Indicator__group">{{description}}</p>
+      <p class="Indicator__callout">{{ location }}</p>
+      <p [ngClass]="status" class="Indicator__callout availability">{{availability}}</p>
+    </div>
+    <div class="column col-3 multipleItem">
+        <p class="Indicator__callout quantity">{{quantity}}</p>
+    </div>
+    </div>
+    <span [ngClass]="status" class="Indicator__status"></span>
+</div>

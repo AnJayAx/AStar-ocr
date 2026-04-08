@@ -1,0 +1,29 @@
+<div>
+  <div class="row">
+    <div class="col-12">
+      <app-view-heading
+        [title]="'mobile-user-profile.title' | translate"
+      ></app-view-heading>
+
+    </div>
+  </div>
+  <div class="row">
+
+
+
+      <div class="mb-3 d-flex justify-content-between align-items-center">
+        <kendo-label [for]="darkmodeSwitch" text="{{'mobile-user-profile.label_darkmode' | translate}}"></kendo-label>
+        <kendo-switch #darkmodeSwitch id="darkmode-switch"[(ngModel)]="isDarkMode"  (valueChange)="onThemeChange($event)"></kendo-switch>
+      </div>
+
+      <div class="mb-3 d-flex justify-content-between align-items-center">
+        <kendo-label [for]="darkmodeSwitch" text="{{'mobile-user-profile.label_language' | translate}}"></kendo-label>
+        <kendo-dropdownlist  [data]="languages"  textField="text" (valueChange)="languageChange($event)"
+                             valueField="value" [(ngModel)]="languageSelected">
+        </kendo-dropdownlist>
+      </div>
+
+  </div>
+
+</div>
+

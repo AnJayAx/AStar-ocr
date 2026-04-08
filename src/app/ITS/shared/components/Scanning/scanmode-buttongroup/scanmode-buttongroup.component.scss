@@ -1,0 +1,18 @@
+.scanmode-icon {
+    height: 1.5rem;
+
+    :nth-child(2) {
+        height: 1.5rem;
+    }
+}
+.hide {
+    display: none;
+}
+
+.custom-toolbar {
+    background-color: #292833; 
+    border: 1px solid #292833; 
+    padding: 0.3rem; 
+    border-radius: 0.5em;
+    width: 100%;
+}

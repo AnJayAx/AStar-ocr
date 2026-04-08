@@ -1,0 +1,15 @@
+<div class="mt-2" *ngIf="!!CheckStatusList">
+    <kendo-buttongroup selection="single" style="width: 100%">
+        <button kendoButton *ngFor="let pageName of CheckStatusList"
+            style="width: 100%"
+            id="{{ pageName }}"
+            [ngClass]="selected === pageName ? 'toggled' : ''"
+            (click)="onClick(pageName)"
+        >{{ pageName }}</button>
+    </kendo-buttongroup>
+</div>
+
+<app-cs-item-info *ngIf="selected === 'Item Info'" [itemEPC]="itemEPC" [itemAssetID]="itemAssetID"></app-cs-item-info>
+<app-cs-flow-history *ngIf="selected === 'Flow History'" [itemAssetID]="itemAssetID"></app-cs-flow-history>
+<app-cs-mro-history *ngIf="selected === 'MRO History'" [itemAssetID]="itemAssetID"></app-cs-mro-history>
+

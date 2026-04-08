@@ -1,0 +1,49 @@
+<div class="custom-toolbar">
+  <div class="d-flex justify-content-around" *ngIf="!isChanging">
+    <kendo-buttongroup
+      selection="single"
+      width="100%"
+      style="margin-right: 0.3rem"
+    >
+      <button
+        kendoButton
+        type="button"
+        [disabled]="isChanging || isDisabled"
+        [toggleable]="true"
+        [selected]="selectedScanMode == ScanMode.RFID"
+        (click)="onScanModeChange(ScanMode.RFID)"
+        [ngClass]="{ toggled: isButtonHighlighted(ScanMode.RFID) }"
+      >
+        <img
+          src="assets/img/ic_rfid_white.png"
+          class="scanmode-icon"
+          [ngClass]="{ hide: !isButtonHighlighted(ScanMode.RFID) }"
+        />
+        <img
+          src="assets/img/ic_rfid.png"
+          class="scanmode-icon"
+          [ngClass]="{ hide: isButtonHighlighted(ScanMode.RFID) }"
+        />
+      </button>
+      <button
+        kendoButton
+        type="button"
+        [disabled]="isChanging || isDisabled"
+        [toggleable]="true"
+        [selected]="selectedScanMode == ScanMode.Barcode"
+        (click)="onScanModeChange(ScanMode.Barcode)"
+        [ngClass]="{ toggled: isButtonHighlighted(ScanMode.Barcode) }"
+      >
+        <fa-icon [icon]="barcodeIcon" class="scanmode-icon"></fa-icon>
+      </button>
+    </kendo-buttongroup>
+    <app-scan-settings-btn></app-scan-settings-btn>
+  </div>
+
+  <div class="card text-center" *ngIf="isChanging">
+    <div class="d-flex justify-content-center align-items-center gap-2">
+      <div class="spinner-border text-primary" role="status"></div>
+      <p class="mb-0">Connecting to Scanner ...</p>
+    </div>
+  </div>
+</div>

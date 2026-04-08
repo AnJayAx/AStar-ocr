@@ -1,0 +1,50 @@
+<div>
+  <app-view-heading
+    [title]="'sample.heading' | translate"
+    [subtitle]="'sample.heading-description' | translate"
+  ></app-view-heading>
+
+  <p>Shows that changes within DIS does not cause merge conflicts.</p>
+  <div class="row">
+    <div class="col-md-12">
+      <button kendoButton (click)="onLoadingMessageButtonClick()" [primary]="true">Test Loading Message</button>
+      <button kendoButton (click)="onNotificationButtonClick()" [primary]="true">Test Notification</button>
+    </div>
+  </div>
+
+</div>
+
+<ng-template #template>
+  <h3>If a storm is coming, take some steps to prepare:</h3>
+  <ul>
+      <li>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Modi, sequi.</li>
+      <li>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Modi, sequi.</li>
+      <li>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Modi, sequi.</li>
+  </ul>
+</ng-template>
+
+
+<div class="row mt-4">
+  <div class="col-sm-12 col-md-2 d-flex">
+    <kendo-lineargauge #linear [pointer]="{ value: value }">
+    </kendo-lineargauge>
+  </div>
+  <div class="col-sm-12 col-md-3 d-flex">
+    <kendo-radialgauge #radial [pointer]="{ value: value }">
+    </kendo-radialgauge>
+  </div>
+  <div class="col-sm-12 col-md-3 d-flex">
+    <kendo-circulargauge #circular [value]="value">
+      <ng-template kendoCircularGaugeCenterTemplate let-value="value">
+        {{ value }}
+      </ng-template>
+    </kendo-circulargauge>
+  </div>
+  <div class="col-sm-12 col-md-3 d-flex">
+    <kendo-arcgauge #arc [value]="value">
+      <ng-template kendoArcGaugeCenterTemplate let-value="value">
+        {{ value }}
+      </ng-template>
+    </kendo-arcgauge>
+  </div>
+</div>

@@ -1,0 +1,232 @@
+<div class="container-fluid float-container" *ngIf="!!operationForm">
+
+    <div class="d-flex justify-content-between align-items-center">
+        <h3>SKU:<span class="sku-display">{{ selectedSku }}</span></h3>
+        <app-reload-btn 
+            [componentType]="reloadComponent"
+            [elementRef]="reloadElemRef"
+            (reloaded)="onReload($event)"
+        ></app-reload-btn>
+    </div>
+
+    <hr/>
+
+    <div class="mt-2">
+        <form class="k-form" [formGroup]="operationForm">
+            <fieldset class="k-form-fieldset">
+                <kendo-formfield>
+                    <kendo-label>Description</kendo-label>
+                    <kendo-textarea
+                        formControlName="description"
+                        placeholder="Enter description..."
+                        [rows]="3"
+                        resizable="vertical"
+                        #description
+                    ></kendo-textarea>
+                </kendo-formfield>
+            </fieldset>
+            <fieldset class="k-form-fieldset">
+                <kendo-formfield>
+                    <kendo-label class="compulsory-field">Category*</kendo-label>
+                    <kendo-dropdownlist
+                        formControlName="category"
+                        [data]="categoryList"
+                        required
+                        #category
+                    ></kendo-dropdownlist>
+                    <kendo-formerror>Category is required</kendo-formerror>
+                </kendo-formfield>
+            </fieldset>
+
+            <fieldset class="k-form-fieldset">
+                <kendo-formfield>
+                    <kendo-label class="compulsory-field">Work Center*</kendo-label>
+                    <app-location-search-dropdown formControlName="workCenter" [isRequired]="true" [selectedLocation]="operationForm.get('workCenter').value"></app-location-search-dropdown>
+                    <kendo-formerror>Work center is required</kendo-formerror>
+                </kendo-formfield>
+            </fieldset>
+
+            <fieldset class="k-form-fieldset">
+                <kendo-label class="k-form-kendo-label compulsory-field">Batch No*</kendo-label>
+                <kendo-formfield>
+                    <div class="d-flex align-items-center">
+                        <span style="margin-right: 1rem;">Running Batch Number?</span>
+                        <input type="checkbox" kendoCheckBox
+                            formControlName="isRunningBatchNo"
+                            #isRunningBatchNo
+                            (valueChanges)="onToggleIsRunningBatchNo()"
+                        />
+                    </div>
+                </kendo-formfield>
+                <kendo-formfield [class.hide]="hideBatchNoInput">
+                    <kendo-textbox
+                        formControlName="batchNo"
+                        #batchNo
+                        placeholder="Enter batch number..."
+                        [clearButton]="true"
+                    ></kendo-textbox>
+                </kendo-formfield>
+            </fieldset>
+
+            <fieldset class="k-form-fieldset">
+                <kendo-formfield>
+                    <kendo-label class="compulsory-field">Manufacturing Date*</kendo-label>
+                    <kendo-datepicker
+                        [incompleteDateValidation]="true"
+                        format="dd-MMM-yyyy"
+                        formControlName="manufacturingDate"
+                        #manufacturingDate
+                        required
+                    ></kendo-datepicker>
+                    <kendo-formerror>Manufacturing date is required</kendo-formerror>
+                </kendo-formfield>
+
+                <div>
+                    <kendo-formfield>
+                        <kendo-label>Date of Expire</kendo-label>
+                        <kendo-datepicker
+                            format="dd-MMM-yyyy"
+                            formControlName="expiryDate"
+                            #expiryDate
+                        ></kendo-datepicker>
+                    </kendo-formfield>
+                    &nbsp;
+                </div>
+            </fieldset>
+
+            <fieldset class="k-form-fieldset">
+                <kendo-formfield>
+                    <kendo-label class="compulsory-field">Confirmed Qty*</kendo-label>
+                    <kendo-numerictextbox [spinners]="false"
+                        formControlName="confirmedQty"
+                        #confirmedQty
+                        format="##"
+                        [min]="0"
+                        required
+                    ></kendo-numerictextbox>
+                    <kendo-formerror>Confirmed qty is required</kendo-formerror>
+                </kendo-formfield>
+
+                <div class="d-flex justify-content-between align-items-center">
+                    <kendo-formfield style="flex: 2;">
+                        <kendo-label class="compulsory-field">Packing Qty*</kendo-label>
+                        <kendo-numerictextbox [spinners]="false"
+                            formControlName="packingQty"
+                            #packingQty
+                            format="##"
+                            [min]="0"
+                            required
+                        ></kendo-numerictextbox>
+                        <kendo-formerror>Packing qty is required</kendo-formerror>
+                    </kendo-formfield>
+                    &nbsp;
+                    <kendo-formfield style="flex: 1;">
+                        <kendo-label>Packing Unit</kendo-label>
+                        <kendo-textbox
+                            formControlName="packingUnit"
+                            #packingUnit
+                            [clearButton]="true"
+                        ></kendo-textbox>
+                    </kendo-formfield>
+                </div>
+                <kendo-formerror *ngIf="showQtyErrorMsg">Packing qty cannot exceed confirmed qty</kendo-formerror>
+            </fieldset>
+
+            <fieldset class="k-form-fieldset">
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="d-flex align-items-center">
+                        <span style="margin-right: 0.5rem;">Auto running EPC ID?</span>
+                        <input type="checkbox" kendoCheckBox
+                            formControlName="isAutoRunningEpcId"
+                            #isAutoRunningEpcId
+                        />
+                    </span>
+                    <span *ngIf="showEpcScanButton">
+                        <button kendoButton [primary]="true" (click)="toggleEpcScanWindow()" [disabled]="disableToggleScanWindow"><fa-icon [icon]="tagsIcon"></fa-icon>&nbsp;Scan Tags</button>
+                    </span>
+                </div>
+                <div *ngIf="disableToggleScanWindow === false && showEpcScanButton === true" class="mt-2">
+                    <span class="d-flex justify-content-end align-items-center">
+                        <fa-icon [icon]="checkIcon" *ngIf="showCheckIcon" class="success-icon"></fa-icon>
+                        <fa-icon [icon]="warningIcon" *ngIf="showWarningIcon" class="warning-icon"></fa-icon>
+                        &nbsp;&nbsp;
+                        <strong>{{ displayScannedTags.length }}&nbsp;of&nbsp;{{ numOfTagsNeeded }}&nbsp;tags scanned</strong>
+                    </span>            
+                </div>
+                <kendo-formerror *ngIf="showQtyErrorMsg && showEpcScanButton && disableToggleScanWindow">Ensure Confirmed Qty. and Packing Qty. values are valid to scan tags.</kendo-formerror>
+                <kendo-formerror *ngIf="showEpcScanButton && disableToggleScanWindow">Enter Confirmed Qty. and Packing Qty. values to scan tags.</kendo-formerror>
+            </fieldset>
+
+            <hr/>
+
+            <div class="d-flex justify-content-between">
+                <button kendoButton (click)="resetForm()">Reset Form</button>
+                <button kendoButton [primary]="true" [disabled]="disableConfirmation" (click)="onConfirm()">Confirm</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<kendo-dialog
+    *ngIf="showEpcScanDialog"
+    (close)="toggleEpcScanWindow()"
+    [minWidth]="300"
+    [style.height.%]="100"
+>
+    <kendo-dialog-titlebar class="scan-dialog-titlebar">
+        <div class="d-flex align-items-center">
+            <h4 class="m-0">{{ displayScannedTags.length }}&nbsp;of&nbsp;{{ numOfTagsNeeded }} tags scanned</h4>
+            <fa-icon [icon]="checkIcon" *ngIf="showCheckIcon" class="success-icon"></fa-icon>
+            <fa-icon [icon]="warningIcon" *ngIf="showWarningIcon" class="warning-icon"></fa-icon>
+        </div>
+    </kendo-dialog-titlebar>
+    <div>
+        <div *ngFor="let tag of displayScannedTags" class="tag-container">
+            <span class="tag"><strong>{{ tag }}</strong></span>
+            <span class="action">
+                <button kendoButton class="delete-btn" (click)="onDeleteTag(tag)"><fa-icon [icon]="deleteIcon"></fa-icon></button>
+            </span>
+        </div>
+    </div>
+    <kendo-dialog-actions>
+        <span class="px-2"><app-scanmode-buttongroup></app-scanmode-buttongroup></span>
+        <div class="d-flex justify-content-around">
+            <!-- <button kendoButton (click)="toggleEpcScanWindow()">Cancel</button> -->
+            <app-clearscan-btn (clicked)="onClearEpcScan($event)"></app-clearscan-btn>
+            <app-startscan-btn></app-startscan-btn>
+            <button kendoButton [primary]="true" (click)="toggleEpcScanWindow(true)">
+                <fa-icon [icon]="saveIcon"></fa-icon>&nbsp;
+                Save
+            </button>
+        </div>
+    </kendo-dialog-actions>
+</kendo-dialog>
+
+<kendo-dialog
+    *ngIf="invalidTags.length > 0"
+    (close)="closeInvalidTagsDialog()"
+    [minWidth]="300"
+    [style.height.%]="100"    
+>
+    <kendo-dialog-titlebar style="background-color: lightgray;">Invalid Tags</kendo-dialog-titlebar>
+    <div class="mt-2">
+        <h4 class="mt-0">The following tags already exist:</h4>
+        <p style="text-align: left;" *ngFor="let tag of invalidTags">{{ tag }}</p>
+    </div>
+    <div class="mt-2">
+        <button kendoButton [primary]="true" [style.width.%]="100" (click)="closeInvalidTagsDialog()">Close</button>
+    </div>
+</kendo-dialog>
+
+<app-pt-bom-scan
+    *ngIf="showBomPanel"
+    [operationId]="selectedOperationId"
+    (bomDialogClosed)="onCloseBomPanel($event)"
+></app-pt-bom-scan>
+
+<app-submission-dialog
+    *ngIf="showSubmissionPanel"
+    [transactionNo]=""
+    [dialogTitle]="'Submit First Operation'"
+    (closeSelected)="onCloseSubmissionPanel($event)"
+></app-submission-dialog>

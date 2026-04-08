@@ -1,0 +1,66 @@
+@import "variables";
+
+.list-item {
+    padding: 0.5rem 0.7rem;
+    background-color: white;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border: 1px solid grey;
+    border-radius: 0.3rem;
+
+    .partsno-container {
+        flex: 2;
+        text-align: start;
+
+        .partsno-wrapper {
+            // background-color: #99ca3c;
+            background-color: rgb(141, 198, 63);
+            color: white;
+            border-radius: 0.1rem;
+            padding: 0.2rem 0.25rem;
+        }
+    }
+    .desc-container {
+        flex: 4;
+        white-space: nowrap; /* Prevent text from wrapping */
+        overflow: hidden; /* Hide any overflow */
+        text-overflow: ellipsis; /* Display ellipsis for overflow text */
+        text-align: start;
+        padding-left: 0.3rem;
+    }
+    .amt-container {
+        flex: 2;
+        color: #45474B;
+        text-align: center;
+        font-size: 1.2rem;
+        font-weight: bolder;
+    }
+    .action-container {
+        flex: 1;
+        display: flex;
+        padding: 0;
+
+        .delete-btn {
+            color: $error;
+            margin: 0 0.5rem;
+            font-size: 1.5rem;
+            :nth-child(1) {
+                margin: 0;
+            }
+        }
+        .edit-btn {
+            color: black;
+            margin-left: 0.5rem;
+            font-size: 1.5rem;
+            :nth-child(1) {
+                margin: 0;
+            }
+        }
+    }
+}
+
+.add-btn-text {
+    font-weight: bolder;
+    font-size: 1.5rem;
+}

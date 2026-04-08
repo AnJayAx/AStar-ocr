@@ -1,0 +1,40 @@
+@import "its-variables";
+@import "variables";
+
+.k-textbox {
+    flex: 1;
+    width: fit-content;
+    padding: 0;
+    overflow: hidden;
+}
+
+.subtitle {
+    display: inline-block;
+    font-size: 0.8rem;
+    color: gray;
+    font-weight: bolder;
+}
+
+.error-msg {
+    display: flex;
+    justify-content: flex-start;
+    color: $error;
+    font-size: 0.8rem;
+    text-align: start;
+}
+
+.property {
+    display: flex;
+    justify-content: flex-start;
+    color: $gray-700;
+    font-weight: 700;
+    font-size: smaller;
+}
+
+.decorated-footer {
+    @include decorated-footer;
+
+    .decorated-footer-text {
+        @include decorated-footer-text
+    }
+}

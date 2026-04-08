@@ -1,0 +1,50 @@
+<div class="Profile" (clickOutside)="onClick('none')">
+  <!-- Show login when not logged in: Assumed user object undefined. -->
+  <button
+    class="Profile__button"
+    kendoButton
+    look="flat"
+    *ngIf="!user || user.email === undefined"
+    [routerLink]="'/login'"
+  >
+    <kendo-icon [name]="'login'"></kendo-icon>
+    <span>Login</span>
+  </button>
+  <!-- Show profile when logged in: Assumed user object no longer undefined. -->
+  <button
+    class="Profile__button"
+    kendoButton
+    look="flat"
+    #profileAnchor
+    (click)="onClick('profile')"
+    *ngIf="user && user.email !== undefined"
+  >
+    <kendo-icon [name]="'user'"></kendo-icon>
+    <span>{{ user?.id }}</span>
+    <span>({{ user?.role }})</span>
+  </button>
+  <!-- Popup possible when logged in: Assumed user has certain props. -->
+  <kendo-popup
+    class="Profile__popup"
+    [anchor]="profileAnchor"
+    *ngIf="currentMenu === 'profile'"
+  >
+    <kendo-card width="auto" class="Profile__card">
+      <kendo-card-header>
+        <kendo-avatar
+          [shape]="'circle'"
+          [initials]="user?.email.slice(0, 2)"
+        ></kendo-avatar>
+        <div>
+          <h3>{{ (user?.email.split("@"))[0] }}</h3>
+          <h5>{{ user?.role }}</h5>
+          <p>Email:</p>
+          <span>{{ user?.email }}</span>
+          <p>Contact:</p>
+          <span>{{ user?.contact }}</span>
+        </div>
+      </kendo-card-header>
+      <ng-content></ng-content>
+    </kendo-card>
+  </kendo-popup>
+</div>

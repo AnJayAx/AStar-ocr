@@ -1,0 +1,32 @@
+@import "its-variables";
+
+.float {
+    @include float;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.float-container {
+    @include float-container;
+}
+
+.single-tag-card {
+    padding: 0.5rem;
+    background-color: white;
+    border-radius: 0.5rem;
+    
+    display: flex;
+    flex-direction: column;
+
+    .header {
+        margin-bottom: 0.5rem;
+    }
+
+    .content-wrapper {
+        padding: 2rem 3rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
+

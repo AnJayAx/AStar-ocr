@@ -1,0 +1,34 @@
+<div *ngIf="!!stItem" class="item" [class.bg-darker]="index%2 == 0" (click)="onSelect()">
+    <div class="item-details">
+        <div class="item-name">
+            <span class="custom-marker" [class.bg-m]="stItem.SM === 'M'">{{ stItem.SM }}</span>{{ stItem.Asset_No }}
+        </div>
+        <div class="item-category">{{ stItem.Category }}</div>
+        <div>{{ stItem.ItemDescription }}</div>
+        <div class="item-location">{{ stItem.Location }}</div>
+        <div class="item-epc">{{ stItem.EPC_ID }}</div>
+    </div>
+
+    <div *ngIf="showNumericTextbox()" class="d-flex flex-column mt-4 mb-0">
+        <kendo-numerictextbox [spinners]="false"
+            class="custom-numerictextbox"
+            [format]="n3"
+            [style.width.px]="70"
+            [value]="stItem.ST_Qty"
+            [min]="0" 
+            [autoCorrect]="true"
+            (valueChange)="onValueChange($event)"
+        ></kendo-numerictextbox>
+        <span class="item-balance-m" *ngIf="showSTLastBal">{{ printPrevBal }}</span>
+    </div>
+    <div *ngIf="!showNumericTextbox()" class="d-flex align-items-center">
+        <span class="item-balance">{{ printPrevBal }}</span>
+    </div>
+
+    <div *ngIf="deletable" class="item-trash" (click)="onRemove()">
+        <fa-icon [icon]="binIcon"></fa-icon>
+    </div>
+
+    <div class="item-indicator" [class.bg-found]="stItem.Status === 'Found'">{{ stItem.Status }}</div>
+</div>
+

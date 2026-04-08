@@ -1,0 +1,42 @@
+<kendo-dialog
+    (close)="onCloseDialog(DialogCloseEventType.Cancel)"
+    [minWidth]="300"
+>
+    <kendo-dialog-titlebar>
+        <div class="d-flex flex-column">
+            <h4 class="my-0">Enter QC Information</h4>
+            <div><span class="subtitle-property">Op. ID:</span>&nbsp;<span class="subtitle">{{ operationId }}</span></div>
+        </div>
+    </kendo-dialog-titlebar>
+    <div>
+        <form class="k-form" [formGroup]="qcInfoForm" (ngSubmit)="onCloseDialog(DialogCloseEventType.Confirm)">
+            <fieldset class="k-form-fieldset">
+                <kendo-formfield>
+                    <kendo-label class="compulsory-field">Select Action*</kendo-label>
+                    <kendo-dropdownlist
+                        formControlName="action"
+                        [data]="actionList"
+                        required
+                        #action
+                    ></kendo-dropdownlist>
+                </kendo-formfield>
+                <kendo-formfield>
+                    <kendo-label>Remarks</kendo-label>
+                    <kendo-textarea
+                        formControlName="remarks"
+                        placeholder="Enter remarks..."
+                        [rows]="3"
+                        resizable="vertical"
+                        #remarks
+                    ></kendo-textarea>
+                </kendo-formfield>
+            </fieldset>
+        </form>
+    </div>
+    <kendo-dialog-actions>
+        <div class="d-flex justify-content-around">
+            <button kendoButton (click)="onBack()">Back</button>
+            <button kendoButton [primary]="true" (click)="onCloseDialog(DialogCloseEventType.Confirm)">Confirm</button>
+        </div>
+    </kendo-dialog-actions>
+</kendo-dialog>

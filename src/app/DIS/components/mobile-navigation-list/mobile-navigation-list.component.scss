@@ -1,0 +1,57 @@
+@import "variables";
+
+// .menu-list-wrapper {
+//   display: flex;
+//   flex-wrap: wrap;
+//   justify-content: space-between;
+//
+//   .menu-list-item{
+//     display: flex;
+//     justify-content: center;
+//     align-items: center;
+//     flex-direction: column;
+//     flex: 0 0 calc(50% - 0.5rem);
+//     color: $white;
+//     padding: 1.5rem;
+//     margin-bottom: 1rem;
+//     border-radius: 0.5rem;
+//     .k-icon {
+//       font-size: 5rem;
+//     }
+//     .menu-item-bg{
+//      background :  #292833;
+//     }
+//
+//     .menu-list-item-text{
+//       margin-bottom: 0.5rem;
+//     }
+//   }
+// }
+.menu-list-wrapper{
+  display:flex;
+  flex-wrap: wrap;
+  padding-top: 22px;
+  justify-content: center;
+        .menu-list-item{
+           flex-direction: row;
+           color: $white;
+           flex-basis : 96px;
+        }
+        .menu-item-bg{
+            background :  #292833;
+            width : 70px;
+            height : 67px;
+            border-radius : 50px;
+            margin-left : 12px;
+        }
+        .menu-list-item-text{
+              margin-bottom: 0.5rem;
+              margin-top: 0.5rem;
+              color: $black;
+        }
+        .k-i-crosstab{
+         font-size  : 2.5rem;
+         margin-top : 14px;
+        }
+}
+

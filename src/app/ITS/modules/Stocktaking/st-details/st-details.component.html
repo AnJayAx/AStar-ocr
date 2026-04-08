@@ -1,0 +1,51 @@
+<div class="vh-100">
+    <div class="row mt-2" *ngIf="!!stNoList">
+        <kendo-label><strong>ST No.*</strong></kendo-label>
+        <span class="col-12 row">
+            <span class="col-10">
+                <kendo-dropdownlist required
+                    [data]="stNoList | async"
+                    textField="stNo" valueField="stId"
+                    [(ngModel)]="selectedStNoListItem"
+                    (valueChange)="handleStNoChange($event)"
+                ></kendo-dropdownlist>
+            </span>
+            <span class="col-2 d-flex justify-content-center align-items-center p-0">
+                <app-reload-btn 
+                    [componentType]="reloadComponent"
+                    [elementRef]="reloadElemRef"
+                    (reloaded)="onReload($event)"
+                ></app-reload-btn>
+            </span>
+        </span>
+    </div>
+
+    <div class="mt-4 col-12" *ngIf="showFields">
+        <hr/>
+        <ng-container *ngIf="!!stDetailsFormFields">
+            <div *ngFor="let field of stDetailsFormFields">
+                <app-multiselect-popup-display
+                    [fieldName]="field.label"
+                    [required]="field.required"
+                    [storageKey]="field.storageKey"
+                    [options]="field.dataItemList"
+                ></app-multiselect-popup-display>
+            </div>
+        </ng-container>
+        <div class="mt-4 row mx-2">
+            <button kendoButton [primary]="true" [disabled]="!submissionEnabled()" (click)="onClickGetStDetails()">Get Stock Take Details</button>
+        </div>
+    </div>
+    <div class="mt-4" *ngIf="!showFields && (stNoList | async)?.length > 0">
+        <div class="d-flex justify-content-center">
+            <span class="d-flex align-items-center">
+                <span class="k-icon k-i-loading k-icon-xl" style="font-size: x-large;"></span>
+            </span>
+        </div>
+    </div>
+    <div class="mt-4" *ngIf="!showFields && (stNoList | async)?.length == 0">
+        <span class="d-flex justify-content-center">
+            No stock taking orders found.
+        </span>
+    </div>
+</div>

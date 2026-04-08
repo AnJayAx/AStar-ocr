@@ -1,0 +1,11 @@
+<div class="d-flex justify-content-around align-items-center tagview-block">
+    <span class="checkbox-wrapper">
+        <input type="checkbox" kendoCheckBox (change)="toggle($event)" [checked]="isSelected"/>
+    </span>
+    <span class="tagname-wrapper">
+        <h1 class="tagname">{{ epcTag }}</h1>
+    </span>
+    <span class="delete-wrapper">
+        <span class="k-icon k-i-trash" (click)="onTagDelete()"></span>
+    </span>
+</div>

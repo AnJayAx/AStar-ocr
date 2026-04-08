@@ -1,0 +1,13 @@
+@import "its-variables";
+
+.custom-marker {
+    @include sm-indicator-nobg;
+    background-color: $s-indicator-bgcolor;
+    font-size: 1.2rem;
+    font-weight: bolder;
+}
+.custom-marker.bg-m {
+    background-color: $m-indicator-bgcolor;
+    font-size: 1.2rem;
+    font-weight: bolder;
+}

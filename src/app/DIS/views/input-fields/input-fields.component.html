@@ -1,0 +1,153 @@
+<div>
+  <div class="row">
+    <div class="col-12">
+      <app-view-heading
+        [title]="'sample.input-field.header' | translate"
+      ></app-view-heading>
+
+    </div>
+  </div>
+
+  <form class="row" [formGroup]="myGroup">
+    <div class="col-md-8">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="mb-3">
+            <kendo-label [for]="textbox" text="{{'sample.input-field.text-box' | translate}}"></kendo-label>
+            <input class="form-control"
+              formControlName="textbox"
+              kendoTextBox
+              #textbox
+              required
+            />
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="mb-3">
+            <kendo-label [for]="combobox" text="{{'sample.input-field.dropdown-combo-box' | translate}}"></kendo-label>
+            <kendo-combobox class="form-control" #combobox [data]="listItems"  formControlName="combobox">
+            </kendo-combobox>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="mb-3">
+            <kendo-label [for]="numerictextbox" text="{{'sample.input-field.numeric-text-box' | translate}}"></kendo-label>
+            <kendo-numerictextbox
+              #numerictextbox
+              formControlName="numerictextbox"
+              [min]="0"
+              [max]="100"
+              [autoCorrect]="autoCorrect"
+              class="form-control"
+            >
+            </kendo-numerictextbox>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="mb-3">
+            <kendo-label [for]="combobox" text="{{'sample.input-field.date-time-picker' | translate}}"></kendo-label>
+            <kendo-datetimepicker  class="form-control" [format]="format"  formControlName="datetime">
+            </kendo-datetimepicker>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="mb-3">
+            <kendo-label [for]="radio" text="{{'sample.input-field.radio-button' | translate}}"></kendo-label>
+            <div class="form-control radio-input">
+              <label class="k-label">Male</label>
+              <input
+                type="radio"
+                name="gender"
+                value="Male"
+                #radio
+                formControlName="gender"
+                kendoRadioButton
+              />
+
+              <label class="k-label ms-3">Female</label>
+              <input
+                type="radio"
+                name="gender"
+                value="Female"
+                #radio
+                formControlName="gender"
+                kendoRadioButton
+              />
+
+              <label class="k-label ms-3">Other</label>
+              <input
+                type="radio"
+                name="gender"
+                value="Other"
+                #radio
+                formControlName="gender"
+                kendoRadioButton
+              />
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="mb-3">
+            <kendo-label [for]="combobox" text="{{'sample.input-field.dropdown-combo-box' | translate}}"></kendo-label>
+            <div class="form-control">
+              <label class="k-label"
+              >Accept Terms&Conditions
+                <input type="checkbox" kendoCheckBox name="cb"  formControlName="checkbox" />
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4 mt-4 mt-md-0">
+      <div class="mb-3">
+        <kendo-label class="form-label" [for]="textarea" text="{{'sample.input-field.dropdown-combo-box' | translate}}"></kendo-label>
+        <kendo-textarea class="form-control"
+                        [value]="textAreaWithColsValue"
+                        [rows]="6"
+                        #textarea
+                        formControlName="textarea"
+        ></kendo-textarea>
+      </div>
+
+    </div>
+    <div class="col-12 text-center">
+      <button class="col-6 btn-clear" kendoButton>Clear</button>
+      <button class="col-6 btn-submit" kendoButton [primary]="true" (click)="test()">Submit</button>
+
+    </div>
+  </form>
+
+
+  <div class="row mt-4">
+    <div class="col-12">
+      <kendo-grid
+        [data]="view"
+        [height]="550"
+        [navigable]="true"
+      >
+        <kendo-grid-column field="ProductID" width="100"></kendo-grid-column>
+        <kendo-grid-column
+          field="ProductName"
+          width="200"
+          title="Product Name"
+        ></kendo-grid-column>
+        <kendo-grid-column field="QuantityPerUnit"> </kendo-grid-column>
+        <div *kendoGridDetailTemplate>
+          <kendo-grid
+            [data]="view"
+            [skip]="0"
+            [navigable]="true"
+          >
+            <kendo-grid-column field="ProductID" title="Product ID" width="120">
+            </kendo-grid-column>
+            <kendo-grid-column field="ProductName" title="Product Name">
+            </kendo-grid-column>
+            <kendo-grid-column field="UnitPrice" title="Unit Price" format="{0:c}">
+            </kendo-grid-column>
+          </kendo-grid>
+        </div>
+      </kendo-grid>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,10 @@
+<span class="item-indicator" *ngIf="!!onHoldStatus" 
+    [class.bg-available]="statusName === ItemStatusName.Available"
+    [class.bg-onloan]="statusName === ItemStatusName.Onloan"
+    [class.bg-notavailable]="statusName === ItemStatusName.NotAvailable"
+    [class.bg-scrapped]="statusName === ItemStatusName.Scrapped"
+    [class.bg-intransit]="statusName === ItemStatusName.InTransit"
+    [class.bg-onhold]="statusName === onHoldStatus"
+    [class.bg-refurbished]="statusName === ItemStatusName.Refurbished"
+>{{ statusName }}</span>
+

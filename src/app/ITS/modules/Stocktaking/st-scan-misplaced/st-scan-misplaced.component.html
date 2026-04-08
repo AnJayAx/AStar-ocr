@@ -1,0 +1,27 @@
+<div style="min-height: 100%;" *ngIf="listItems">
+    <ng-container *ngIf="showRequestCheckbox() && !disableUpdateItemsLoc">
+        <div class="my-2 d-flex align-items-center justify-content-end">
+            <span (click)="onClickUpdateItemsLoc()" class="d-flex align-items-center">
+                <fa-icon [icon]="relocateIcon"></fa-icon>&nbsp;<strong>Submit relocation request to\n<i>{{ selectedLocs[0] }}</i></strong>
+                &nbsp;
+                <input type="checkbox" kendoCheckBox class="request-checkbox" [checked]="updateItemsLoc"/>
+            </span>
+        </div>   
+    </ng-container>
+    <ng-container *ngIf="showRequestCheckbox() && disableUpdateItemsLoc">
+        <div>
+            <span><i>Note:</i>&nbsp;Relocation request is unavailable for multiple selected locations.</span>
+        </div>
+    </ng-container>
+
+    <div class="row mt-2 d-flex align-items-center">
+        <app-st-listview [listData]="listItems"></app-st-listview>
+    </div>
+
+    <ng-template #noResults>
+        <div class="d-flex justify-content-center align-items-center">
+            No results found.
+        </div>
+    </ng-template>
+
+</div>

@@ -1,0 +1,45 @@
+@import "its-variables";
+@import "variables";
+
+.float {
+    @include float;
+    justify-content: space-around;
+    align-items: center;
+}
+.float-container {
+    @include float-container;
+}
+.selection-btn {
+    margin-right: 0.1rem;
+}
+.list-header-subtitle {
+    color: #61677A;
+}
+.delete-btn {
+    background-color: red; 
+    color: white; 
+    margin-right: 0.1rem;
+}
+.sku-display {
+    margin-left: 1rem; 
+    color: $list-item-text;
+}
+
+$icon-size: 2rem;
+
+.valid-icon {
+    color: $success;
+    font-size: $icon-size;
+}
+.invalid-icon {
+    color: $error;
+    font-size: $icon-size;
+}
+
+.decorated-footer {
+    @include decorated-footer;
+
+    .decorated-footer-text {
+        @include decorated-footer-text
+    }
+}

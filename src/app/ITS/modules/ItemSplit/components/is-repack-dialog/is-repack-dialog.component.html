@@ -1,0 +1,83 @@
+<kendo-dialog
+    title="Submit Repack Item"
+    (close)="onClose(DialogCloseEventType.Cancel)"
+    [minWidth]="300"
+    *ngIf="open"
+>
+    <div class="container-fluid" *ngIf="loaded; else loading">
+        <form class="k-form" [formGroup]="repackForm">
+            <div class="custom-formfield">
+                <span class="property">ID</span>
+                <span class="value">{{ id }}</span>
+            </div>
+            <div class="custom-formfield">
+                <span class="property">QTY.</span>
+                <span class="value">{{ repackQty }}</span>
+            </div>
+            <div class="custom-formfield">
+                <span class="property">NO. OF TAGS</span>
+                <span class="value">{{ repackEPCs.length }}</span>
+            </div>
+            <div class="custom-formfield">
+                <span class="property">DESC.</span>
+                <span class="value">
+                    <input
+                        kendoTextBox
+                        formControlName="idescs"
+                        #idescs
+                        class="form-control"
+                    />
+                </span>
+            </div>
+            <div class="custom-formfield">
+                <span class="property">SKU</span>
+                <span class="value">
+                    <input
+                        kendoTextBox
+                        formControlName="iskus"
+                        #iskus
+                        class="form-control"
+                    />
+                </span>
+            </div>
+            <div class="custom-formfield">
+                <span class="property">BATCH NO.</span>
+                <span class="value">
+                    <input
+                        kendoTextBox
+                        formControlName="ibatchs"
+                        #ibatchs
+                        class="form-control"
+                    />
+                </span>
+            </div>
+            <div class="custom-formfield">
+                <span class="property">UOM</span>
+                <span class="value">
+                    <input
+                        kendoTextBox
+                        formControlName="iuom"
+                        #iuom
+                        class="form-control"
+                    />
+                </span>
+            </div>
+        </form>
+        <div *ngIf="invalidForm" class="error-msg">
+            <span><strong>ERROR:</strong> Ensure that at least one of these two fields are filled: SKU, DESC.</span>
+        </div>
+        <div *ngIf="submitError" class="error-msg">
+            <span><strong>ERROR:</strong> Failed to submit repack item.</span>
+        </div>
+        <div class="row mt-4">
+            <span class="col-6"><button kendoButton [style.width.%]="100" (click)="onClose(DialogCloseEventType.Cancel)">Cancel</button></span>
+            <span class="col-6"><button kendoButton type="submit" [primary]="true" [style.width.%]="100" (click)="onClose(DialogCloseEventType.Confirm)">Submit</button></span>
+        </div>
+    </div>
+    <ng-template #loading>
+        <div class="container-fluid d-flex justify-content-center align-items-center">
+            <kendo-loader [type]="'infinite-spinner'"></kendo-loader>
+        </div>
+    </ng-template>
+</kendo-dialog>
+

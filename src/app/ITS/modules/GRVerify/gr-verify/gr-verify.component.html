@@ -1,0 +1,84 @@
+<div class="container-fluid float-container">
+    <div class="d-flex align-items-center">
+        <button kendoButton #searchKeyAnchor (click)="onToggleSearchKeyPopup()" class="popup-btn">
+            <fa-icon [icon]="searchKeyIcon"></fa-icon>
+            &nbsp;
+            <strong *ngIf="selectedSearchKeyType === SearchKeyType.BatchNo">B</strong>
+            <strong *ngIf="selectedSearchKeyType === SearchKeyType.RefNo">R</strong>
+        </button>
+        <kendo-popup 
+            #searchKeyPopup 
+            [anchor]="searchKeyAnchor" 
+            [offset]="offset" 
+            (anchorViewportLeave)="showPopup = false"
+            *ngIf="showPopup && !!searchKeyTypes"
+        >
+            <kendo-card width="auto">
+                <kendo-card-body *ngFor="let key of searchKeyTypes">
+                    <p (click)="handleSelectedSearchKeyTypeChange(key)">Search by <b>{{ key }}</b></p>
+                </kendo-card-body>
+            </kendo-card>
+        </kendo-popup>
+        <kendo-textbox 
+            style="flex: 2"
+            [placeholder]="searchbarPlaceholder"
+            [clearButton]="true"
+            [(ngModel)]="searchKeyword"
+            [style.width.%]="100"
+        ></kendo-textbox>
+        <button kendoButton
+            [primary]="true"
+            class="send-button"
+            icon="search"
+            (click)="onClickSearch()"
+        ></button>
+    </div>
+
+    <div class="mt-2 row">
+        <span class="col-10"><app-scanmode-buttongroup></app-scanmode-buttongroup></span>
+        <span class="col-2 d-flex justify-content-start align-items-center p-0">
+            <app-reload-btn 
+                [componentType]="reloadComponent"
+                [elementRef]="reloadElemRef"
+                (clicked)="onClickReload($event)"
+            ></app-reload-btn>
+        </span>
+    </div>
+
+    <div class="row mt-4">
+        <span class="d-flex justify-content-between align-items-center"  style="border-bottom: 1px solid black; padding-bottom: 0.5rem;">
+            <h4 class="mt-0 mb-0">Results</h4>
+            <span>
+                <b>{{ foundItemList.length }}</b> of <b>{{ itemInfoList.length }}</b> tags found.
+                <span *ngIf="showCheckMark()"><fa-icon [icon]="verifiedIcon" class="verified-icon"></fa-icon></span>
+            </span>
+        </span>
+    </div>
+
+    <div class="mt-2" *ngIf="itemInfoList.length > 0">
+        <kendo-listview [data]="itemInfoList">
+            <ng-template kendoListViewItemTemplate let-dataItem="dataItem">
+                <app-item-card
+                    [item]="dataItem"
+                    [isSelectable]="false"
+                    [isSelected]="isSelected(dataItem)"
+                    [isDeletionDisabled]="true"
+                    [isEditable]="true"
+                ></app-item-card>
+            </ng-template>
+        </kendo-listview>            
+    </div>
+    <div *ngIf="itemInfoList.length === 0" class="mt-4 d-flex justify-content-center p-0">
+        <i>{{ itemListPlaceholder }}</i>
+    </div>
+
+    <div class="float">
+        <app-clearscan-btn (clicked)="onClear($event)"></app-clearscan-btn>
+        <app-startscan-btn></app-startscan-btn>
+        <button kendoButton [primary]="true" (click)="onClickConfirm()" [disabled]="foundItemList.length === 0">Confirm</button> 
+    </div>
+</div>
+
+<div *ngIf="showSubmissionPanel" class="container-fluid" style="min-height: 100%">
+    <app-submission-dialog [dialogTitle]="'Submit GR Verify'" (closeSelected)="onCloseSubmission($event)" [disabled]="foundItemList.length === 0"></app-submission-dialog>
+</div>

@@ -1,0 +1,11 @@
+@import "its-variables";
+
+.list-item {
+    &.text {
+        color: $list-item-text;
+    }
+}
+
+.selected-item {
+    @include selected-item
+}

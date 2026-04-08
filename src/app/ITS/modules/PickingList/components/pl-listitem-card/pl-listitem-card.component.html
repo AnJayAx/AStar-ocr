@@ -1,0 +1,41 @@
+<div class="item-container" *ngIf="item">
+    <div class="details-wrapper">
+        <div class="title">
+            <span class="category-indicator">{{ item.Category.toUpperCase() }}</span>
+            &nbsp;
+            <span class="name">{{ item.Description }}</span>
+        </div>
+
+        <div class="mb-2" *ngIf="showExpiry || showBatchNo">
+            <span *ngIf="showExpiry" class="d-flex align-items-center"><span style="font-size: 0.7rem">EXP. DATE:</span>&nbsp;<span class="sortby">{{ item.Date_of_Expire }}</span></span>
+            <span *ngIf="showBatchNo" class="d-flex align-items-center"><span style="font-size: 0.7rem">BATCH NO.:</span>&nbsp;<span class="sortby">{{ item.BatchNo }}</span></span>
+        </div>
+        
+        <ng-container *ngIf="isOutOfStock === false">
+            <div class="location-detail" *ngFor="let loc of item.Location">
+                <span class="location">{{ loc.Location_Name }}</span>
+                &nbsp;
+                <span class="number">({{ loc.Qty }})</span>
+            </div>
+        </ng-container>
+        <ng-container *ngIf="isOutOfStock">
+            <span class="out-of-stock-indicator">
+                <fa-icon [icon]="outOfStockIcon"></fa-icon>&nbsp;Out-of-stock
+            </span>
+        </ng-container>
+        
+    </div>
+    <div class="stats-wrapper">
+        <div class="actual">{{ item._picked.toFixed(2) }}</div>
+        <div class="total">{{ item.Qty.toFixed(2) }}</div>
+        <span class="uom">{{ item.UOM }}</span>
+    </div>
+    <div *ngIf="item._mDetected"style="min-height: 80px; display: flex; align-items: start;">
+        <span class="d-flex justify-content-center"><app-sm-indicator [sm]="'M'"></app-sm-indicator></span>
+    </div>
+    <div *ngIf="showNavBtn">
+        <button kendoButton class="navbtn" (click)="onNavToTagsPage()">
+            <span class="k-icon k-i-arrow-chevron-right navicon"></span>
+        </button>
+    </div>
+</div>

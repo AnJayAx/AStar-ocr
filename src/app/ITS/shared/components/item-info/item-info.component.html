@@ -1,0 +1,109 @@
+<div *ngIf="!!item" class="container-fluid">
+    <div class="d-flex justify-content-center align-items-center">
+        <app-item-image [assetId]="itemAssetID.toString()"></app-item-image>
+    </div>
+
+    <hr />
+
+    <div *ngIf="isFormFieldTitlesDictionaryLoaded">
+        <div class="row">
+            <span class="property">TAG ID</span>
+            <span class="value">{{ item.EPC_ID }}</span>
+        </div>
+        <div class="row">
+            <legend class="property">{{formfieldTitlesDictionary["Category"]}}</legend>
+            <span class="value">{{ item.Category }}</span>
+        </div>
+        <div class="row">
+            <legend class="property">{{formfieldTitlesDictionary["Description"]}}</legend>
+            <span class="value">{{ item.Description }}</span>
+        </div>
+        <div class="row">
+            <legend class="property">{{formfieldTitlesDictionary["SKU"]}}</legend>
+            <span class="value">{{ item.SKU }}</span>
+        </div>
+        <div class="row">
+            <span class="property">LOC.</span>
+            <span class="value">{{ item.Asset_LocationLocation }}</span>
+        </div>
+        <div class="row">
+            <span class="property">STATUS</span>
+            <span class="value">{{ item.Asset_StatusName }}</span>
+        </div>
+        <div class="row">
+            <span class="property">CONTAINER</span>
+            <span class="value">{{ item.ContainerName }}</span>
+        </div>
+        <div class="row">
+            <span class="col-6">
+                <legend class="property">{{formfieldTitlesDictionary["Date_of_Purchase"]}}*</legend>
+                <span class="value">{{ item.Date_of_PurchaseS }}</span>
+            </span>
+            <span class="col-6">
+                <legend class="property">{{formfieldTitlesDictionary["Date_of_Expire"]}}</legend>
+                <span class="value">{{ item.Date_of_ExpireS }}</span>
+            </span>
+        </div>
+        <div class="row">
+            <span class="col-6">
+                <legend class="property">{{formfieldTitlesDictionary["Warranty_Expiry_Date"]}}</legend>
+                <span class="value">{{ item.Warranty_Expiry_Date }}</span>
+            </span>
+            <span class="col-6">
+                <legend class="property">{{formfieldTitlesDictionary["Calibration_Date"]}}</legend>
+                <span class="value">{{item.Calibration_Date }}</span>
+            </span>
+        </div>
+        <div class="row">
+            <span class="col-6">
+                <legend class="property">{{formfieldTitlesDictionary["Cost"]}}</legend>
+                <span class="value">{{ item.Cost }}</span>
+            </span>
+            <span class="col-6">
+                <span class="property">QTY.</span>
+                <span class="value">{{ item.LastBal }}</span>
+            </span>
+        </div>
+        <div class="row">
+            <legend class="property">{{formfieldTitlesDictionary["UOM"]}}</legend>
+            <span class="value">{{ item.UOM }}</span>
+        </div>
+        <div class="row">
+            <span class="property">REF #</span>
+            <span class="value">{{ item.Ref_No }}</span>
+        </div>
+        <div class="row">
+            <legend class="property">{{formfieldTitlesDictionary["BatchNo"]}}</legend>
+            <span class="value">{{ item.BatchNo }}</span>
+        </div>
+        <div class="row">
+            <legend class="property">{{formfieldTitlesDictionary["Remarks"]}}</legend>
+            <span class="value">{{ item.Remarks }}</span>
+        </div>
+        <div class="row">
+            <legend class="property">{{formfieldTitlesDictionary["Remarks2"]}}</legend>
+            <span class="value">{{ item.Remarks2 }}</span>
+        </div>
+        <div class="row">
+            <legend class="property">{{formfieldTitlesDictionary["Remarks3"]}}</legend>
+            <span class="value">{{ item.Remarks3 }}</span>
+        </div>
+        <div class="row">
+            <legend class="property">{{formfieldTitlesDictionary["Remarks4"]}}</legend>
+            <span class="value">{{ item.Remarks4 }}</span>
+        </div>
+        <div class="row">
+            <legend class="property">{{formfieldTitlesDictionary["Remarks5"]}}</legend>
+            <span class="value">{{ item.Remarks5 }}</span>
+        </div>
+        <div class="row">
+            <legend class="property">{{formfieldTitlesDictionary["Remarks6"]}}</legend>
+            <span class="value">{{ item.Remarks6 }}</span>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="!item" class="k-block">
+    <kendo-loader *ngIf="!itemNotFound"></kendo-loader>
+    <span *ngIf="itemNotFound">No Item Information Found.</span>
+</div>

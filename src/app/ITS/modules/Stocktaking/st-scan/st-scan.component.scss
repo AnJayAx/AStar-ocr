@@ -1,0 +1,81 @@
+@import "its-variables";
+@import "variables";
+
+.menu-wrapper {
+    min-height: 100dvh;
+    margin-bottom: 15%;
+}
+
+.tiles {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+
+    .tile {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        flex: 0 0 calc(50% - 0.5rem);
+        padding: 1rem 1.3rem 1rem 1.3rem;
+        margin-bottom: 1rem;
+        border-radius: 0.5rem;
+        background-color: dodgerblue;
+        color: white;
+
+        height: 25vh;
+
+        .header {
+            font-weight: bolder;
+            text-align: center;
+            // font-size: 0.8rem;
+            font-size: 2.5vh;
+        }
+        .main {
+            // font-size: 4rem;
+            font-size: 10vh;
+        }
+        .footer {
+            width: 100%;
+            display: flex;
+            justify-content: flex-end;
+
+            .k-icon {
+                font-size: 3.5vh;
+            }
+        }
+    }
+}
+
+.float {
+
+    @include float;
+
+    padding: 0.5em 1em;
+    top: 85%;
+    flex-direction: column;
+    overflow: hidden;
+    width: 100%;
+
+    .submit-btn {
+        background-color: $primary;
+        color: white;
+    }
+
+    .checkbox-container {
+        flex-grow: 1;
+        flex-wrap: nowrap;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+    }
+
+    .buttons-container {
+        margin-top: 0.1rem;
+        flex-grow: 1;
+        flex-wrap: nowrap;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+}

@@ -1,0 +1,38 @@
+<div class="vh-100">
+    <div class="row vh-80">
+        <kendo-listview [data]="viewListItems">
+
+            <ng-template kendoListViewHeaderTemplate>
+                <span class="mt-2 mb-2 d-flex flex-column" style="padding: 0.5rem;">
+                    <div class="row">
+                        <app-autocompletesearch-input
+                            [listItems]="listItems"
+                            [sourceSearchItems]="sourceSearchItems"
+                            [searchTerm]="searchTerm"
+                            (viewChanged)="onViewItemsChanged($event)"
+                        ></app-autocompletesearch-input>
+                    </div>
+                    <div class="mt-4 d-flex justify-content-between align-items-center">
+                        <button kendoButton (click)="onHeaderClick()">{{ headerText }}</button>
+                        <span>{{ listItemLength }} record(s) found.</span>
+                    </div>
+                </span>
+            </ng-template>
+
+            <ng-template kendoListViewItemTemplate let-dataItem="dataItem" let-isFirst="isFirst" let-index="index">
+                <kendo-card [style.width.%]="100" (click)="toggleSelectedItemChange(dataItem)">
+                    <kendo-card-header [class.selected-item]="isSelectedItem(dataItem.value)">
+                        <div class="k-hstack d-flex justify-content-between align-items-center py-2">
+                            <strong class="list-item text">{{ index+1 }}.&nbsp;&nbsp;{{ dataItem.label }}</strong>
+                        </div>
+                    </kendo-card-header>
+                </kendo-card>
+            </ng-template>
+
+        </kendo-listview>
+
+        <div class="row-cols-1">
+            <button kendoButton [primary]="true" (click)="onConfirm()">Confirm</button>
+        </div>
+    </div>
+</div>

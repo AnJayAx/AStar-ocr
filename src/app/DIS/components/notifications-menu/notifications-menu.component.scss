@@ -1,0 +1,90 @@
+@import "variables";
+
+// .Notifications {
+//   position: relative;
+//
+//   &__button {
+//     span:first-of-type {
+//       margin: 0 0.25rem 0 0.5rem;
+//       text-transform: uppercase;
+//     }
+//   }
+//
+//   &__popup {
+//     position: absolute;
+//     right: 0;
+//     top: 100%;
+//     min-width: 20rem;
+//     max-width: 40rem;
+//   }
+//
+//   &__card {
+//     box-shadow: $shadow-200;
+//   }
+// }
+//
+// .Notification {
+//   position: relative;
+//   display: flex;
+//   align-items: center;
+//   justify-content: space-between;
+//   padding-left: 2rem;
+//
+//   &:hover {
+//     background: $gray-400;
+//   }
+//
+//   &:not(:last-of-type) {
+//     border-bottom: $border-100;
+//   }
+//
+//   &__indicator {
+//     position: absolute;
+//     top: 0;
+//     left: 0;
+//     width: 0.5rem;
+//     height: 100%;
+//     background: $gray-600;
+//   }
+//
+//   &__content {
+//     flex: 1;
+//     padding-right: 1rem;
+//     margin-bottom: 0;
+//     border-right: $border-100;
+//   }
+//
+//   &__action {
+//     padding: 0.5rem;
+//     margin-left: 1rem;
+//     cursor: pointer;
+//   }
+// }
+
+.k-icon-16{
+  font-size: 26px;
+  display: inline;
+}
+.msg-content{
+  display: inline;
+  margin-left : 7%;
+}
+.notifications-list{
+  list-style-type: none;
+  line-height: 4.5rem;
+  font-size: 18px;
+}
+
+.notifications-list li {
+   border-bottom: 1px solid #000;
+}
+.mybtn-right{
+  text-align: right;
+  font-size:18px;
+}
+.notifications-list li:hover{
+  background-color: #292833;
+  color: $white;
+}
+
+

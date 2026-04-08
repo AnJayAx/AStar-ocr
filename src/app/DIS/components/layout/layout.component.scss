@@ -1,0 +1,92 @@
+@import "variables";
+
+$dynamic-content-margin: max(20vw, 20rem);
+
+.Layout {
+  display: grid;
+  min-height: 100vh;
+  grid-template-rows: auto 1fr;
+  transition: 0.2s;
+
+  &.show-menu {
+    margin-left: $dynamic-content-margin;
+  }
+}
+
+.AppBar {
+  position: sticky;
+  top: 0;
+  z-index: $z-index-navigation - 1;
+  background: $white;
+  // border: $border-100;
+  border: 0;
+  display: flex;
+  padding: 0 0.8rem 0 0.8rem;
+  align-items: center;
+  background-color: #292833;
+
+  &__title,
+  .sidebar-toggle {
+    //font-size: $font-size-lg;
+    font-weight: 700;
+    color: $white;
+    // padding: 1rem;
+    padding: 0.7rem;
+    // margin: 0 3rem 0 1rem;
+    margin: 0 auto;
+  }
+
+  .sidebar-toggle {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-content: center;
+    width: 1rem;
+    margin-right: 1rem;
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  &__nav {
+    flex: 1;
+    align-items: center;
+    justify-content: flex-end;
+    display: flex;
+    > * {
+      // padding-left: 1rem;
+      padding-left: 0.5rem;
+    }
+  }
+}
+
+.iosPad {
+  // margin-top: 25px;
+  padding-top: 2.2rem;
+  // outline: 2px solid red;
+}
+
+.AppMain {
+  grid-row: 2 / -1;
+  // padding: 1rem 1rem;
+  padding: 0.5rem; /* Override padding for mobile app */
+  // overflow-x: auto;
+  overflow-x: hidden;
+}
+
+.AppMainOcr {
+  padding: 0;
+}
+
+app-mobile-navigation-menu {
+  position: sticky;
+  bottom: 0;
+}
+.img-responsive {
+  height: auto;
+  width: auto;
+  max-height: 30px;
+  max-width: 80px;
+}
+.AppBar__div {
+  display: contents;
+}

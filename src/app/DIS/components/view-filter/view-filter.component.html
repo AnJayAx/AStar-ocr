@@ -1,0 +1,11 @@
+<div class="ViewFilter">
+  <kendo-icon
+    class="ViewFilter__icon"
+    [name]="icon"
+    [themeColor]="'secondary'"
+  ></kendo-icon>
+  <p class="ViewFilter__label">{{ label }}</p>
+  <div class="ViewFilter__filter">
+    <ng-content></ng-content>
+  </div>
+</div>

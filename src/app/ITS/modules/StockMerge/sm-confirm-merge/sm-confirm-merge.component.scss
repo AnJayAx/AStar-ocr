@@ -1,0 +1,44 @@
+@import "its-variables";
+@import "variables";
+
+.page-title {
+    @include page-title
+}
+
+.empty-list-wrapper {
+    padding: 2rem 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sm-list-container {
+    height: 40%;
+    max-height: 40vh;
+    border: 0.35rem solid white;
+    overflow: scroll;
+}
+
+.section-container {
+    @include section-colours;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    font-size: larger;
+    .-header {
+        font-size: larger;
+    }
+}
+
+.highlighted {
+    color: #FF6000;
+    font-size: larger;
+}
+
+.float-container {
+    @include float-container;
+}
+
+.page-icon {
+    font-size: larger;
+    font-weight: bolder;
+}

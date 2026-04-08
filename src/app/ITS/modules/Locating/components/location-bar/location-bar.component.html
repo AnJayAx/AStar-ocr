@@ -1,0 +1,34 @@
+<div class="float-container">
+<!-- {{ distance }}
+{{ isScanning }} -->
+    <div style="height: 300px;">
+        <div class="bar">
+            <div class="bar-wrap">
+                <div class="bar" [ngStyle]="{'transform': 'translateY(' + getTranslateY() + '%)' }"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="float">
+        <button kendoButton (click)="startLocationScan()" *ngIf="!isScanning" class="scan-btn">
+            Start Scan
+        </button>
+        <button kendoButton (click)="stopLocationScan()" *ngIf="isScanning" class="scan-btn">
+            <span class="k-icon k-i-kpi-status-open"></span>&nbsp;Stop Scan
+        </button>
+    </div>
+</div>
+
+
+<!-- FOR DEVELOPMENT PURPOSES ONLY -->
+<!-- <div class="mt-2">
+    <kendo-buttongroup selection="single" width="100%" style="margin-right: 1rem;">
+        <button kendoButton type="button" *ngFor="let val of testVals"
+        [toggleable]="true" 
+        [selected]="isButtonHighlighted(val)" 
+        (click)="onSelectTestVal(val)"
+        [ngClass]="{'toggled': isButtonHighlighted(val) }"
+        >{{ val }}</button>
+    </kendo-buttongroup>
+</div> -->
+

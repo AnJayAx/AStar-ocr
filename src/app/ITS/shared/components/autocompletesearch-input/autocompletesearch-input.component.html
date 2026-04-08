@@ -1,0 +1,12 @@
+<div class="d-flex justify-content-around align-items-center" style="width: 100%;">
+    <span class="k-icon k-i-search mx-2"></span>
+    <span style="width: 100%">
+        <kendo-autocomplete [style.width.%]="100"
+            (valueChange)="handleSearchValueChange($event)"
+            (filterChange)="handleSearchFilterChange($event)"
+            [filterable]="true"
+            [data]="searchItems"
+            [placeholder]="searchTerm"
+        ></kendo-autocomplete>
+    </span>
+</div>

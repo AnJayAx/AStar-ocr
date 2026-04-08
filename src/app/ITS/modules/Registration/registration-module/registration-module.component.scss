@@ -1,0 +1,52 @@
+@import "its-variables";
+@import "variables";
+
+.k-label {
+    font-size: 16px;
+}
+
+.k-i-trash {
+    font-size: 2rem;
+    color: darkred;
+}
+
+.toggle-text-left {
+    margin-right: 0.1rem;
+    font-size: smaller;
+    font-weight: bolder;
+}
+.toggle-text-right {
+    margin-left: 0.1rem; 
+    font-size: smaller; 
+    font-weight: bolder;
+}
+
+.selected-item {
+  @include selected-item;
+}
+
+// badges
+.badge {
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: white;
+}
+
+.badge-green {
+  background-color: #16a34a; /* success */
+}
+
+.badge-red {
+  background-color: #dc2626; /* error */
+}
+
+.badge-blue {
+  background-color: #2563eb; /* info/progress */
+}
+
+.badge-yellow {
+    background-color: #acac05; /* new */
+}  
+

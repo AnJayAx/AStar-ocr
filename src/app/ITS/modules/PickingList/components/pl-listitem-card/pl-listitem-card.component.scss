@@ -1,0 +1,98 @@
+
+@import "its-variables";
+
+$category-color: #6a5acd;
+$grey: #656565;
+
+.item-container.m-item-card {
+    border: 2px solid orange;
+}
+
+.item-container {
+    @include item-card;
+    margin-bottom: 1rem;
+
+    .details-wrapper {
+        width: 80%;
+
+        .title {
+            margin-bottom: 0.5rem;
+
+            .category-indicator {
+                font-size: 0.8rem;
+                font-weight: bolder;
+                color: white;
+                border-radius: 8px;
+                background-color: $category-color;                
+                padding: 0.3rem 0.5rem;
+            }
+            .name {
+                @include item-card-name;
+            }
+        }
+
+        .sortby {
+            font-size: 0.7rem;
+            font-weight: bolder;
+            border-radius: 2px;
+            padding: 0.2rem 0.4rem;
+            color: white;
+            background-color: grey;
+        }
+
+        .location-detail {
+            margin-top: 0.5rem;
+
+            .location {
+                @include item-card-location;
+            }
+            .number {
+                font-size: 0.9rem;
+                font-weight: bolder;
+            }
+        }
+
+        .out-of-stock-indicator {
+            border: 1.5px solid red;
+            background-color: white; 
+            color: red;
+            padding: 3px 5px;
+            border-radius: 2px;
+            font-size: 0.9rem;
+            font-weight: bolder;
+        }
+    }
+
+    .stats-wrapper {
+        width: 20%;
+
+        .actual {
+            font-size: 1.3rem;
+            font-weight: bolder;
+            line-height: 1.25rem;
+            color: $grey;
+        }
+        .total {
+            font-size: 0.9rem;
+            color: $pl-qty-color;
+        }
+        .uom {
+            font-size: 0.9rem;
+            color: grey;
+        }
+    }
+
+    .navbtn {
+        background: none;
+        font-weight: bolder;
+        border: none;
+        font-size: x-large;
+        padding: 0;
+        display: flex;
+        justify-content: flex-end;
+
+        .navicon {
+            font-size: 1.5rem;
+        }
+    }
+}

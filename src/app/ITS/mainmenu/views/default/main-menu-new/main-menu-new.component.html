@@ -1,0 +1,21 @@
+<div class="row" *ngFor="let item of items; let i = index" [title]="item.group">
+    <div class="menu-list-wrapper text-center">
+      <div class="menu-list-item" *ngFor="let menuitem of item.items" (click)="navigate(menuitem)" >
+          <kendo-icon *ngIf="menuitem.icon" [name]="menuitem.icon"></kendo-icon>
+          <fa-icon *ngIf="menuitem.faIcon" [icon]="menuitem.faIcon"></fa-icon>
+        <h5 class="menu-list-item-text">{{ menuitem.name }}</h5>
+      </div>
+    </div>
+</div>
+
+<div class="message-notice" *ngIf="items?.length === 0">
+  No menu items found.
+</div>
+
+<kendo-floatingactionbutton class="custom-fab list-view"
+  [icon]="'menu'"
+  [size]="'large'"
+  [themeColor]="'info'"
+  (click)="showList()"
+></kendo-floatingactionbutton>
+

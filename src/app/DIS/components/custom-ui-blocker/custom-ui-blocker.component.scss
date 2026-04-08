@@ -1,0 +1,7 @@
+@import "variables";
+
+.block-ui-template {
+  #loading-message, .k-loader-segment {
+    color: $primary;
+  }
+}

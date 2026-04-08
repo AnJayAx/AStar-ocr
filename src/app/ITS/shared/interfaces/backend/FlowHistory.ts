@@ -1,0 +1,22 @@
+export interface FlowHistoryEntry {
+    "Asset_Flow_History_ID": number,
+    "Display_ID": string,
+    "Creator": string,
+    "Creation_Time": string,
+    "Edit_Time": string,
+    "Availability": number,
+    "Status": string,
+    "Date": string,
+    "Qty_In": number,
+    "Qty_Out": number,
+    "Person_In_Charge": string,
+    "Remarks": string,
+    "Asset_ID": number,
+    "Balance": number,
+    "FIFO": boolean,
+    "Doc_No": string,
+    "BalanceCal": string,
+    "DateS": string,
+    "Qty_InS": string,
+    "Qty_OutS": string
+}

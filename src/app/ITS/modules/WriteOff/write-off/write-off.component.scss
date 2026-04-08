@@ -1,0 +1,25 @@
+@import "variables";
+@import "its-variables";
+
+.float {
+    @include float;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.float-container {
+    @include float-container;
+    margin-bottom: 10%;
+}
+
+.larger-font {
+    font-size: larger;
+}
+
+.decorated-footer {
+    @include decorated-footer;
+
+    .decorated-footer-text {
+        @include decorated-footer-text
+    }
+}

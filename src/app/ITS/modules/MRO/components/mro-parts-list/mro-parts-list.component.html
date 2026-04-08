@@ -1,0 +1,30 @@
+<kendo-listview 
+    [kendoListViewBinding]="partsList"
+    containerClass="k-d-flex k-flex-col k-flex-nowrap"
+    [style.height.%]="100"
+>
+    <ng-template kendoListViewItemTemplate let-dataItem="dataItem">
+        <div class="list-item">
+            <span class="partsno-container"><span class="partsno-wrapper">{{ dataItem?.part.partNumber }}</span></span>
+            <span class="desc-container">{{ dataItem?.part.description }}</span>
+            <span class="amt-container">${{ dataItem?.amount.toFixed(2) }}</span>
+            <span class="action-container">
+                <span class="delete-btn">
+                    <!-- <kendo-svg-icon [icon]="trashIcon" (click)="onPartDelete(dataItem.part)"></kendo-svg-icon> -->
+                    <fa-icon [icon]="trashIcon" (click)="onPartDelete(dataItem.part)"></fa-icon>
+                </span>
+                <span class="edit-btn">
+                    <!-- <kendo-svg-icon [icon]="pencilIcon" (click)="onPartEdit(dataItem.part)"></kendo-svg-icon> -->
+                    <fa-icon [icon]="pencilIcon" (click)="onPartEdit(dataItem.part)"></fa-icon>
+                </span>
+            </span>
+        </div>
+    </ng-template>
+    <ng-template kendoListViewFooterTemplate>
+        <div class="d-flex mt-2">
+            <button kendoButton [style.width.%]="100" (click)="onPartAdd()">
+                <span class="d-flex align-items-center"><strong style="font-size: larger;">+</strong>&nbsp;Add Spare Part</span>
+            </button>
+        </div>
+    </ng-template>
+</kendo-listview>

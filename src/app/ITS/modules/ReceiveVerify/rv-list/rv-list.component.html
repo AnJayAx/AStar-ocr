@@ -1,0 +1,78 @@
+<div class="container-fluid float-container">
+    <div class="mt-2 row">
+        <span class="col-10"><app-scanmode-buttongroup></app-scanmode-buttongroup></span>
+        <span class="col-2 d-flex justify-content-start align-items-center p-0">
+            <app-reload-btn 
+                [componentType]="reloadComponent"
+                [elementRef]="reloadElemRef"
+                (clicked)="onReload()"
+            ></app-reload-btn>
+        </span>
+    </div>
+
+    <div class="mt-2 d-flex align-items-center">
+        <kendo-label class="w-100">
+            <strong>Order*</strong>
+            <kendo-dropdownlist required
+                class="w-100"
+                [data]="orderItems$ | async"
+                [value]="selectedOrderItem"
+                textField="label" valueField="value"
+                (valueChange)="handleSelectedOrderChange($event)"
+            ></kendo-dropdownlist>
+        </kendo-label>
+    </div>
+
+    <hr/>
+
+    <div class="mt-2" *ngIf="selectedPickedItems.length === 0" style="width: 100%; height: 100%">
+        <div class="d-flex justify-content-center align-items-center">
+            <i>Select an order from the dropdown list to continue.</i>
+        </div>
+    </div>
+
+    <div *ngIf="selectedPickedItems.length > 0">
+        <kendo-card orientation="horizontal" style="width: 100%;">
+            <kendo-card-header class="d-flex justify-content-between align-items-center" style="width: 100%;">
+                <span>
+                    <div class="row">
+                        <span class="col-12 d-flex justify-content-start">
+                            <span class="picking-type-indicator">{{ rvType }}</span>
+                        </span>
+                    </div>
+                    <div class="row">
+                        <span class="subtitle-display" *ngIf="showDestinationLocation">
+                            <fa-icon [icon]="arrowRight"></fa-icon>&nbsp;{{ !!destinationLocation ? destinationLocation : '--' }}
+                        </span>
+                    </div>
+                </span>
+                <h1 kendoCardTitle class="total-display"> 
+                    <fa-icon [icon]="circleCheck" class="verified-icon" *ngIf="isAllPicked()"></fa-icon>&nbsp;
+                    <u>{{ getReceiveVerifyPickedCount() }}</u> of {{ selectedPickedItems.length }}
+                </h1>
+            </kendo-card-header>
+        </kendo-card>
+    </div>
+
+    <div class="mt-2" *ngIf="selectedPickedItems.length > 0">
+        <kendo-listview [data]="selectedPickedItems">
+            <ng-template kendoListViewItemTemplate let-dataItem="dataItem">
+                <app-rv-list-card [item]="dataItem"></app-rv-list-card>
+            </ng-template>
+        </kendo-listview>
+    </div>
+
+    <div class="float">
+        <app-clearscan-btn (clicked)="onClear($event)"></app-clearscan-btn>
+        <app-startscan-btn></app-startscan-btn>
+        <button kendoButton [primary]="true" (click)="onClickConfirm()" [disabled]="isConfirmDisabled">Confirm</button>
+    </div>
+</div>
+
+<div *ngIf="showSubmissionPanel" class="container-fluid" style="min-height: 100%;">
+    <app-submission-dialog 
+        [dialogTitle]="'Submit Receive/Verify'" 
+        [transactionNo]="selectedOrderItem?.label"
+        (closeSelected)="onClose($event)"
+    ></app-submission-dialog>
+</div>

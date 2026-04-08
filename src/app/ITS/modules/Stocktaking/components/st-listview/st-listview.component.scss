@@ -1,0 +1,16 @@
+@import "its-variables";
+
+.empty-search-wrapper {
+    padding: 2rem 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.decorated-footer {
+    @include decorated-footer;
+
+    .decorated-footer-text {
+        @include decorated-footer-text
+    }
+}

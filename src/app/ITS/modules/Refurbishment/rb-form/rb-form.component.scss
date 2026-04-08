@@ -1,0 +1,24 @@
+@import "variables";
+
+.highlighted-btn {
+    outline: 2px solid black;
+}
+.flex-btn {
+    flex: 1;
+}
+.pass-toggled {
+    background-color: $success;
+    color: white;
+}
+.fail-toggled {
+    background-color: $error;
+    color: white;
+}
+
+.options-no-data-wrapper {
+    color: black;
+    .prompt {
+        font-weight: bolder;
+        font-size: 1.2rem;
+    }
+}

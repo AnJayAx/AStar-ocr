@@ -1,0 +1,25 @@
+<div class="container-fluid" style="background-color: transparent;">
+    <div class="barcode-scanner--area--container">
+        <div class="relative vh-20">
+            <div class="results-box mt-4">
+                <span class="title">Result:</span>
+                <br />
+                <span class="result">
+                    <h3 *ngIf="showResult">{{ scannedQR }}</h3>
+                    <strong *ngIf="!showResult"><i>Scanning...</i></strong>
+                </span>
+            </div>
+        </div>
+        <p>Aim the camera at a QR code</p>
+        <div class="square surround-cover">
+            <div class="barcode-scanner--area--outer surround-cover">
+                <div class="barcode-scanner--area-inner"></div>
+            </div>
+        </div>
+        <div class="relative footer">
+            <button kendoButton (click)="stopScan()" class="red-btn">
+                <span class="d-flex align-items-center"><span class="k-icon k-i-kpi-status-open"></span>&nbsp;Stop Scan</span>
+            </button>
+        </div>
+    </div>
+</div>

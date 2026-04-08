@@ -1,0 +1,37 @@
+{
+  "sample": {
+    "heading" : "图表，表格标记与更多 ",
+    "heading-description": "目标是为了有客制化组件 （如果是必须的， 而且KendoUI无法提供）+ 客制化组件的设计必须与整体设计一致",
+    "dashboard": {
+      "header" : "仪表盘"
+    },
+    "table": {
+      "header" : "表格"
+    },
+    "input-field": {
+      "header" : "表单",
+      "text-box": "输入栏",
+      "dropdown-combo-box": "下拉框",
+      "numeric-text-box": "号码选择器",
+      "date-time-picker": "日期时间选择",
+      "radio-button": "单选",
+      "check-box": "复选框",
+      "description": "描述"
+    }
+  },
+  "common": {
+    "block-ui": {
+      "loading-message": "加载当中"
+    }
+  },
+  "mobile-menu": {
+    "home": "主页",
+    "menu": "菜单",
+    "account": "账户"
+  },
+  "mobile-user-profile": {
+    "title": "账户",
+    "label_darkmode": "黑暗模式",
+    "label_language": "语言"
+  }
+}

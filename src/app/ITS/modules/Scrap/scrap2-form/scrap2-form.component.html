@@ -1,0 +1,22 @@
+<div class="row d-flex justify-content-center">    
+    <form class="k-form" [formGroup]="scrapForm">
+      <fieldset class="k-form-fieldset">  
+        <kendo-formfield>
+          <legend class="k-form-legend">Remarks</legend>
+          <input
+            formControlName="rmk"
+            kendoTextArea
+            #rmk
+            class="form-control"
+          />
+        </kendo-formfield>
+    </fieldset>
+  </form>
+  <div class="row mt-4">
+    <button kendoButton [primary]="true" (click)="pressSubmit()">Submit</button>
+  </div>
+</div>
+
+<div *ngIf="showSubmissionPanel" class="container-fluid" style="min-height: 100%">
+  <app-submission-dialog [dialogTitle]="'Submit Scrap'" (closeSelected)="onClose($event)"></app-submission-dialog>
+</div>

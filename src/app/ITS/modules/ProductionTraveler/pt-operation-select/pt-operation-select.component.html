@@ -1,0 +1,93 @@
+<div class="float-container container-fluid">
+    <div class="mt-2 row">
+        <span class="col-10">
+            <h4 class="my-0">Select Operation</h4>
+        </span>
+        <span class="col-2 d-flex justify-content-start align-items-center p-0">
+            <app-reload-btn 
+                [componentType]="reloadComponent"
+                [elementRef]="reloadElemRef"
+                (reloaded)="onReload($event)"
+                (clicked)="onClickReload($event)"
+            ></app-reload-btn>
+        </span>
+    </div>
+
+    <div class="mt-4">
+        <legend class="compulsory-field">SKU*</legend>
+        <kendo-autocomplete
+            style="width: 100%"
+            [data]="skuList"
+            [value]="sku"
+            (valueChange)="onSkuChange($event)"
+            placeholder="Enter SKU..."
+        ></kendo-autocomplete>
+    </div>
+
+    <div class="mt-2" *ngIf="!!itemTrait">
+        <div class="d-flex">
+            <span style="flex: 1">
+                <div class="d-flex icon-container">
+                    <div class="d-flex align-items-center">
+                        <h1><fa-icon [icon]="itemIcon" style="height: 100%;"></fa-icon></h1>
+                    </div>
+                </div>
+            </span>
+            <span style="flex: 5">
+                <table>
+                    <tr><th>Height:</th><td class="px-2">{{ itemTrait.height }} {{ itemTrait.lwhUom }}</td></tr>
+                    <tr><th>Length:</th><td class="px-2">{{ itemTrait.length }} {{ itemTrait.lwhUom }}</td></tr>
+                    <tr><th>Width:</th><td class="px-2">{{ itemTrait.width }} {{ itemTrait.lwhUom }}</td></tr>
+                    <tr><th>Weight:</th><td class="px-2">{{ itemTrait.weight }} {{ itemTrait.weightUom }}</td></tr>
+                </table>
+            </span>
+        </div>        
+    </div>
+
+
+    <hr/>
+
+    <ng-container *ngIf="showAdditionalOptions">
+        <div class="mt-4">
+            <div class="d-flex align-items-center" style="width: 70vw;">
+                <legend class="my-0 py-0 compulsory-field">Is First Operation?*</legend>
+                <input type="checkbox" kendoCheckBox
+                    [checked]="isFirstOp"
+                    (click)="onToggleIsFirstOp()"
+                    class="first-op-checkbox"
+                />
+            </div>
+
+            <div class="mt-2 field-container" *ngIf="isFirstOp && !!firstOp">
+                <div><strong>{{ firstOp["OpAc"] }}&nbsp;{{ firstOp["Operation_short_text"] }}</strong></div>
+            </div>
+            <div class="mt-2 d-flex justify-content-center align-items-center" *ngIf="isFirstOp && !firstOp">
+                <kendo-loader></kendo-loader>
+            </div>
+        </div>
+
+        <div class="mt-4" *ngIf="isFirstOp">
+            <legend>Work Order</legend>
+            <div class="d-flex">
+                <kendo-textbox
+                    style="width: 100%"
+                    placeholder="Scan or enter work order..."
+                    [clearButton]="true"
+                    [value]="workOrder"
+                    (valueChange)="onWorkOrderChange($event)"
+                ></kendo-textbox>
+                <button kendoButton (click)="toQRPage()" id="qr-btn" *ngIf="isCameraValid$ | async"><kendo-svg-icon [icon]="qrCodeIcon"></kendo-svg-icon>&nbsp;QR Scan</button>
+            </div>
+        </div>
+    </ng-container>
+
+    <ng-container *ngIf="!showAdditionalOptions">
+        <div class="d-flex justify-content-center align-items-center mt-4">
+            <i>Enter an SKU to continue</i>
+        </div>
+    </ng-container>
+
+    <div class="float">
+        <button kendoButton [primary]="true" (click)="onClickConfirm()" [disabled]="sku.length === 0 || undefinedFirstOperationDetected" [style.width.%]="100">Confirm</button>
+    </div>
+</div>

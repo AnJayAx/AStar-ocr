@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config xmlns:tools="http://schemas.android.com/tools">
+  <domain-config>
+    <domain includeSubdomains="true">auth-dev.mf.platform</domain>
+    <domain includeSubdomains="true">dev.mf.platform</domain>
+    <trust-anchors>
+      <certificates src="@raw/auth_dev_ca" />
+    </trust-anchors>
+  </domain-config>
+</network-security-config>

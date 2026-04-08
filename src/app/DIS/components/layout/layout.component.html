@@ -1,0 +1,76 @@
+<!-- *ngIf="dataReady" -->
+<div class="Layout" id="layoutId" *ngIf="dataReady" [ngClass]="{'show-menu': !isMenuCollapsed }">
+  <div class="AppBar" [ngClass]="{ 'is-login-view': isLoginView(), 'iosPad': isIOS }">
+    <!-- Hamburger -->
+    <span class="sidebar-toggle" (click)="menuToggle();" *ngIf="isSideMenuSelected && !isMobile">
+      <kendo-icon [name]="'hamburger'"></kendo-icon>
+    </span>
+
+    <div class= "AppBar__div">
+      <span *ngIf="isInModule; else showAppIcon">
+        <app-navback-btn [isDarkBackground]="true"></app-navback-btn>
+      </span>
+      <ng-template #showAppIcon>
+        <img class="img-responsive" src="assets/img/a-star-removebg.png"/>
+      </ng-template>
+      <h3 class="AppBar__title">{{ appBarTitle }}</h3>
+    </div>
+
+    <app-horizontal-menu *ngIf="!isSideMenuSelected && !isMobile"></app-horizontal-menu>
+    <div class="AppBar__nav">
+      <!-- Translation Panel -->
+
+      <kendo-dropdownlist *ngIf="isSelectionEnabled" [data]="languages"  textField="text" (valueChange)="languageChange($event)"
+                          valueField="value" [(ngModel)]="languageSelected">
+      </kendo-dropdownlist>
+      
+      <!-- <app-search-icon></app-search-icon> -->
+      <app-home-btn *ngIf="isInModule" [isDarkBackground]="true"></app-home-btn>
+      <app-setting *ngIf="enableSettings" (currentMenuChange)="onSettingsChange($event)"></app-setting>
+      
+      <!-- Notifications (Remove if not required) -->
+      <!-- <app-notifications-menu-->
+      <!-- *ngIf="isNotificationEnabled && isLoggedIn$ | async"-->
+      <!-- [notifications]="notifications"-->
+      <!-- [(currentMenu)]="currentFocusedMenu"-->
+      <!-- [onNotificationClick]="onNotificationClick"-->
+      <!-- ></app-notifications-menu>-->
+      <!-- Profile -->
+      
+      <app-profile-menu [user]="user" [(currentMenu)]="currentFocusedMenu"  *ngIf="!isMobile">
+        <!-- Add additional actions below. Route to your pages. -->
+        <kendo-card-actions orientation="vertical" class="align-items-center py-2" layout="stretched">
+          <!-- Change user role/password/email etc. -->
+          <span>Dark Mode Testing</span>
+          <kendo-switch [(ngModel)]="isDarkMode"  (valueChange)="onThemeChange($event)"></kendo-switch>
+        </kendo-card-actions>
+        <!-- Add additional actions below. Route to your pages. -->
+        <kendo-card-actions orientation="horizontal" layout="stretched">
+          <!-- Change user role/password/email etc. -->
+          <button kendoButton look="flat" [routerLink]="'/settings'">
+            User Settings
+          </button>
+        </kendo-card-actions>
+        <kendo-card-actions orientation="horizontal" layout="stretched">
+          <!-- MCT/DIS will handle auth. -->
+          <button kendoButton look="flat" (click)="logout()">
+            Logout
+          </button>
+        </kendo-card-actions>
+      </app-profile-menu>
+
+    </div>
+  </div>
+
+  <!-- Side Bar -->
+  <!-- <app-sidebar *ngIf="isSideMenuSelected"></app-sidebar> -->
+  <!-- 'mb-5': isMobile -->
+  <main class="AppMain" [ngClass]="{ 'AppMainOcr': isOCR, 'is-login-view': isLoginView() }">
+    <router-outlet (activate)='onActivate($event)'></router-outlet>
+    <div kendoDialogContainer></div>
+  </main>
+  <!--
+  <app-mobile-navigation-menu
+    *ngIf="isMobile"></app-mobile-navigation-menu>
+    -->
+</div>

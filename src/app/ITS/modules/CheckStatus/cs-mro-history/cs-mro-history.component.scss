@@ -1,0 +1,29 @@
+@import "its-variables";
+
+.mro-card {
+    margin: 0.5rem 0.1rem;
+    outline: 1px solid lightgrey;
+
+    .top {
+        padding: 0.8rem 0.5rem;
+        background-color: white;
+        display: flex;
+        align-items: center;
+        justify-content:flex-start;
+    }
+    .main {
+        padding: 0.8rem 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+    }
+}
+
+fa-icon {
+    color: grey;
+}
+
+.info-text {
+    color: $list-item-text;
+    margin-left: 0.5rem;
+}

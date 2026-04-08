@@ -1,0 +1,58 @@
+@import "its-variables";
+@import "variables";
+
+.item {
+    display: flex;
+    height: fit-content;
+    padding: 0.8rem;
+    align-items: flex-start;
+    border-top: solid;
+    border-color: #ecebeb;
+    border-width: thin;
+    background-color: white;
+    outline: 1px solid lightgray;
+
+    position: relative;
+
+    &-details {
+        flex: 3;
+        flex-grow: 2;
+    }
+    &-value {
+        flex: 1;
+        flex-grow: 1;
+    }
+    &-name {
+        font-size: 1.2rem;;
+        color: $list-item-text;
+        font-weight: bolder;
+    }
+    &-category {
+        font-size: 1rem;
+        color: $list-item-text;
+    }
+    &-location {
+        font-size: 1rem;
+        color: #656565;
+    }
+    &-epc {
+        font-size: 1rem;
+        color: goldenrod;
+    }
+    &-balance {
+        @include item-card-balance;
+        color: red;
+    }
+}
+
+.custom-marker {
+    background-color: $list-item-text;
+    color: white;
+    padding: 2px 4px;
+    text-align: center;
+    border-radius: 0.1rem;
+    margin-right: 0.5rem;
+}
+.custom-marker.bg-m {
+    background-color: lightseagreen;
+}

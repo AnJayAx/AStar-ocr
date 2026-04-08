@@ -1,0 +1,31 @@
+@import "variables";
+
+.SamplePage {
+  .PageContent {
+    display: grid;
+    grid-gap: $grid-section-gap;
+
+    @media screen and (min-width: map-get($grid-breakpoints, "md")) {
+      grid-template-columns: auto 1fr;
+    }
+  }
+
+  section.Indicators {
+    display: grid;
+    grid-gap: $grid-component-gap;
+    align-self: flex-start;
+  }
+
+  section.Charts {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-gap: $grid-component-gap;
+    grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+
+    > * {
+      border: $border-100;
+      border-radius: $border-radius;
+      padding: 0.5rem;
+    }
+  }
+}

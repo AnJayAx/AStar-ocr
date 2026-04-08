@@ -1,0 +1,13 @@
+    <kendo-dropdownlist *ngIf="!!viewLocationsList"
+        #loc
+        [filterable]="true"
+        [disabled]="disabled"
+        [required]="isRequired"
+        [data]="viewLocationsList"
+        [value]="selectedLocation"
+        textField="Name"
+        valueField="Asset_Location_ID"
+        (valueChange)="onLocationChange($event)"
+        (filterChange)="handleFilter($event)"
+        (blur)="onTouched()"
+    ></kendo-dropdownlist>

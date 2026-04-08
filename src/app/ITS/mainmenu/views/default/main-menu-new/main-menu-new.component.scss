@@ -1,0 +1,70 @@
+@import "variables";
+
+.menu-list-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-bottom: 20%;
+
+  .menu-list-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background: $gray-700;
+    flex: 0 0 calc(50% - 0.5rem);
+    color: $white;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 0.5rem;
+
+    .k-icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+    }
+
+    fa-icon {
+      width: auto;
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items:flex-start;
+
+      * {
+        // display: inline-block;
+        width: 4rem;
+        height: 4rem;
+        margin: 0;
+      }
+    }
+
+    .menu-list-item-text{
+      margin-bottom: 0.5rem;
+      font-size: 1rem;
+    }
+  }
+}
+
+.custom-fab {
+  &.list-view {
+    // background-color: $info;
+    // background-color: dodgerblue;
+    background-color: #292833;
+    color: white;
+    border-radius: 50%;
+  }
+  &.logout {
+    // background-color: $gray-300; 
+    background-color: #292833;
+    color: white;
+    border-radius: 50%;
+  }
+}
+
+.message-notice {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

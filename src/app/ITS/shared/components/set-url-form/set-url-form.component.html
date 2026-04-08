@@ -1,0 +1,180 @@
+<form class="k-form" [formGroup]="form">
+    <fieldset class="k-form-fieldset">
+        <legend class="k-form-legend">HTTP</legend>
+
+        <div class="d-flex align-items-center">
+            <input #httpsOnly
+                kendoCheckBox
+                id="httpsOnly"
+                type="checkbox"
+                formControlName="httpsOnly"
+            />&nbsp;HTTPS Only?
+        </div>
+    </fieldset>
+    <fieldset class="k-form-fieldset">
+        <legend class="k-form-legend">Toggle Custom URL</legend>
+
+        <div class="d-flex justify-content-center align-items-center">
+            <span style="margin-right: 1rem;">IP</span>
+            <app-custom-switch 
+                [altModeEnabled]="true"
+                [isToggled]="defaultInputMode===InputMode.Custom"
+                (toggled)="onDefaultInputModeToggled($event)"
+            ></app-custom-switch>
+            <span style="margin-left: 1rem;">Custom URL</span>
+        </div>
+
+        <div class="row-cols-1" *ngIf="defaultInputMode===InputMode.Custom">
+             <legend class="k-form-legend">Base URL</legend>
+            <kendo-formfield>
+                <kendo-label [for]="defaultUrl" text="Custom URL:"></kendo-label>
+                <kendo-textbox
+                    formControlName="defaultUrl"
+                    [clearButton]="true"
+                    #defaultUrl
+                    required
+                ></kendo-textbox>
+                <kendo-formhint>A complete URL is required.</kendo-formhint>
+                <kendo-formerror>Error: Base URL is required.</kendo-formerror>
+            </kendo-formfield>
+        </div>
+    </fieldset>
+
+    <fieldset class="k-form-fieldset" *ngIf="defaultInputMode===InputMode.IP">
+        <legend class="k-form-legend">ITEM TRACKING</legend>
+        <div class="row">
+            <kendo-formfield class="col-7">
+                <kendo-label [for]="itemTrackingIP" text="IP Address"></kendo-label>
+                <kendo-textbox
+                    formControlName="itemTrackingIP"
+                    [clearButton]="true"
+                    #itemTrackingIP
+                    required
+                ></kendo-textbox>
+                <kendo-formerror>Error: Item tracking IP address is required.</kendo-formerror>
+            </kendo-formfield>
+
+            <kendo-formfield class="col-5">
+                <kendo-label [for]="itemTrackingPort" text="Port No."></kendo-label>
+                <kendo-textbox
+                    formControlName="itemTrackingPort"
+                    [clearButton]="true"
+                    #itemTrackingPort
+                    required
+                ></kendo-textbox>
+                <kendo-formerror>Error: Item tracking port number is required.</kendo-formerror>
+            </kendo-formfield>
+        </div>
+    </fieldset>
+
+    <fieldset class="k-form-fieldset" *ngIf="defaultInputMode===InputMode.IP">
+        <legend class="k-form-legend">SPT DOC</legend>
+        <div class="row">
+            <kendo-formfield class="col-7">
+                <kendo-label [for]="sptDocIP" text="IP Address"></kendo-label>
+                <kendo-textbox
+                    formControlName="sptDocIP"
+                    [clearButton]="true"
+                    #sptDocIP
+                    required
+                ></kendo-textbox>
+                <kendo-formerror>Error: SPT Doc IP address is required.</kendo-formerror>
+            </kendo-formfield>
+
+            <kendo-formfield class="col-5">
+                <kendo-label [for]="sptDocPort" text="Port No."></kendo-label>
+                <kendo-textbox
+                    formControlName="sptDocPort"
+                    [clearButton]="true"
+                    #sptDocPort
+                    required
+                ></kendo-textbox>
+                <kendo-formerror>Error: SPT Doc port number is required.</kendo-formerror>
+            </kendo-formfield>
+        </div>
+    </fieldset>
+
+    <fieldset class="k-form-fieldset" *ngIf="defaultInputMode===InputMode.IP">
+        <legend class="k-form-legend">CUSTOMER</legend>
+        <div class="row">
+            <kendo-formfield class="col-7">
+                <kendo-label [for]="customerIP" text="IP Address"></kendo-label>
+                <kendo-textbox
+                    formControlName="customerIP"
+                    [clearButton]="true"
+                    #customerIP
+                    required
+                ></kendo-textbox>
+                <kendo-formerror>Error: Customer IP address is required.</kendo-formerror>
+            </kendo-formfield>
+            <kendo-formfield class="col-5">
+                <kendo-label [for]="customerPort" text="Port No."></kendo-label>
+                <kendo-textbox
+                    formControlName="customerPort"
+                    [clearButton]="true"
+                    #customerPort
+                    required
+                ></kendo-textbox>
+                <kendo-formerror>Error: Customer port number is required.</kendo-formerror>
+            </kendo-formfield>
+        </div>
+    </fieldset>
+
+    <fieldset class="k-form-fieldset">
+        <div>
+            <legend class="k-form-legend">Keycloak</legend>
+            <kendo-formfield *ngIf="defaultInputMode===InputMode.Custom">
+                <kendo-label [for]="keycloakUrl" text="Custom URL:"></kendo-label>
+                <kendo-textbox
+                    formControlName="keycloakUrl"
+                    [clearButton]="true"
+                    #keycloakUrl
+                ></kendo-textbox>
+                <kendo-formhint>A complete URL is required.</kendo-formhint>
+            </kendo-formfield>
+
+            <div class="row" *ngIf="defaultInputMode===InputMode.IP">
+                <kendo-formfield class="col-7">
+                    <kendo-label [for]="keycloakIP" text="IP Address"></kendo-label>
+                    <kendo-textbox
+                        formControlName="keycloakIP"
+                        [clearButton]="true"
+                        #keycloakIP
+                    ></kendo-textbox>
+                </kendo-formfield>
+                <kendo-formfield class="col-5">
+                    <kendo-label [for]="keycloakPort" text="Port"></kendo-label>
+                    <kendo-textbox
+                        formControlName="keycloakPort"
+                        [clearButton]="true"
+                        #keycloakPort
+                    ></kendo-textbox>
+                </kendo-formfield>
+            </div>
+        </div>
+
+        <hr/>
+
+        <kendo-formfield>
+            <kendo-label [for]="keycloakRealm" text="Realm"></kendo-label>
+            <kendo-textbox
+                formControlName="keycloakRealm"
+                [clearButton]="true"
+                #keycloakRealm
+            ></kendo-textbox>
+        </kendo-formfield>
+
+        <kendo-formfield>
+            <kendo-label [for]="keycloakClient" text="Client"></kendo-label>
+            <kendo-textbox
+                formControlName="keycloakClient"
+                [clearButton]="true"
+                #keycloakClient
+            ></kendo-textbox>
+        </kendo-formfield>
+    </fieldset>
+
+    <div class="k-form-buttons d-flex justify-content-start">
+        <button kendoButton (click)="clearForm()">Clear</button>
+    </div>
+</form>

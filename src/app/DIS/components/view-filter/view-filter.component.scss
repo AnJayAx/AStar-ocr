@@ -1,0 +1,16 @@
+@import "variables";
+
+.ViewFilter {
+  margin-right: 0.5rem;
+
+  &__label {
+    display: inline-block;
+    margin: 0 0 0.25rem 0;
+    font-size: $font-size-sm;
+    text-transform: uppercase;
+  }
+
+  &__filter {
+    display: block;
+  }
+}

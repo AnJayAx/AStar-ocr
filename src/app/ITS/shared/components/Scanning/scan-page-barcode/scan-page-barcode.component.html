@@ -1,0 +1,62 @@
+
+<div class="container-fluid" style="min-height: 100%; background-color: transparent;">
+    <!-- <div *ngIf="!isScanning" class="d-flex justify-content-between align-items-center">
+        <button kendoButton (click)="back()">
+            <span class="d-flex align-items-center"><span class="k-icon k-i-arrow-left"></span>&nbsp;Back</span>
+        </button>
+        <h3 class="mt-0 mb-0">Scan Barcodes</h3>
+    </div> -->
+    
+    <span class="vh-80 d-flex flex-column justify-content-between">
+        <div class="scan-status-wrapper">
+            <div class="d-flex justify-content-start align-items-center">
+                <span class="title" style="margin-right: 0.5rem;">Last Scanned:</span>{{ lastScannedCode }}
+            </div>
+            <div class="d-flex justify-content-start align-items-start">
+                <span class="title-list">Scanned&nbsp;<b>({{ scannedBarcodes.length }})</b>:</span>
+                <ul class="code-list"><li *ngFor="let code of scannedBarcodes">{{ code }}</li></ul>
+            </div>
+        </div>
+        <div class="scan-page-wrapper">
+            <div class="barcode-scanner-area--container">
+                <div class="square surround-cover">
+                    <div class="barcode-scanner-area--outer surround-cover">
+                        <div class="barcode-scanner-area--inner"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="d-flex justify-content-center">
+            <button kendoButton (click)="stopScan()" class="red-btn">
+                <span class="d-flex align-items-center"><span class="k-icon k-i-kpi-status-open"></span>&nbsp;Stop Scan</span>
+            </button>
+        </div>
+    </span>
+
+    <!-- <span *ngIf="!isScanning" class="mt-2 vh-80 d-flex flex-column justify-content-between">
+        <kendo-card [style.height.%]="100" [style.width.%]="100">
+            <kendo-card-header class="d-flex justify-content-between align-items-center">
+                <h1 kendoCardTitle>Scanned Codes</h1>
+                <p kendoCardSubtitle><strong>{{ scannedTags.length }}</strong>&nbsp;items scanned.</p>
+            </kendo-card-header>
+            <kendo-card-body>
+                <ul style="list-style-type: none;"><li *ngFor="let code of scannedTags">{{ code }}</li></ul>
+            </kendo-card-body>
+        </kendo-card>
+        <div class="mt-4 d-flex justify-content-between">
+            <button kendoButton (click)="startScan()" class="red-btn">
+                <span class="d-flex align-items-center"><span class="k-icon k-i-barcode-scanner"></span>&nbsp;Start Scan</span>
+            </button>
+            <span class="d-flex justify-content-end">
+                <button kendoButton (click)="clearItems()" class="clear-btn">
+                    <span class="d-flex align-items-center"><span class="k-icon k-i-cancel"></span>&nbsp;Clear</span>
+                </button>
+                <button kendoButton (click)="submit()" class="submit-btn">
+                    <span class="d-flex align-items-center"><span class="k-icon k-i-check"></span>&nbsp;Confirm</span>
+                </button>
+            </span>
+        </div>
+    </span> -->
+
+</div>
+

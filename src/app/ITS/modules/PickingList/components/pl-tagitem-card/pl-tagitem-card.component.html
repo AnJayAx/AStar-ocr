@@ -1,0 +1,49 @@
+<div class="item-container" [class.selected-item]="isSelected">
+    <div class="details-wrapper" (click)="onItemClick()">
+        <div class="title">
+            <span class="sm-indicator" [ngClass]="{ 'bg-m': isM }">{{ item.IsIndividual }}</span>&nbsp;
+            <span class="name">{{ item.Asset_ID }}</span>&nbsp;&nbsp;
+            <app-item-status-indicator [statusName]="item.Status"></app-item-status-indicator>
+        </div>
+        <div class="subtitle">
+            <span class="category">{{ item.Category }}</span>&nbsp;
+            <span class="description">{{ item.Description }}</span>
+        </div>
+        <div class="location">
+            {{ item._location }}
+        </div>
+        <div class="epc">
+            {{ item.EPC_ID }}
+        </div>
+        <div class="balance">
+            Balance:&nbsp;<strong>{{ this.item._balance.toFixed(2) }}</strong>
+        </div>
+    </div>
+    <div class="stats-wrapper">
+        <div class="picking-numeric-textbox">
+            <ng-container *ngIf="isM">
+                <span class="numerictextbox-wrapper">
+                    <kendo-numerictextbox [spinners]="false"
+                        [style.width.%]="100"
+                        [disabled]="isDisabled"
+                        [min]="0" [max]="max"
+                        [format]="n3"
+                        [value]="item._picked"
+                        [autoCorrect]="true"
+                        (focus)="onFocus()"
+                        (blur)="onBlur()"
+                        (valueChange)="onPickedQtyChange($event)"
+                    ></kendo-numerictextbox>
+                </span>
+            </ng-container>
+            <ng-container *ngIf="!isM">
+                <strong>{{ item._picked.toFixed(2) }}</strong>
+            </ng-container>
+        </div>
+        <div class="qty">
+            {{ initialRemainingQty.toFixed(2) }}
+        </div>
+    </div>
+</div>
+
+<!-- {{ max }} -->

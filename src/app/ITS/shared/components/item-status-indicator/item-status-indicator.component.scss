@@ -1,0 +1,41 @@
+@import "variables";
+
+.item {
+    &-indicator {
+        font-size: smaller;
+        font-weight: 700;
+        background: black;
+        color: #fff;
+        padding: 3px 5px;
+        border-radius: 0.1rem;
+    }
+
+    &-indicator.bg-available {
+        background-color: $success;
+        color: black;
+    }
+    &-indicator.bg-onloan {
+        background-color: #D0D4CA;
+        color: black;
+    }
+    &-indicator.bg-notavailable {
+        background-color: $error;
+        color: white;
+    }
+    &-indicator.bg-scrapped {
+        background-color: black;
+        color: white;
+    }
+    &-indicator.bg-intransit {
+        background-color: blue;
+        color: white;
+    }
+    &-indicator.bg-onhold {
+        background-color: $warning;
+        color: black;
+    }
+    &-indicator.bg-refurbished {
+        background-color: #BEADFA;
+        color: black;
+    }
+}

@@ -1,0 +1,160 @@
+<div>
+  <div class="row">
+    <div class="col-md-12">
+      <app-view-heading
+        [title]="'sample.table.header' | translate"
+      ></app-view-heading>
+
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      {{ value | json}}
+      <kendo-grid class=" vh-lg-70 vh-xl-70"
+        [kendoGridBinding]="gridView | async"
+        kendoGridSelectBy="id"
+        [selectedKeys]="mySelection"
+        [pageSize]="20"
+        [pageable]="true"
+        [sortable]="true"
+        [groupable]="true"
+        [reorderable]="true"
+        [resizable]="true"
+        [columnMenu]="{ filter: true }"
+        (edit)="onEditClick($event)"
+        (remove)="onDeleteClick($event)"
+      >
+        <ng-template kendoGridToolbarTemplate>
+          <input #filterInput
+                 placeholder="Search in all columns..."
+                 kendoTextBox
+                 (input)="onFilter(filterInput.value)"
+          />
+          <button kendoButton type="button" [primary]="true" (click)="click()">
+              Add Now
+          </button>
+          <button kendoButton>Other</button>
+          <button kendoButton>Save</button>
+          <button kendoButton>Cancel</button>
+        </ng-template>
+        <kendo-grid-checkbox-column
+          [width]="45"
+          [headerClass]="{ 'text-center': true }"
+          [class]="{ 'text-center': true }"
+          [resizable]="false"
+          [columnMenu]="false"
+          showSelectAll="true"
+        ></kendo-grid-checkbox-column>
+
+        <kendo-grid-column field="full_name" title="Contact Name" [width]="220">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <div class="customer-name">{{ dataItem.full_name }}</div>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column field="job_title" title="Job Title" [width]="220">
+        </kendo-grid-column>
+        <kendo-grid-column
+          field="country"
+          title="Country"
+          [width]="100"
+          [resizable]="false"
+        >
+        </kendo-grid-column>
+        <kendo-grid-column
+          field="is_online"
+          title="Status"
+          [width]="100"
+          [resizable]="false"
+          filter="boolean"
+        >
+          <ng-template kendoGridCellTemplate let-dataItem>
+          <span
+            *ngIf="dataItem.is_online === true"
+            class="badge badge-success"
+          >Online</span
+          >
+            <span
+              *ngIf="dataItem.is_online === false"
+              class="badge badge-danger"
+            >Offline</span
+            >
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column
+          field="target"
+          title="Engagement"
+          [width]="230"
+          [resizable]="false"
+          filter="numeric"
+        >
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <kendo-sparkline
+              type="bar"
+              [data]="dataItem.target"
+              [tooltip]="{ visible: false }"
+              [transitions]="true"
+              [seriesDefaults]="{
+              labels: { background: 'none', visible: true, format: '{0}%' }
+            }"
+            >
+              <kendo-chart-area opacity="0" [width]="200"></kendo-chart-area>
+              <kendo-chart-value-axis>
+                <kendo-chart-value-axis-item [min]="0" [max]="130">
+                </kendo-chart-value-axis-item>
+              </kendo-chart-value-axis>
+            </kendo-sparkline>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-command-column
+          title="Actions"
+          [resizable]="true"
+          [width]="150"
+        >
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <button kendoButton  class="me-3" (click)="onViewClick(dataItem)" ><span class="k-icon k-i-preview "></span></button>
+            <button kendoGridEditCommand class="me-3"><span class="k-icon k-i-edit "></span></button>
+            <button kendoGridRemoveCommand class="me-3"><span class="k-icon k-i-trash "></span></button>
+          </ng-template>
+        </kendo-grid-command-column>
+      </kendo-grid>
+
+    </div>
+  </div>
+</div>
+
+<div class="k-overlay" *ngIf="isWindowOpened"></div>
+<kendo-window
+  title="Please provide additional data"
+  *ngIf="isWindowOpened"
+  [top]="100"
+  (close)="closeWindow()"
+
+  [minWidth]="250"
+  [width]="450"
+>
+  <form class="k-form" (ngSubmit)="submitWindow(formGroup.value)"  [formGroup]="formGroup">
+    <fieldset>
+      <legend>User Details</legend>
+
+      <label class="k-form-field">
+        <span>Name</span>
+        <input class="k-textbox" formControlName="full_name"/>
+      </label>
+      <label class="k-form-field">
+        <span>Role</span>
+        <input class="k-textbox"  formControlName="job_title"/>
+      </label>
+    </fieldset>
+
+    <div class="k-actions justify-content-center">
+      <button type="submit" class="k-button k-primary" >
+        Submit
+      </button>
+      <button type="button" class="k-button" (click)="closeWindow()">
+        Cancel
+      </button>
+    </div>
+  </form>
+</kendo-window>
+

@@ -1,0 +1,219 @@
+<div *ngIf="!!item" class="container-fluid">
+    <div class="row">
+        <span class="property">TAG ID</span>
+        <span class="value">{{ item.EPC_ID }}</span>
+    </div>
+    <div class="row mt-2">
+        <span class="property">Status</span>
+        <span class="value">{{ item.Asset_StatusName }}</span>
+    </div>
+
+    <hr/>
+
+    <form class="k-form" [formGroup]="tagReuseForm">
+        <kendo-formfield>
+            <legend class="k-form-legend compulsory-field">{{ formfieldTitlesDictionary["Category"] }}*</legend>
+            <app-category-search-dropdown
+                formControlName="cat"
+                [isRequired]="true"
+                [selectedCategoryName]="tagReuseForm.controls['cat'].value"
+                (selectedCategoryChange)="onCategoryChange($event)"
+            ></app-category-search-dropdown>
+            <kendo-formerror>Error: Category is required</kendo-formerror>
+        </kendo-formfield>
+        <kendo-formfield>
+            <legend class="k-form-legend compulsory-field">{{ formfieldTitlesDictionary["Description"] }}*</legend>
+            <input
+                formControlName="desc"
+                kendoTextBox
+                required
+                #desc
+                class="form-control"
+            />
+            <kendo-formerror>Error: Description is required</kendo-formerror>
+        </kendo-formfield>
+        <kendo-formfield>
+            <legend class="k-form-legend compulsory-field">{{ formfieldTitlesDictionary["Asset_Location_ID"] }}*</legend>
+            <app-location-search-dropdown
+                formControlName="loc"
+                [isRequired]="true"
+                [selectedLocationId]="tagReuseForm.controls['loc'].value"
+                (selectedLocationChanged)="onLocationChange($event)"
+            ></app-location-search-dropdown>
+            <kendo-formerror>Error: Location is required</kendo-formerror>
+        </kendo-formfield>
+        <kendo-formfield>
+            <legend class="k-form-legend compulsory-field">{{ formfieldTitlesDictionary["Asset_No"] }}*</legend>
+            <input
+                formControlName="assetno"
+                kendoTextBox
+                #assetno
+                class="form-control"
+            />
+        </kendo-formfield>
+        <kendo-formfield>
+            <legend class="k-form-legend">{{ formfieldTitlesDictionary["SKU"] }}</legend>
+            <input
+                formControlName="sku"
+                kendoTextBox
+                #sku
+                class="form-control"
+            />
+        </kendo-formfield>
+        <kendo-formfield>
+            <legend class="k-form-legend">{{ formfieldTitlesDictionary["Ref_No"] }}</legend>
+            <input
+                formControlName="refno"
+                kendoTextBox
+                #refno
+                class="form-control"
+                value="{{ item?.Ref_No }}"
+            />
+        </kendo-formfield>
+        <kendo-formfield>
+            <legend class="k-form-legend compulsory-field">{{formfieldTitlesDictionary["Date_of_Purchase"]}}*</legend>
+            <kendo-datepicker
+                [incompleteDateValidation]="true"
+                format="dd-MMM-yyyy"
+                formControlName="dop"
+                #dop
+                class="form-control"
+                required
+            ></kendo-datepicker>
+            <kendo-formerror>Error: D.O.P is required</kendo-formerror>
+        </kendo-formfield>
+        <kendo-formfield>
+            <legend class="k-form-legend">{{ formfieldTitlesDictionary["Date_of_Expire"] }}</legend>
+            <kendo-datepicker
+                format="dd-MMM-yyyy"
+                formControlName="doe"
+                #doe
+                class="form-control"
+            ></kendo-datepicker>
+        </kendo-formfield>
+        <kendo-formfield>
+            <legend class="k-form-legend">{{ formfieldTitlesDictionary["Warranty_Expiry_Date"] }}</legend>
+            <kendo-datepicker
+                format="dd-MMM-yyyy"
+                formControlName="dowe"
+                #dowe
+                class="form-control"
+            ></kendo-datepicker>
+        </kendo-formfield>
+        <kendo-formfield>
+            <legend class="k-form-legend">{{ formfieldTitlesDictionary["Calibration_Date"] }}</legend>
+            <kendo-datepicker
+                format="dd-MMM-yyyy"
+                formControlName="doc"
+                class="form-control"
+            ></kendo-datepicker>
+        </kendo-formfield>
+        <kendo-formfield>
+            <legend class="k-form-legend">{{ formfieldTitlesDictionary["Cost"] }}</legend>
+            <kendo-numerictextbox
+                [spinners]="false"   
+                [format]="n2"      
+                formControlName="cost"
+                #cost
+                class="form-control"
+            ></kendo-numerictextbox>
+        </kendo-formfield>
+        <kendo-formfield>
+            <legend class="k-form-legend">{{ formfieldTitlesDictionary["UOM"] }}</legend>
+            <input
+                formControlName="uom"
+                kendoTextBox
+                #uom
+                class="form-control"
+            />
+        </kendo-formfield>
+        <kendo-formfield>
+            <legend class="k-form-legend">{{ formfieldTitlesDictionary["BatchNo"] }}</legend>
+            <input
+                formControlName="batchno"
+                kendoTextBox
+                #batchno              
+                class="form-control"
+            />
+        </kendo-formfield>
+        <kendo-formfield>
+            <legend class="k-form-legend">{{ formfieldTitlesDictionary["Remarks"] }}</legend>
+            <div class="d-flex align-items-center">
+                <span class="toggle-text-left">Non&nbsp;{{ inboundVerifyValue | async }}</span>&nbsp;
+                <app-custom-switch
+                  [isToggled]="isQcToggled"
+                  (toggled)="onVerifyToggleChange($event)"
+                ></app-custom-switch>
+                &nbsp;<span class="toggle-text-right">{{ inboundVerifyValue | async }}</span>
+            </div>
+        </kendo-formfield>
+        <kendo-formfield>
+            <legend class="k-form-legend">{{ formfieldTitlesDictionary["Remarks2"] }}</legend>
+            <input
+                formControlName="rmk2"
+                kendoTextBox
+                #rmk2
+                class="form-control"
+            />
+        </kendo-formfield>
+        <kendo-formfield>
+            <legend class="k-form-legend">{{ formfieldTitlesDictionary["Remarks3"] }}</legend>
+            <input
+                formControlName="rmk3"
+                kendoTextBox
+                #rmk3
+                class="form-control"
+            />
+        </kendo-formfield>
+        <kendo-formfield>
+            <legend class="k-form-legend">{{ formfieldTitlesDictionary["Remarks4"] }}</legend>
+            <input
+                formControlName="rmk4"
+                kendoTextBox
+                #rmk4
+                class="form-control"
+            />
+        </kendo-formfield>
+        <kendo-formfield>
+            <legend class="k-form-legend">{{ formfieldTitlesDictionary["Remarks5"] }}</legend>
+            <input
+                formControlName="rmk5"
+                kendoTextBox
+                #rmk5
+                class="form-control"
+                value="{{ item?.Remarks5 }}"
+            />
+        </kendo-formfield>
+        <kendo-formfield>
+            <legend class="k-form-legend">{{ formfieldTitlesDictionary["Remarks6"] }}</legend>
+            <input
+                formControlName="rmk6"
+                kendoTextBox
+                #rmk6
+                class="form-control"
+                value="{{ item?.Remarks6 }}"
+            />
+        </kendo-formfield>
+    </form>
+
+    <div class="row mt-4">
+        <button kendoButton type="submit" [primary]="true" (click)="pressSubmit()">Submit</button>
+    </div>
+</div>
+
+<div *ngIf="!item" class="k-block container-fluid vh-100">
+    <div class="d-flex justify-content-center">
+        <span class="d-flex align-items-center">
+            <kendo-loader *ngIf="!itemNotFound"></kendo-loader>
+            <span *ngIf="itemNotFound">No Item Information Found.</span>
+        </span>
+    </div>
+</div>
+
+<div *ngIf="showSubmissionPanel" class="container-fluid" style="min-height: 100%;">
+    <app-submission-dialog 
+        [dialogTitle]="'Post Tag Reuse'" 
+        [transactionNo]="''"
+        (closeSelected)="onClose($event)"
+    ></app-submission-dialog>
+</div>

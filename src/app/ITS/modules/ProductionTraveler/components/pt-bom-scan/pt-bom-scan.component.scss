@@ -1,0 +1,35 @@
+
+.subtitle {
+    color: gray;
+    font-weight: bolder;
+    &-property {
+        color: gray;
+    }
+}
+
+.bom-card {
+    background-color: #EEEEEE; 
+    border: 1px solid darkgrey; 
+    border-radius: 3px; 
+    padding: 0.2rem 0.5rem; 
+}
+
+.bom-item {
+    display: flex;
+    align-items: center;
+    margin: 0.5rem 0;
+
+    .epc {
+        flex: 1;
+        :nth-child(1) {
+            border: 1px solid lightgray;
+        }    
+    }
+}
+
+.sku {
+    display: flex;
+    justify-content: flex-start;
+    font-weight: bolder;
+    margin-top: 0.5rem;
+}

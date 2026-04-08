@@ -1,0 +1,38 @@
+@import "variables";
+
+.menu-list-wrapper {
+  .menu-list-item{
+    display: flex;
+    align-items: stretch;
+    justify-content: flex-start;
+    flex-direction: column;
+    background: $gray-700;
+    // flex: 0 0 calc(50% - 0.5rem);
+    color: $white;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    border-radius: 0.5rem;
+
+    .menu-list-item-text{
+      margin-bottom: 0.5rem;
+      font-size: 2rem;
+    }
+  }
+}
+
+.custom-fab {
+  &.grid-view {
+    // background-color: $info;
+    background-color: #292833;
+    color: white;
+    border-radius: 50%;
+  }
+}
+
+.message-notice {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

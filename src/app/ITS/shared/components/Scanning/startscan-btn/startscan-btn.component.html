@@ -1,0 +1,11 @@
+<ng-container *ngIf="scanmode === ScanMode.RFID; else barcode">
+    <app-scanrfid-btn></app-scanrfid-btn>
+</ng-container>
+
+<ng-template #barcode>
+    <ng-container *ngIf="scanmode === ScanMode.Barcode; else undefined">
+        <app-scanbarcode-btn></app-scanbarcode-btn>
+    </ng-container>
+</ng-template>
+
+<ng-template #undefined>Error: Selected scan mode is unrecognized</ng-template>

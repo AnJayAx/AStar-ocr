@@ -1,0 +1,61 @@
+<div class="Settings">
+    <button
+      class="Setting__button"
+      kendoButton
+      look="flat"
+      #settingAnchor
+      (click)="onToggle()"
+    >
+    <kendo-icon [name]="'more-vertical'"></kendo-icon>
+    </button>
+       <kendo-popup
+        #popup
+        class="Setting__popup"
+        [anchor]="settingAnchor"
+        [offset]="offset"
+        (anchorViewportLeave)="show = false"
+        *ngIf="show && !!settingArray"
+      >
+        <kendo-card width="auto" class="Setting__card">
+          <kendo-card-body class="Setting" *ngFor="let n of settingArray">
+             <p class="Setting__content" (click)="onClick(n.text)"><fa-icon [icon]="n.faIcon" class="setting-icon"></fa-icon>{{ n.text }}</p>
+          </kendo-card-body>
+        </kendo-card>
+      </kendo-popup>
+</div>
+<!--<div class="Notifications" (clickOutside)="onClick('none')">-->
+<!--    <button-->
+<!--      class="Notifications__button"-->
+<!--      kendoButton-->
+<!--      look="flat"-->
+<!--      #notificationsAnchor-->
+<!--      (click)="onClick('notifications')"-->
+<!--    >-->
+<!--      <kendo-icon [name]="'bell'"></kendo-icon>-->
+<!--      <kendo-badge-->
+<!--        shape="dot"-->
+<!--        themeColor="error"-->
+<!--        *ngIf="notifications?.length > 0"-->
+<!--      ></kendo-badge>-->
+<!--      </button>-->
+  <!--  &lt;!&ndash; Popup possible when notifications available. &ndash;&gt;-->
+  <!--  <kendo-popup-->
+  <!--    class="Notifications__popup"-->
+  <!--    [anchor]="notificationsAnchor"-->
+  <!--    *ngIf="currentMenu === 'notifications' && notifications?.length > 0"-->
+  <!--  >-->
+  <!--    <kendo-card width="auto" class="Notifications__card">-->
+  <!--      <kendo-card-body class="Notification" *ngFor="let n of notifications">-->
+  <!--        &lt;!&ndash; ngStyle used here as the color is dynamic depending on data response. Inline style should be considered sparingly. &ndash;&gt;-->
+  <!--        <span-->
+  <!--          class="Notification__indicator"-->
+  <!--          [ngStyle]="{ background: assignColor(n.status) }"-->
+  <!--        ></span>-->
+  <!--        <p class="Notification__content">{{ n.content }}</p>-->
+  <!--        <div class="Notification__action" (click)="onNotificationClick(n.id)">-->
+  <!--          <kendo-icon [name]="'check'"></kendo-icon>-->
+  <!--        </div>-->
+  <!--      </kendo-card-body>-->
+  <!--    </kendo-card>-->
+  <!--  </kendo-popup>-->
+  <!--</div> -->

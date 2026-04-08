@@ -1,0 +1,25 @@
+<div style="min-height: 100%;" *ngIf="listItems">
+    <div class="row">
+        <kendo-buttongroup [style.width.%]="100">
+            <button kendoButton [style.width.%]="100" 
+                [toggleable]="true" 
+                [ngClass]="toggledView === 'all'? 'toggled' : ''"
+                (click)="onClickToggleView('all')"
+            >
+            <app-sm-indicator [sm]="'s'"></app-sm-indicator><b>/</b>&nbsp;<app-sm-indicator [sm]="'m'"></app-sm-indicator>
+            </button>
+            <button kendoButton [style.width.%]="100"
+                [toggleable]="true" 
+                [ngClass]="toggledView === 'highlighted'? 'toggled' : ''"
+                (click)="onClickToggleView('highlighted')"
+            >
+                <app-sm-indicator [sm]="'m'"></app-sm-indicator>
+            </button>
+        </kendo-buttongroup>
+    </div>
+
+    <div class="row mt-2">
+        <app-st-listview [listData]="listItems"></app-st-listview>
+    </div>
+
+</div>

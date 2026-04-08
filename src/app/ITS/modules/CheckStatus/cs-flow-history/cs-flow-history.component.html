@@ -1,0 +1,57 @@
+<div class="vh-50 d-flex justify-content-center align-items-center" *ngIf="noFlowRecordsFound(); else showRecords"> 
+    <h4>No Flow Records Found.</h4>
+</div>
+
+<ng-template #showRecords>
+    <div class="container-fluid mt-2">
+        <kendo-listview #listview
+            [kendoListViewBinding]="flowRecords"
+            containerClass="k-d-flex k-flex-col k-flex-nowrap"
+        >
+            <ng-template kendoListViewHeaderTemplate>
+                <span class="d-flex justify-content-end p-2">
+                    <span style="font-size: 0.9rem;"><strong>{{ flowRecords?.length }}</strong> record(s) found.</span>
+                </span>
+            </ng-template>
+            <ng-template kendoListViewItemTemplate let-dataItem="dataItem" let-index="index">
+                <div class="flow-card">
+                    <div class="top">
+                        <span>
+                            <div class="d-flex justify-content-start align-items-center">
+                                <fa-icon [icon]="dateIcon"></fa-icon>
+                                <div class="datetime">
+                                    <span class="info-text" style="font-size: 1.1rem;"><strong>{{ getDateFromDateS(dataItem.DateS) }}</strong></span>
+                                    <span class="info-text">{{ getTimeFromDateS(dataItem.DateS) }}</span>
+                                </div>
+                            </div>
+                        </span>
+                        <span>
+                            <div class="pic">
+                                <fa-icon [icon]="userIcon"></fa-icon>
+                                <span class="info-text" style="margin-left: 0.5rem">{{ dataItem.Person_In_Charge.length>0? dataItem.Person_In_Charge : '-' }}</span>
+                            </div>
+                        </span>
+                    </div>
+                    <div class="main">
+                        <span class="stat">
+                            <p kendoCardTitle class="info-text">{{ dataItem.Qty_InS.length>0 ? dataItem.Qty_InS : '-' }}</p>
+                            <p kendoCardSubtitle>Qty In</p>
+                        </span>
+                        <span class="stat">
+                            <p kendoCardTitle class="info-text">{{ dataItem.Qty_OutS.length>0 ? dataItem.Qty_OutS : '-' }}</p>
+                            <p kendoCardSubtitle>Qty Out</p>
+                        </span>
+                        <span class="stat">
+                            <p kendoCardTitle class="info-text">{{ dataItem.BalanceCal.length>0 ? dataItem.BalanceCal : '-' }}</p>
+                            <p kendoCardSubtitle>Balance</p>
+                        </span>
+                    </div>
+                    <div class="bottom">
+                        <fa-icon [icon]="remarksIcon"></fa-icon>
+                        <span class="info-text" style="margin-left: 0.5rem">{{ dataItem.Remarks.length>0 ? dataItem.Remarks : '-' }}</span>
+                    </div>
+                </div>
+            </ng-template>
+        </kendo-listview>
+    </div>
+</ng-template>

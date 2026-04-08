@@ -1,0 +1,50 @@
+export interface IPickedItemByHHLite {
+  "Asset_ID": number;
+  "Qty": number;
+  "PickingList_ID": number;
+  "EPC_ID": string;
+  "Verification_ID": number;
+  "Remarks": string;
+  "SM": string;
+  "Package_Master_ID": string;
+  "Weight": string;
+  "Creator": string;
+}
+
+export interface IPickedItemByHH   {
+    "PickedItem_ID": number;
+    "Display_ID": string;
+    "Creator": string;
+    "Creation_Time": string;
+    "Edit_Time": string;
+    "Status": string;
+    "Asset_ID": number;
+    "Qty": number;
+    "PickingList_ID": number;
+    "EPC_ID": string;
+    "PickedItem_Status": string;
+    "Ver_Qty": number;
+    "Verification_ID": number;
+    "Receiving_Location_ID": number;
+    "Receiving_Location": string;
+    "From_Location_ID": number;
+    "From_Location": string;
+    "Received_Qty": number;
+    "Received_Remarks": string;
+    "Received_Status": string;
+    "Remarks": string;
+    "Received_By": string;
+    "Category": string;
+    "Description": string;
+    "OrderQty": number;
+    "PLRemarks": string;
+    "Date_of_Expire": string;
+    "BatchNo": number;
+    "SKU": string;
+    "ItemDescription": string;
+    "ItemSKU": string;
+    "ItemBatchNo": string;
+    "SM": string;
+    "Package_Master_ID": string;
+    "Weight": string;
+  }

@@ -1,0 +1,150 @@
+@import "variables";
+
+$bootstrap-blue: #0257d5;
+$list-item-text: rgb(5,55,160);
+$chip-item-background: #676775;
+$input-field-outline-grey: lightgrey;
+
+@mixin decorated-footer {
+    width: 100%; 
+    text-align: center; 
+    border-bottom: 1.5px solid #000; 
+    line-height: 0.1em;
+    margin: 1rem 0;
+}
+
+@mixin decorated-footer-text {
+    background: $gray-200;
+    padding: 1rem 0.5rem;
+    font-size: smaller;
+}
+
+@mixin float-container {
+    min-width: 100%;
+    // min-height: 100%;
+    margin-bottom: 20% !important;
+}
+
+@mixin float {
+    display: flex;
+    position: fixed;
+    top: 90%;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    background-color: white;
+    padding: 0.5rem 1rem;
+    z-index: 2;
+}
+
+@mixin item-card {
+    display: flex;
+    height: fit-content;
+    align-items: center;
+    padding: 0.7rem 1rem;
+    justify-content: space-between;
+    column-gap: 0.5rem;
+
+    border: 0;
+    background-color: white;
+}
+
+@mixin item-card-name {
+    font-size: 1.2rem;;
+    color: $list-item-text;
+    font-weight: bolder;
+}
+
+@mixin item-card-category {
+    font-size: 1rem;
+    color: $list-item-text;
+}
+
+@mixin item-card-location {
+    font-size: 1rem;
+    color: #656565;
+}
+
+@mixin item-card-epc {
+    font-size: 1rem;
+    color: goldenrod;
+}
+
+@mixin item-card-balance {
+    color: #656565;
+    font-weight: bolder;
+    font-size: 1.3rem;
+}
+
+@mixin sm-indicator-nobg {
+    color: white;
+    padding: 2px 4px;
+    text-align: center;
+    border-radius: 0.1rem;
+    margin-right: 0.5rem;
+}
+
+@mixin selected-item {
+    border: 1px solid #749BC2;
+    background-color: #D2E9E9;
+}
+
+@mixin deletable-tag-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    outline: 1px solid darkgray;
+    margin: 0.3rem 0;
+    padding: 0.3rem 0.5rem;
+    border-radius: 2%;
+}
+@mixin deletable-tag-container-tag {
+    flex: 4;
+    text-align: start;
+}
+@mixin deletable-tag-container-action {
+    flex: 1
+}
+@mixin deletable-tag-container-delete-btn {
+    background-color: $error;
+    color: white;
+    size: 70%;
+}
+
+@mixin section-colours {
+    background-color: #E5E4E2;
+    color: black;
+}
+
+// picking list
+$s-indicator-bgcolor: rgb(5,55,160);
+$m-indicator-bgcolor: lightseagreen;
+$pl-qty-color: #ff1493;
+
+// st-scan (Stock taking main page) -- unused
+$total-bg-color: rgb(212,229,246);
+$total-text-color: rgb(64,120,179);
+
+$found-bg-color: rgb(211,242,218);
+$found-text-color: rgb(67,181,80);
+
+$misplaced-bg-color: rgb(246,208,222);
+$misplaced-text-color: rgb(199,6,3);
+
+$excess-bg-color: rgb(254,186,49);
+$excess-text-color: white;
+
+$noaccess-bg-color: rgb(236,236,234);
+$noaccess-text-color: rgb(11,50,145);
+
+$notregistered-bg-color: rgb(168,171,168);
+$notregistered-text-color: white;
+
+// stock merge
+@mixin page-title {
+    border-bottom: 2px solid #413F42; 
+    padding: 0.1rem 0.5rem; 
+    font-size: larger;
+}
+

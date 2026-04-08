@@ -1,0 +1,56 @@
+@import "its-variables";
+@import "variables";
+
+.hide {
+    display: none;
+}
+
+.k-form-fieldset {
+    @include section-colours;
+    padding: 0.5rem 0.8rem;
+    border-radius: 2%;
+}
+
+.sku-display {
+    margin-left: 1rem; 
+    color: $list-item-text;
+
+}
+
+.k-checkbox {
+    border: 1px solid black !important;
+    size: 1.2rem;
+    margin: 0;
+}
+
+.scan-dialog-titlebar {
+    background-color: #EEEEEE;
+}
+
+.success-icon {
+    color: $success;
+    margin-left: 0.5rem
+}
+.warning-icon {
+    color: $warning;
+    margin-left: 0.5rem
+}
+
+.tag-container {
+    @include deletable-tag-container;
+
+    .tag {
+        @include deletable-tag-container-tag;
+    }
+    .action {
+        @include deletable-tag-container-action;
+        
+        .delete-btn {
+            @include deletable-tag-container-delete-btn;
+        }
+    }
+}
+
+kendo-label {
+    font-weight: bolder;
+}

@@ -1,0 +1,40 @@
+@import "its-variables";
+
+.listitem-container {
+    display: flex;
+
+    .checkbox-wrapper {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        background-color: white;
+
+        .item-checkbox {
+            margin-left: 0.5rem;
+            margin-right: 0.3rem;
+            border: 1px solid black;
+        }
+    }
+
+    .card-wrapper {
+        flex-grow: 9;
+    }
+}
+
+.selection-btn {
+    margin-right: 0.1rem;
+}
+
+.delete-btn {
+    background-color: red; 
+    color: white; 
+    margin-right: 0.1rem;
+}
+
+.decorated-footer {
+    @include decorated-footer;
+
+    .decorated-footer-text {
+        @include decorated-footer-text
+    }
+}

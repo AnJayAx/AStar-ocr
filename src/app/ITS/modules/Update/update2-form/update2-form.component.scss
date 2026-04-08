@@ -1,0 +1,47 @@
+@import "its-variables";
+
+.hide {
+    display: none;
+}
+
+.property {
+    display: flex;
+    justify-content: flex-start;
+    font-size: 16px;     
+    font-weight: bolder;
+    color: grey;
+}
+
+.value {
+    display: flex;
+    justify-content: flex-start;
+    margin-left: 0.5rem;
+    margin-bottom: 0.5rem;
+    color: $list-item-text; 
+}
+
+.k-i-trash {
+    font-size: 2rem;
+    color: darkred;
+}
+
+.k-form-legend.compulsory-field {
+    display: flex;
+    justify-content: flex-start;
+    font-size: 16px;
+    font-weight: bolder;
+    color: darkred;
+}
+
+.k-form-legend
+{
+    display: flex;
+    justify-content: flex-start;
+    font-size: 16px;
+    font-weight: bolder;
+    color: grey;
+}
+
+.image-scroll {
+    overflow-x: scroll;
+}

@@ -1,0 +1,34 @@
+@import "variables";
+
+.custom-formfield {
+    display: flex;
+    margin-bottom: 1rem;
+    align-items: center;
+
+    .property {
+        flex: 1;
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items:flex-start;
+        font-weight: 600;
+        font-size: 0.75rem;
+        color: slategrey;
+        text-align: left;
+        margin-right: 1rem;
+    }
+    .value {
+        flex: 4;
+        display: flex;
+        justify-content: flex-start;
+    }
+}
+
+.error-msg {
+    font-size: 0.8rem;
+    color: $error;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    text-align: left;
+}

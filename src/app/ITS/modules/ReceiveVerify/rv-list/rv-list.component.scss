@@ -1,0 +1,45 @@
+@import "variables";
+@import "its-variables";
+
+.float {
+    @include float;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.float-container {
+    @include float-container;
+    margin-bottom: 10%;
+}
+
+.verified-icon {
+    color: $success;
+    font-size: 1rem;
+}
+
+
+.picking-type-indicator {
+    border-radius: 5px;
+    padding: 0.2rem 0.5rem;
+    background-color: black;
+    color: white;
+    font-weight: bolder;
+}
+
+.w-100 { width: 100% }
+
+.total-display {
+    min-width: 80px;
+    text-align: end;
+    margin-top: 0.2rem;
+}
+
+.custom-list-header {
+    width: 100%;
+    padding: 0.5rem;
+}
+
+.subtitle-display {
+    font-size: medium;
+    font-weight: bold;
+}

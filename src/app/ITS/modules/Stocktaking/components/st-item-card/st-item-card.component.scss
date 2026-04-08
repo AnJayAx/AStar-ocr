@@ -1,0 +1,73 @@
+@import "its-variables";
+@import "variables";
+
+.item {
+    @include item-card;
+    position: relative;
+
+    &-details {
+        flex: 1;
+    }
+    &-name {
+        @include item-card-name;
+    }
+    &-category {
+        @include item-card-category;
+    }
+    &-location {
+        @include item-card-location;
+    }
+    &-epc {
+        @include item-card-epc;
+    }
+    &-balance {
+        color: #656565;
+        font-weight: bolder;
+        font-size: larger;
+        &-m {
+            color: #656565;
+            font-weight: bolder;
+            font-size: smaller;
+        }
+    }
+    &-indicator {
+        position: absolute;
+        right: 0;
+        top: 5%;
+        font-size: smaller;
+        font-weight: 700;
+        background: black;
+        color: #fff;
+        padding: 3px 10px;
+        border-radius: 0.1rem;
+        z-index: 1;
+    }
+    &-indicator.bg-found {
+        background-color: #F0A500;
+        color: black;
+    }
+
+    &-trash {
+        position: absolute;
+        right: 1rem;
+        bottom: 10%;
+        z-index: 1;
+        color: $error;
+    }
+}
+
+.item.bg-darker {
+    background-color: #e2e2e2;
+}
+
+.custom-marker {
+    @include sm-indicator-nobg;
+    background-color: $s-indicator-bgcolor;
+}
+.custom-marker.bg-m {
+    background-color: $m-indicator-bgcolor;
+}
+
+.custom-numerictextbox {
+    outline: 1px solid lightgrey;
+}

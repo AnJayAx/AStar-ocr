@@ -1,0 +1,57 @@
+@import "variables";
+
+.Profile {
+  position: relative;
+
+  &__button {
+    @media screen and (max-width: map-get($grid-breakpoints, "md")) {
+      span {
+        display: none;
+      }
+    }
+    span:first-of-type {
+      text-transform: uppercase;
+      margin: 0 0.25rem 0 0.5rem;
+    }
+    span:last-of-type:not(:only-child()) {
+      font-weight: bold;
+    }
+  }
+
+  &__popup {
+    position: absolute;
+    right: 0;
+    top: 100%;
+    min-width: 20rem;
+    max-width: 40rem;
+  }
+
+  &__card {
+    text-align: center;
+    box-shadow: $shadow-200;
+
+    kendo-card-header {
+      padding: 1rem 0;
+    }
+
+    kendo-avatar {
+      margin-right: 0;
+    }
+
+    h3 {
+      margin: 0;
+    }
+
+    h5 {
+      margin: 0 0 0 0;
+      font-weight: normal;
+    }
+
+    p {
+      margin: 1rem 0 0 0;
+      color: $gray-600;
+      text-transform: uppercase;
+      //font-size: $font-size-sm;
+    }
+  }
+}

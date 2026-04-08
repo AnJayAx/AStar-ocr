@@ -1,0 +1,24 @@
+<div style="min-height: 100%;">
+    <div class="row">
+        <kendo-listview 
+            *ngIf="showListItems(); else noResults"
+            [kendoListViewBinding]="listItems"
+            containerClass="k-d-flex k-flex-col k-flex-nowrap"
+        >
+            <ng-template kendoListViewItemTemplate let-dataItem="dataItem" let-isLast="isLast">
+                <kendo-card [style.width.%]="100">
+                    <kendo-card-header>
+                        <div class="k-hstack d-flex justify-content-between align-items-center py-2">
+                            <strong>{{ dataItem }}</strong>
+                        </div>
+                    </kendo-card-header>
+                </kendo-card>
+            </ng-template>
+        </kendo-listview>
+        <ng-template #noResults>
+            <div class="d-flex justify-content-center align-items-center">
+                No results found.
+            </div>
+        </ng-template>
+    </div>
+</div>

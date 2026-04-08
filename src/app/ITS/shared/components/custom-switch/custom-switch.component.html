@@ -1,0 +1,5 @@
+<label class="switch">
+    <input type="checkbox" (change)="onToggle($event.target.checked)" [checked]="isToggled">
+    <span class="slider round" *ngIf="!altModeEnabled"></span>
+    <span class="alt-slider round" *ngIf="altModeEnabled"></span>
+</label>

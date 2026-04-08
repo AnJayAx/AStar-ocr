@@ -1,0 +1,101 @@
+<div>
+  <div class="row">
+    <div class="col-12">
+      <app-view-heading
+        [title]="'sample.dashboard.header' | translate"
+        [previousRouteLink]="'/dashboard-one'"
+      ></app-view-heading>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12 col-lg-4">
+      <app-indicator-custom-sample
+        [size]="'large'"
+        [name]="'Machine #1'"
+        [group]="'Machine Group #1'"
+        [callout]="'69%'"
+        [details]="['Start: 20210420 11:11AM', 'End: 20210420 11:11AM']"
+        [status]="'error'"
+      ></app-indicator-custom-sample>
+    </div>
+    <div class="col-12 col-lg-8 mt-4 mt-lg-0">
+      <section class="chart">
+        <kendo-chart class=" vh-lg-60 vh-xl-40">
+          <kendo-chart-category-axis>
+            <kendo-chart-category-axis-item
+              [categories]="['Q1', 'Q2', 'Q3', 'Q4']"
+            >
+            </kendo-chart-category-axis-item>
+          </kendo-chart-category-axis>
+          <kendo-chart-series>
+            <kendo-chart-series-item
+              type="column"
+              [stack]="true"
+              [data]="[100, 200, 300, 300]"
+            >
+            </kendo-chart-series-item>
+
+            <kendo-chart-series-item type="column" [data]="[100, 100, 100, 100]">
+            </kendo-chart-series-item>
+            <kendo-chart-series-item type="column" [data]="[100, 100, 100, 100]">
+            </kendo-chart-series-item>
+            <kendo-chart-series-item type="line" [data]="[300,400,500,500]">
+            </kendo-chart-series-item>
+          </kendo-chart-series>
+        </kendo-chart>
+      </section>
+    </div>
+  </div>
+
+  <div class="row mt-4">
+    <div class="col-12 col-lg-6">
+      <section class="chart">
+        <kendo-chart title="World Population by Broad Age Groups" class=" vh-lg-30 vh-xl-30">
+          <kendo-chart-legend position="bottom"></kendo-chart-legend>
+          <kendo-chart-series>
+            <kendo-chart-series-item
+              type="pie"
+              [data]="pieData"
+              field="value"
+              categoryField="category"
+              [labels]="{ visible: true, content: labelContent }"
+            >
+            </kendo-chart-series-item>
+          </kendo-chart-series>
+        </kendo-chart>
+      </section>
+    </div>
+    <div class="col-12 col-lg-6 mt-4 mt-lg-0">
+      <section class="chart">
+        <kendo-chart class=" vh-lg-30 vh-xl-30">
+          <kendo-chart-title text="Units sold"></kendo-chart-title>
+          <kendo-chart-category-axis>
+            <kendo-chart-category-axis-item
+              [categories]="['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul']"
+              [title]="{ text: 'Months' }"
+            >
+            </kendo-chart-category-axis-item>
+          </kendo-chart-category-axis>
+          <kendo-chart-series>
+            <kendo-chart-series-item
+              type="area"
+              [data]="[123, 276, 310, 212, 240, 156, 98]"
+            >
+            </kendo-chart-series-item>
+            <kendo-chart-series-item
+              type="area"
+              [data]="[165, 210, 287, 144, 190, 167, 212]"
+            >
+            </kendo-chart-series-item>
+            <kendo-chart-series-item
+              type="area"
+              [data]="[56, 140, 195, 46, 123, 78, 95]"
+            >
+            </kendo-chart-series-item>
+          </kendo-chart-series>
+        </kendo-chart>
+      </section>
+    </div>
+  </div>
+</div>
+

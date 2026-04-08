@@ -1,0 +1,6 @@
+<button kendoButton class="scan-btn" (click)="startScan()" *ngIf="!isScanning" style="width: 100%">
+    <span class="d-flex align-items-center"><fa-icon [icon]="startIcon"></fa-icon>&nbsp;Start Scan</span>
+</button>
+<button kendoButton class="scan-btn" (click)="stopScan()" *ngIf="isScanning" style="width: 100%">
+    <span class="k-icon k-i-kpi-status-open"></span>&nbsp;Stop Scan
+</button>

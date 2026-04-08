@@ -1,0 +1,44 @@
+<div *ngIf="hideList(); else showList" class="d-flex justify-content-center align-items-center">
+    No results found.
+</div>
+
+<ng-template #showList>
+    <kendo-listview #listview *ngIf="listData"
+        [kendoListViewBinding]="viewListData"
+        [pageable]="pagerSettings"
+        [pageSize]="pageSize"
+        containerClass="k-d-flex k-flex-col k-flex-nowrap"
+    >
+        <ng-template kendoListViewHeaderTemplate>
+            <div class="row my-2">
+                <kendo-textbox
+                    placeholder="Search items..."
+                    (valueChange)="handleFilterChange($event, listview)"
+                ><ng-template kendoTextBoxPrefixTemplate><span class="k-icon k-i-search"></span></ng-template>
+                </kendo-textbox>
+            </div>
+
+            <div class="row" *ngIf="searchIsEmpty()">
+                <div class="empty-search-wrapper">
+                    No search items found.
+                </div>
+            </div>
+        </ng-template>
+        <ng-template [ngIf]="!searchIsEmpty()" kendoListViewItemTemplate let-dataItem="dataItem" let-index="index">
+            <app-st-item-card *ngIf="dataItem"
+                [stItem]="dataItem"
+                [index]="index"
+                [deletable]="isDeletable"
+                [editable]="isEditable"
+                [enableItemInfo]="showItemInfo"
+                [showSTLastBal]="displaySTLastBal"
+            ></app-st-item-card>
+        </ng-template>
+        <ng-template kendoListViewFooterTemplate>
+            <div class="decorated-footer">
+                <span class="decorated-footer-text">End of List</span>
+            </div>
+        </ng-template>
+    </kendo-listview>
+</ng-template>
+

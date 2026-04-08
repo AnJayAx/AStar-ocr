@@ -1,0 +1,184 @@
+<div>
+  <app-deletable-tags-view
+    style="max-height: 30vh;"
+    [isExpanded]="false"
+    [tags]="mroTags"
+    (dialogExpanded)="toggleExpandedDialog($event)"
+    (tagDeleted)="onDeleteTags([$event])"
+    (tagsDeleted)="onDeleteTags($event)"
+  ></app-deletable-tags-view>
+
+  <hr/>
+
+  <div class="row d-flex justify-content-center">    
+      <form class="k-form" [formGroup]="mroForm">
+        <fieldset class="k-form-fieldset">
+          
+          <kendo-formfield>
+            <legend class="k-form-legend">Doc No</legend>
+            <kendo-textbox
+              formControlName="docNo"
+              #docNo
+              required
+              class="form-control"
+              readonly
+            ></kendo-textbox>
+          </kendo-formfield>
+          
+          <kendo-formfield>
+            <legend class="k-form-legend">PIC</legend>
+            <kendo-textbox
+              formControlName="pic"
+              #pic
+              required
+              class="form-control"
+            ></kendo-textbox>
+          </kendo-formfield>
+
+          <kendo-formfield>
+            <legend class="k-form-legend">Faults</legend>
+            <kendo-textarea
+              style="height: 90px;"
+              formControlName="faults"
+              [rows]="3"
+              #faults
+              class="form-control"
+            ></kendo-textarea>
+          </kendo-formfield>
+
+          <kendo-formfield>
+            <legend class="k-form-legend d-flex justify-content-between">
+              <span>Spare Parts Used</span>
+              <span><i>{{ sparePartsList.length }} part(s)</i></span>
+            </legend>
+            <div *ngIf="sparePartsList.length === 0">
+              <div class="d-flex justify-content-center">
+                <div class="d-flex align-items-center">
+                  <i>Tap '+ Add Spare Part' to add new spare parts</i>
+                </div>
+              </div>
+            </div>
+            <app-mro-parts-list
+              [partsList]="sparePartsList"
+              (deletePart)="onPartDelete($event)"
+              (editPart)="onPartEdit($event)"
+              (newPart)="onAddNewPart()"
+            ></app-mro-parts-list>
+            <div class="mt-2">
+              <div class="d-flex justify-content-end">
+                <span class="d-flex align-items-center">
+                  TOTAL:&nbsp;<strong style="font-size: 1.2rem;">${{ sparePartsTotalCost?.toFixed(2) }}</strong>
+                </span>
+              </div>
+            </div>
+          </kendo-formfield>
+
+
+          <kendo-formfield class="mt-4">
+            <div class="row px-2">
+              <span class="col ml-2 mr-2">RENTAL?</span>
+              &nbsp;&nbsp;
+              <span class="col d-flex align-items-center">
+                <input type="checkbox"
+                  kendoCheckBox
+                  formControlName="isRental"
+                  #isRental
+                  class="custom-checkbox"
+                  (click)="onToggleRentalChargeableWarranty('r')"
+                />
+              </span>
+            </div>
+          </kendo-formfield>
+
+          <kendo-formfield>
+            <div class="row px-2">
+              <span class="col mr-2">CHARGEABLE?</span>
+              &nbsp;&nbsp;
+              <span class="col d-flex align-items-center">
+                <input type="checkbox"
+                  kendoCheckBox
+                  formControlName="isChargeable"
+                  #isChargeable
+                  class="custom-checkbox"
+                  (click)="onToggleRentalChargeableWarranty('c')"
+                />
+              </span>
+            </div>
+          </kendo-formfield>
+
+          <kendo-formfield>
+            <div class="row px-2">
+              <span class="col mr-2">UNDER WARRANTY?</span>
+              &nbsp;&nbsp;
+              <span class="col d-flex align-items-center">
+                <input type="checkbox"
+                  kendoCheckBox
+                  formControlName="isWarranty"
+                  #isWarranty
+                  class="custom-checkbox"
+                  (click)="onToggleRentalChargeableWarranty('w')"
+                />
+              </span>
+            </div>
+          </kendo-formfield>
+
+          <kendo-formfield class="mt-4">
+            <legend class="k-form-legend">Action/Remarks</legend>
+            <kendo-textarea
+              style="height: 90px;"
+              formControlName="rmk"
+              [rows]="3"
+              #rmk
+              class="form-control"
+            ></kendo-textarea>
+          </kendo-formfield>
+      </fieldset>
+    </form>
+    
+    <div class="d-flex justify-content-around mt-4">
+      <button kendoButton [style.width.%]="100" (click)="pressReset()">Reset</button>
+      &nbsp;
+      <button kendoButton [style.width.%]="100" (click)="pressDraft()">Draft</button>
+      &nbsp;
+      <button kendoButton [style.width.%]="100" [primary]="true" (click)="pressSubmit()">Submit</button>
+    </div>
+  </div>
+
+</div>
+
+<ng-container *ngIf="showExpandedDialog" class="container-fluid vh-100">
+  <kendo-dialog class="p-0" [style.width.%]="100" [style.height.%]="100" (close)="toggleExpandedDialog(false)">
+      <app-deletable-tags-view 
+          [isExpanded]="true"
+          [tags]="mroTags"
+          (tagDeleted)="onDeleteTags([$event])"
+          (tagsDeleted)="onDeleteTags($event)"
+      ></app-deletable-tags-view>
+      <kendo-dialog-actions>
+          <button kendoButton [primary]="true" [style.width.%]="100" (click)="toggleExpandedDialog(false)">Done</button>
+      </kendo-dialog-actions>
+  </kendo-dialog>
+</ng-container>
+
+<div *ngIf="showSubmissionPanel" class="container-fluid" style="min-height: 100%">
+  <app-submission-dialog 
+    [dialogTitle]="'Submit MRO'" 
+    [isDraft]="isDraft" 
+    [transactionNo]="mroForm.get('docNo').value"
+    (closeSelected)="onClose($event)"
+  ></app-submission-dialog>
+</div>
+
+<ng-container *ngIf="!!sparePartsDialogOpenType" class="container-fluid vh-100">
+  <kendo-dialog
+    title="{{ sparePartDialogTitle }}"
+    (close)="onCloseSparePartDialog(DialogCloseEventType.Cancel)"
+    [style.height.%]="100" [style.width.%]="100"
+  >
+    <app-mro-part-form
+      [editPart]="selectedSparePart"
+      (partUpdateCancelled)="onCloseSparePartDialog(DialogCloseEventType.Cancel)"
+      (partUpdateConfirmed)="onCloseSparePartDialog(DialogCloseEventType.Confirm, $event)"
+    ></app-mro-part-form>
+  </kendo-dialog>
+</ng-container>

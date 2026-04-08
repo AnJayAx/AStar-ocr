@@ -1,0 +1,51 @@
+@import "variables";
+
+$margin-x: 3rem;
+$margin-y: 2.5rem;
+
+.Login {
+  width: calc(100% + 2 * #{$margin-x});
+  height: calc(100% + 2 * #{$margin-y});
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: -#{$margin-y} -#{$margin-x};
+
+  &__card {
+    min-width: 30rem;
+    box-shadow: $shadow-200;
+  }
+
+  &__card-header {
+    display: flex;
+    align-items: center;
+  }
+
+  &__logo {
+    height: 10rem;
+    margin-right: 2rem;
+    padding-right: 1rem;
+    border-right: $border-100;
+  }
+
+  &__card-body {
+    padding: 2rem;
+  }
+
+  &__field {
+    margin-bottom: 1rem;
+  }
+
+  &__error {
+    margin: 2.5rem 0 1rem 0;
+    color: $error;
+    font-weight: bold;
+  }
+
+  &__actions {
+    padding-top: 1rem;
+    border-top: $border-100;
+    display: flex;
+    justify-content: space-between;
+  }
+}

@@ -1,0 +1,30 @@
+<!-- Sidebar that becomes toggleable on smaller screens -->
+<aside *ngIf="!isLoginView()" class="Sidebar">
+
+  <!-- Logo -->
+  <img class="Sidebar__logo" src="assets/img/logo.png" alt="SIMTech Logo" />
+  <!-- Category title and items -->
+  <div class="Sidebar__menu" *ngIf="isLoggedIn$ | async">
+    <!-- FIXME: When menuGroup has no items for current elevation, category should not appear -->
+    <kendo-panelbar  class="dis-custom-menu-bar" [expandMode]="'single'" >
+
+        <kendo-panelbar-item   class="dis-custom-panelbar-item"  *ngFor="let menuGroup of menuGroups; index as i" [expanded]="showFirstPanelItems(i)">
+          <ng-template kendoPanelBarItemTitle >
+            <h4 class="Sidebar__menuCategoryTitle">{{ menuGroup.group }}</h4>
+          </ng-template>
+          <kendo-panelbar-item class="dis-custom-panelbar-child"
+                               *ngFor="let item of menuGroup.items"  [routerLink]="item.link" routerLinkActive="active">
+            <ng-template kendoPanelBarItemTitle>
+              <ng-container>
+                <a class="side-bar-links" >
+                  <kendo-icon [name]="item.icon"></kendo-icon>
+                  {{ item.name }}
+                </a>
+              </ng-container>
+            </ng-template>
+          </kendo-panelbar-item>
+
+        </kendo-panelbar-item>
+    </kendo-panelbar>
+  </div>
+</aside>

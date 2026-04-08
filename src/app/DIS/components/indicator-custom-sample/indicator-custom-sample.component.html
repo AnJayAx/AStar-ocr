@@ -1,0 +1,23 @@
+<div class="Indicator" (click)="Navigateto()" [ngClass]="{size : true , 'component-click-more-detail':nextRouteLink}" >
+  <div class="Indicator__title">
+    <div>
+      <div class="row">
+        <div class="column col-10">
+          <h3 class="Indicator__name">{{ name }}</h3>
+        </div>
+        <div class="column col-2">
+          <h3 class="front-option k-icon k-i-arrow-chevron-right" *ngIf="nextRouteLink"></h3>
+        </div>
+      </div>
+
+
+    </div>
+    <p class="Indicator__group">{{ group }}</p>
+  </div>
+  <p class="Indicator__callout">{{ callout }}</p>
+  <div class="Indicator__details">
+    <p class="Indicator__detail" *ngFor="let detail of details">{{ detail }}</p>
+  </div>
+  <span [ngClass]="status" class="Indicator__status"></span>
+</div>
+

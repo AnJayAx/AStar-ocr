@@ -1,0 +1,176 @@
+<div class="content" role="main">
+  <div id="alert-container">
+    <div
+      id="alert-notif"
+      [ngClass]="{
+        'alert-success': resultsDetected,
+        'alert-fail': !resultsDetected
+      }"
+    >
+      <div *ngIf="resultsDetected">S/N found: {{ currRes }}</div>
+      <div *ngIf="!resultsDetected">S/N not found!</div>
+    </div>
+  </div>
+  <div id="camera-preview-host">
+    <canvas id="camera-preview-canvas"></canvas>
+    <div id="roiRect">
+      <canvas id="camera-canvas"> </canvas>
+    </div>
+    <!-- scanning active indicator -->
+    <div *ngIf="ocrSwitchedOn" class="scanning-badge">Scanning…</div>
+  </div>
+
+  <div class="ocr-menu" id="ocr-menu-container">
+    <div class="mt-2 d-flex justify-content-between">
+      <div class="">
+        <legend class="k-form-legend">Lights</legend>
+        <div class="d-flex align-items-center">
+          <span class="toggle-text-left">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              role="img"
+              aria-labelledby="lbsTitle"
+            >
+              <title id="lbsTitle">Lightbulb Off</title>
+              <!-- Bulb outline (same shape) -->
+              <path
+                d="M12 3a7 7 0 0 0-4.95 11.95c.67.67 1.11 1.35 1.33 2.05.09.29.36.5.67.5h5.9c.31 0 .58-.21.67-.5.22-.7.66-1.38 1.33-2.05A7 7 0 0 0 12 3z"
+              />
+              <!-- Base ribs -->
+              <path d="M9 18.5h6M9.75 20.25h4.5M10.5 22h3" />
+              <!-- Slash -->
+              <path d="M4 4l16 16" />
+            </svg> </span
+          >&nbsp;
+          <app-custom-switch
+            [isToggled]="false"
+            (toggled)="onLightsToggleChange($event)"
+          ></app-custom-switch>
+          &nbsp;<span class="toggle-text-right">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              role="img"
+              aria-labelledby="lbTitle"
+            >
+              <title id="lbTitle">Lightbulb</title>
+              <!-- Bulb outline -->
+              <path
+                d="M12 3a7 7 0 0 0-4.95 11.95c.67.67 1.11 1.35 1.33 2.05.09.29.36.5.67.5h5.9c.31 0 .58-.21.67-.5.22-.7.66-1.38 1.33-2.05A7 7 0 0 0 12 3z"
+              />
+              <!-- Filament -->
+              <path d="M9.75 13.25c1.2-.8 3.3-.8 4.5 0" />
+              <!-- Base ribs -->
+              <path d="M9 18.5h6M9.75 20.25h4.5M10.5 22h3" />
+            </svg>
+          </span>
+        </div>
+      </div>
+      <div class="">
+        <legend class="k-form-legend">OCR Scan</legend>
+        <div class="d-flex align-items-center">
+          <span class="toggle-text-left">
+            <!-- Eye Off Icon -->
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              role="img"
+              aria-labelledby="eyeOffTitle"
+            >
+              <title id="eyeOffTitle">Eye Off</title>
+              <path
+                d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-5.52 0-10-4.48-10-8
+          0-1.61.69-3.23 1.94-4.66M6.06 6.06A10.94 10.94 0 0 1 12 4c5.52 0 10 4.48
+          10 8 0 1.61-.69 3.23-1.94 4.66"
+              />
+              <path d="M1 1l22 22" />
+              <path d="M9.88 9.88A3 3 0 0 0 12 15a3 3 0 0 0 2.12-.88" />
+            </svg>
+          </span>
+
+          &nbsp;
+          <app-custom-switch
+            [isToggled]="ocrSwitchedOn"    
+            (toggled)="onOCRToggleChange($event)"
+          ></app-custom-switch>
+          &nbsp;
+
+          <span class="toggle-text-right">
+            <!-- Eye Icon -->
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              role="img"
+              aria-labelledby="eyeTitle"
+            >
+              <title id="eyeTitle">Eye</title>
+              <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z" />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="view" id="results-view">
+      <legend class="k-form-legend">Scan Result</legend>
+      <div id="verify-list">
+        <div *ngIf="currRes" class="card p-20" id="resultText">
+          {{ currRes }}
+        </div>
+      </div>
+    </div>
+
+    <div class="view" id="detected-lines-view" *ngIf="detectedLines.length > 0">
+      <legend class="k-form-legend">Detected Text</legend>
+      <div id="detected-lines-list">
+        <div
+          *ngFor="let line of detectedLines"
+          class="detected-line"
+          [class.detected-line--match]="line === currRes || line.includes(currRes)"
+        >
+          {{ line }}
+        </div>
+      </div>
+    </div>
+    <div id="submit-btn-container">
+      <button
+        kendoButton
+        [primary]="true"
+        (click)="submitResultsToComponent()"
+        id="ocr-submit"
+      >
+        Submit
+      </button>
+    </div>
+  </div>
+</div>

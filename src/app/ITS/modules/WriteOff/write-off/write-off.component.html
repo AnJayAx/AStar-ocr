@@ -1,0 +1,115 @@
+<div class="container-fluid float-container mb-0">
+    <div class="row px-0">
+        <span class="col-10"><app-scanmode-buttongroup></app-scanmode-buttongroup></span>
+        <span class="col-2 d-flex align-items-center">
+            <app-reload-btn 
+                [componentType]="reloadComponent"
+                [elementRef]="reloadElemRef"
+                (clicked)="onClickReload()"
+            ></app-reload-btn>
+        </span>
+    </div>
+
+    <div class="d-flex mt-2 align-items-center">
+        <div class="compulsory-field" style="margin-right: 0.5rem;"><strong>Order*:</strong></div>
+        <kendo-textbox required 
+            [style.width.%]="100"
+            placeholder="Enter order number..."
+            [clearButton]="true"
+            [(ngModel)]="selectedOrderNo"
+        ></kendo-textbox>
+        <button kendoButton
+            [primary]="true"
+            icon="search"
+            (click)="handleSelectedOrderChange(selectedOrderNo)"
+            [disabled]="selectedOrderNo?.length === 0"
+        ></button>
+    </div>
+
+    <hr/>
+
+    <div class="row mt-2" *ngIf="writeOffList?.length > 0">
+        <kendo-listview #listview
+            [kendoListViewBinding]="viewWriteOffList"
+            containerClass="k-d-flex k-flex-col k-flex-nowrap"
+            style="max-height: 68vh"
+        >
+        <ng-template kendoListViewHeaderTemplate>
+            <div class="d-flex justify-content-end align-items-center px-1">
+                <strong class="larger-font">{{ confirmedWriteOffList?.length}}</strong>
+                &nbsp;of&nbsp;
+                <strong class="larger-font">{{ writeOffList?.length }}</strong>
+                &nbsp;record(s) confirmed
+            </div>
+            <div class="d-flex mt-2 mb-2">
+                <kendo-textbox
+                    [style.width.%]="100"
+                    placeholder="Search items..."
+                    [(ngModel)]="searchInput"
+                    (valueChange)="handleFilterChange($event)"
+                ><ng-template kendoTextBoxPrefixTemplate><span class="k-icon k-i-search"></span></ng-template></kendo-textbox>
+                <button kendoButton (click)="onClearFilter()">Clear</button>
+            </div>
+            <div class="mt-2 mb-2 d-flex justify-content-center" *ngIf="writeOffList?.length > 0 && viewWriteOffList?.length === 0">
+                No search items found.
+            </div>
+        </ng-template>
+        <ng-template kendoListViewItemTemplate let-dataItem="dataItem" let-index="index">
+            <app-item-card
+                [item]="dataItem"
+                [isSelectable]="true"
+                [isDeselectOnly]="true"
+                [preventHighlightEvent]="true"
+                [isSelected]="isToWriteOff(dataItem)"
+                [isDeletionDisabled]="true"
+                (itemClicked)="onDataItemSelect(dataItem)"
+            ></app-item-card>
+        </ng-template>
+        <ng-template kendoListViewFooterTemplate>
+            <div class="decorated-footer">
+                <span class="decorated-footer-text">End of List</span>
+            </div>
+        </ng-template>
+        </kendo-listview>
+    </div>
+
+    <div class="mt-4 d-flex justify-content-center p-0" *ngIf="writeOffList?.length === 0">
+        <i>Search for an order number to start.</i>
+    </div>
+
+    <div class="float">
+        <app-clearscan-btn (clicked)="onClear($event)"></app-clearscan-btn>
+        <app-startscan-btn></app-startscan-btn>
+        <button kendoButton [primary]="true" (click)="onClickConfirm()" [disabled]="confirmedWriteOffList?.length === 0">Confirm</button> 
+    </div>
+</div>
+
+<div *ngIf="showRemarksPanel" class="container-fluid" style="min-height: 100%;">
+    <kendo-dialog
+        (close)="onCloseRemarksPanel(DialogCloseEventType.Cancel)"
+        [minWidth]="300"
+    >
+        <div>
+            <div class="d-flex justify-content-start"><strong>Remarks</strong>&nbsp;(<i>optional</i>):</div>
+            <div class="mt-2">
+                <kendo-textarea
+                    style="height: 100px;"
+                    [(ngModel)]="writeOffRemarks"
+                    placeholder="Enter remarks..."
+                    [rows]="3"
+                    resizable="vertical"
+                ></kendo-textarea>
+            </div>
+            <kendo-dialog-actions>
+                <span class="d-flex align-items-center">
+                    <button kendoButton (click)="onCloseRemarksPanel(DialogCloseEventType.Cancel)">Cancel</button>
+                    <button kendoButton (click)="onCloseRemarksPanel(DialogCloseEventType.Confirm)" [primary]="true">Continue</button>
+                </span>
+            </kendo-dialog-actions>
+        </div>
+    </kendo-dialog>
+</div>
+
+<div *ngIf="showSubmissionPanel" class="container-fluid" style="min-height: 100%">
+    <app-submission-dialog [dialogTitle]="'Submit Write-off'" (closeSelected)="onCloseSubmission($event)" [disabled]="confirmedWriteOffList?.length === 0"></app-submission-dialog>
+</div>

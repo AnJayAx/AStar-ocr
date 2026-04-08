@@ -1,0 +1,47 @@
+@import "its-variables";
+
+.card {
+    @include item-card;
+    padding: 0.5rem 0.5rem;
+    column-gap: 0.3rem;
+
+    flex-direction: row;
+    align-items: stretch;
+
+    .card-image {
+        flex-grow: 1;
+        flex-shrink: 1;
+    }
+
+    .card-details {
+        flex-grow: 3;
+        flex-shrink: 1;
+
+        .details-wrapper {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: stretch;
+        }
+    }
+}
+
+.item {
+    &-name {
+        @include item-card-name;
+        font-size: 1rem;
+    }
+    &-category {
+        @include item-card-category;
+    }
+    &-location {
+        @include item-card-location;
+    }
+    &-epc {
+        @include item-card-epc;
+    }
+    &-balance {
+        color: rgb(115, 137, 64);
+        font-weight: bolder;
+    }
+}

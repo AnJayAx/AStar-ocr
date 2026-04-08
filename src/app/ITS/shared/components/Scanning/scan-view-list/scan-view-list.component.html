@@ -1,0 +1,52 @@
+<kendo-listview #listview *ngIf="showList() === true"
+    [kendoListViewBinding]="viewData"
+    containerClass="k-d-flex k-flex-col k-flex-nowrap"
+>
+    <ng-template kendoListViewHeaderTemplate>
+        <div *ngIf="selectMode == 'multiple'" class="d-flex align-items-center justify-content-between" style="padding: 8px;">
+            <span style="display: flex; align-items: stretch;">
+                <button kendoButton (click)="onSelectionBtnClick()" class="selection-btn">{{ selectionText }}</button>
+                <button kendoButton class="delete-btn"><span class="k-icon k-i-trash" (click)="onDeleteSelection()"></span></button>
+            </span>
+            <span>
+                <kendo-textbox
+                    style="max-width: 100%;"
+                    placeholder="Search..."
+                    (valueChange)="handleFilterChange($event, listview)"
+                ><ng-template kendoTextBoxPrefixTemplate><span class="k-icon k-i-search"></span></ng-template>
+                </kendo-textbox>
+            </span>
+        </div>
+        <div *ngIf="selectMode == 'single'" class="d-flex align-items-center" style="padding: 8px;">
+            <kendo-textbox
+                [style.width.%]="100"
+                placeholder="Search..."
+                (valueChange)="handleFilterChange($event, listview)"
+            ><ng-template kendoTextBoxPrefixTemplate><span class="k-icon k-i-search"></span></ng-template>
+            </kendo-textbox>
+        </div>
+    </ng-template>
+    <ng-template kendoListViewItemTemplate let-dataItem="dataItem" let-index="index">
+        <div class="listitem-container">
+            <span class="card-wrapper">
+                <app-item-card
+                    [item]="dataItem"
+                    [isSelected]="isCheckedItem(dataItem) | async"
+                    [isEditable]="isEditable"
+                    [isMaxEnabled]="isMaxEnabled"
+                    (itemRemoved)="onDeleteItem($event)"
+                    (itemClicked)="onClickItem($event)">
+                </app-item-card>
+            </span>
+        </div>
+    </ng-template>
+    <ng-template kendoListViewFooterTemplate>
+        <div class="decorated-footer">
+            <span class="decorated-footer-text">End of List</span>
+        </div>
+    </ng-template>
+</kendo-listview>
+
+<div *ngIf="showList() === false" class="d-flex justify-content-center align-items-center" style="min-height: 100%;">
+    Press "Start Scan" to start scanning.
+</div>

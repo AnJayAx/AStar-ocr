@@ -1,0 +1,17 @@
+<div class="container-fluid float-container">
+    <div class="d-flex justify-content-center">
+        <span class="d-flex align-items-center page-title">
+            <strong>Merge Into</strong>
+        </span>
+    </div>
+
+    <div class="mt-2">
+        <app-scan-view
+            [selectMode]="'single'"
+            [inclBackBtn]="false"
+            [continueOrConfirm]="'continue'"
+            [filterOut]="STOCKMERGE_FILTEROUT"
+            (confirmed)="onConfirm($event)"
+        ></app-scan-view>
+    </div>
+</div>

@@ -1,0 +1,215 @@
+<div>
+  <div class="row">
+    <div class="col-12">
+      <app-view-heading
+        [title]="'sample.dashboard.header' | translate"
+      ></app-view-heading>
+
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12 col-md-8 offset-md-2" >
+      <div class="row">
+        <div class="col-12 d-flex justify-content-center ">
+          <kendo-stepper
+            [steps]="steps"
+            stepType="full"
+            [(currentStep)]="current"
+            [linear]="true"
+            [style.width.px]="570"
+          > </kendo-stepper>
+        </div>
+        <div class="col-md-8 offset-md-2 d-flex justify-content-center mt-5">
+          <form class="k-form" [formGroup]="registerForm">
+            <div id="page-1" *ngIf="current == 0">
+              <fieldset class="k-form-fieldset">
+                <legend class="k-form-legend">User Details</legend>
+                <kendo-formfield>
+                  <kendo-label [for]="firstName" text="First Name"></kendo-label>
+                  <input
+                    formControlName="firstName"
+                    kendoTextBox
+                    #firstName
+                    required
+                  />
+
+                  <kendo-formhint>Your first name</kendo-formhint>
+                  <kendo-formerror>Error: First name is required</kendo-formerror>
+                </kendo-formfield>
+
+                <kendo-formfield>
+                  <kendo-label [for]="lastName" text="Last Name"></kendo-label>
+                  <input formControlName="lastName" kendoTextBox #lastName required />
+
+                  <kendo-formhint>Your last name</kendo-formhint>
+                  <kendo-formerror>Error: Last name is required</kendo-formerror>
+                </kendo-formfield>
+
+                <kendo-formfield>
+                  <kendo-label [for]="email" text="Email"></kendo-label>
+                  <input formControlName="email" kendoTextBox #email required />
+
+                  <kendo-formhint>Your active email</kendo-formhint>
+                  <kendo-formerror>Error: Not valid email format</kendo-formerror>
+                </kendo-formfield>
+
+                <kendo-formfield>
+                  <div class="k-checkbox-wrap">
+                    <input
+                      #acceptNews
+                      type="checkbox"
+                      kendoCheckBox
+                      formControlName="acceptNews"
+                    />
+                    <kendo-label
+                      [for]="acceptNews"
+                      class="k-checkbox-label"
+                      text="I want to receive notifications"
+                    ></kendo-label>
+                  </div>
+
+                  <kendo-formhint
+                  >You will receive our latest updates and promotions on your
+                    email</kendo-formhint
+                  >
+                </kendo-formfield>
+              </fieldset>
+
+              <div class="col-12 d-flex justify-content-center mt-5">
+                <button class="col-4 k-button k-primary mx-3"  (click)="onNext()">Next</button>
+                <button class="col-4 k-button mx-3" (click)="onClear()">Clear</button>
+              </div>
+
+            </div>
+
+            <div id="page-2" *ngIf="current == 1;">
+              <fieldset class="k-form-fieldset">
+                <legend class="k-form-legend">User Details</legend>
+                <div
+                  #surface
+                  style="width: 250px; height: 50px; border-bottom: 1px solid black;"
+                ></div>
+
+                <button class="k-button" (click)="export()">Export as Signature</button>
+                <button class="k-button" (click)="onClear()">Clear</button>
+                <br><br>
+                <div
+                  #drawing
+                  style=" height: 350px; border: 1px solid grey;"
+                ></div>
+                <br>
+
+                <button class="k-button" (click)="drawExport()">Export as SVG</button>
+                <button class="k-button" (click)="onDrawClear()">Clear Drawing</button>
+              </fieldset>
+
+              <div class="col-12 d-flex justify-content-center mt-5">
+                <button class="col-3 k-button k-primary mx-3"  (click)="onNext()">Next</button>
+                <button class="col-3 k-button mx-3"  (click)="onBack()">Back</button>
+                <button class="col-3 k-button mx-3" (click)="onClear()">Clear</button>
+              </div>
+            </div>
+
+            <div id="page-3" *ngIf="current == 2;">
+              <fieldset class="k-form-fieldset">
+                <legend class="k-form-legend">User Details</legend>
+
+                <kendo-upload
+                  [saveUrl]="uploadSaveUrl"
+                  [removeUrl]="uploadRemoveUrl"
+                  [autoUpload]="false"
+                >
+                </kendo-upload>
+
+                <div class="col-12 d-flex justify-content-center mt-5">
+                  <button class="col-3 k-button k-primary mx-3"  (click)="onNext()">Next</button>
+                  <button class="col-3 k-button mx-3"  (click)="onBack()">Back</button>
+                  <button class="col-3 k-button mx-3" (click)="onClear()">Clear</button>
+               </div>
+              </fieldset>
+            </div>
+
+
+            <div id="page-4" *ngIf="current == 3;">
+              <fieldset class="k-form-fieldset">
+                <legend class="k-form-legend">Preview</legend>
+
+                <div class="header">Blauer See Delikatessen</div>
+
+                <div class="address">
+                  <div class="for">
+                    <h3>Invoice For</h3>
+                    <p>
+                      Antonio Moreno<br />
+                      Naucalpan de Juárez<br />
+                      México D.F., Mexico, 53500
+                    </p>
+                  </div>
+
+                  <div class="from">
+                    <h3>From</h3>
+                    <p>
+                      Hanna Moos <br />
+                      Lützowplatz 456<br />
+                      Berlin, Germany, 10785
+                    </p>
+                  </div>
+                </div>
+
+                <div class="items">
+                  <kendo-grid  scrollable="none">
+                    <kendo-grid-column field="productName" title="Product">
+                      <ng-template kendoGridFooterTemplate> Total </ng-template>
+                    </kendo-grid-column>
+                    <kendo-grid-column
+                      field="unitPrice"
+                      format="{0:c}"
+                      title="Price"
+                      width="120"
+                    >
+                      120
+                    </kendo-grid-column>
+                    <kendo-grid-column
+                      field="qty"
+                      title="Pcs."
+                      width="120"
+                    >
+                      <ng-template kendoGridFooterTemplate let-column="column">
+                        1
+                      </ng-template>
+                    </kendo-grid-column>
+                    <kendo-grid-column
+                      field="total"
+                      format="{0:c}"
+                      title="Total"
+                      width="120"
+
+                    >
+                      <ng-template kendoGridFooterTemplate let-column="column">
+                        2
+                      </ng-template>
+                    </kendo-grid-column>
+                  </kendo-grid>
+                </div>
+
+                <div class="col-12 d-flex justify-content-center mt-5">
+                  <button class="col-3 k-button k-primary mx-3"  (click)="onNext()">Submit</button>
+                  <button class="col-3 k-button mx-3"  (click)="onBack()">Back</button>
+                  <button class="col-3 k-button mx-3" (click)="onClear()">Clear</button>
+                </div>
+              </fieldset>
+            </div>
+
+            <div id="page-5" *ngIf="current == 4;">
+              <fieldset class="k-form-fieldset">
+                <p>Your request has been submitted</p>
+              </fieldset>
+            </div>
+
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

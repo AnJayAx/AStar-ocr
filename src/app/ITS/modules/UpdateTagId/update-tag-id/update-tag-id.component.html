@@ -1,0 +1,82 @@
+<div class="container-fluid">
+    <div class="d-flex align-items-center">
+        <kendo-textbox 
+            placeholder="Enter item keyword..."
+            [clearButton]="true"
+            [(ngModel)]="keyword"
+        ></kendo-textbox>
+        <button kendoButton
+            [primary]="true"
+            class="send-button"
+            icon="search"
+            (click)="onClickSearch()"
+        ></button>
+    </div>
+
+    <p class="subtitle mt-1 mb-0"><i>Search by EPC_ID, Description, SKU, Ref_No, BatchNo, Location & Status</i></p>
+
+    <hr style="margin: 0.5rem 0"/>
+
+    <kendo-listview *ngIf="itemInfoList.length > 0"
+        [kendoListViewBinding]="itemInfoList"
+        containerClass="k-d-flex k-flex-col k-flex-nowrap"
+    >
+        <ng-template kendoListViewHeaderTemplate>
+            <div class="d-flex justify-content-end">
+                {{ itemInfoList.length }} record(s) found.
+            </div>
+        </ng-template>
+        <ng-template kendoListViewItemTemplate let-dataItem="dataItem" let-index="index">
+            <span (click)="onSelectItem(dataItem)">
+                <app-item-card 
+                    [item]="dataItem"
+                    [index]="index"
+                    [isDeletionDisabled]="true"
+                    [isSelected]="isSelectedItem(dataItem)"
+                ></app-item-card>
+            </span>
+        </ng-template>
+        <ng-template kendoListViewFooterTemplate>
+            <div class="decorated-footer">
+                <span class="decorated-footer-text">End of List</span>
+            </div>
+        </ng-template>
+    </kendo-listview>
+
+</div>
+
+<kendo-dialog
+    *ngIf="showUpdateDialog"
+    (close)="closeUpdateDialog(DialogCloseEventType.Cancel)"
+    [minWidth]="300"
+>
+    <kendo-dialog-titlebar>
+        <div class="d-flex flex-column">
+            <h4>Update Tag ID</h4>
+            <span class="subtitle">{{ selectedItem.EPC_ID }}</span>
+        </div>
+    </kendo-dialog-titlebar>
+    <div class="d-flex flex-column px-2">
+        <div class="property">TAG ID:</div>
+        <div class="mt-2">
+            <kendo-textbox 
+                [style.width.%]=100
+                [clearButton]="true"
+                [(ngModel)]="updateTag"
+                [value]="updateTag"
+                (valueChange)="onUpdateTagEdit()"
+            ></kendo-textbox>
+        </div>
+        <div class="mt-2 error-msg" *ngIf="showErrorMsg">
+            {{ errorMsg }}
+        </div>
+    </div>
+    <kendo-dialog-actions>
+        <span class="px-2"><app-scanmode-buttongroup></app-scanmode-buttongroup></span>
+        <div class="d-flex justify-content-around">
+            <button kendoButton (click)="closeUpdateDialog(DialogCloseEventType.Cancel)">Cancel</button>
+            <app-startscan-btn></app-startscan-btn>
+            <button kendoButton [primary]="true" (click)="onClickUpdate()" [disabled]="showErrorMsg">Update</button>
+        </div>
+    </kendo-dialog-actions>
+</kendo-dialog>

@@ -1,0 +1,8 @@
+<div class="float-container">
+    <app-scan-view
+        [inclBackBtn]="false"
+        [filterOut]="SPLIT_FILTEROUT"
+        [selectMode]="'single'"
+        (confirmed)="onConfirm($event)"
+    ></app-scan-view>
+</div>

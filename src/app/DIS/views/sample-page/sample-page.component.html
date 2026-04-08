@@ -1,0 +1,89 @@
+<div class="SamplePage">
+  <app-view-heading
+    [title]="'Graphs and tables and more'"
+    [subtitle]="
+      'Goal is to have Custom components (if absolutely necessary and cannot be found in Kendo library) + Library components look similar.'
+    "
+  >
+  </app-view-heading>
+  <div class="PageContent">
+    <section class="Indicators">
+      <app-indicator-custom-sample
+        [name]="'Machine #1'"
+        [group]="'Machine Group #1'"
+        [callout]="'69%'"
+        [details]="['Start: 20210420 11:11AM', 'End: 20210420 11:11AM']"
+      ></app-indicator-custom-sample>
+      <app-indicator-custom-sample
+        [name]="'Machine #2'"
+        [group]="'Machine Group #2'"
+        [callout]="'96%'"
+        [details]="['Start: 20210420 11:11AM', 'End: 20210420 11:11AM']"
+      ></app-indicator-custom-sample>
+    </section>
+
+    <kendo-grid [data]="data" [height]="410">
+      <kendo-grid-column
+        *ngFor="let colname of ['ProductID', 'ProductName', 'QuantityPerUnit']"
+        [field]="colname"
+      ></kendo-grid-column>
+    </kendo-grid>
+
+    <section class="Charts">
+      <kendo-chart>
+        <kendo-chart-title text="Units sold"></kendo-chart-title>
+        <kendo-chart-category-axis>
+          <kendo-chart-category-axis-item
+            [categories]="['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul']"
+            [title]="{ text: 'Months' }"
+          >
+          </kendo-chart-category-axis-item>
+        </kendo-chart-category-axis>
+        <kendo-chart-series>
+          <kendo-chart-series-item
+            type="area"
+            [data]="[123, 276, 310, 212, 240, 156, 98]"
+          >
+          </kendo-chart-series-item>
+          <kendo-chart-series-item
+            type="area"
+            [data]="[165, 210, 287, 144, 190, 167, 212]"
+          >
+          </kendo-chart-series-item>
+          <kendo-chart-series-item
+            type="area"
+            [data]="[56, 140, 195, 46, 123, 78, 95]"
+          >
+          </kendo-chart-series-item>
+        </kendo-chart-series>
+      </kendo-chart>
+      <kendo-chart>
+        <kendo-chart-title text="Units sold"></kendo-chart-title>
+        <kendo-chart-category-axis>
+          <kendo-chart-category-axis-item
+            [categories]="['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul']"
+            [title]="{ text: 'Months' }"
+          >
+          </kendo-chart-category-axis-item>
+        </kendo-chart-category-axis>
+        <kendo-chart-series>
+          <kendo-chart-series-item
+            type="bar"
+            [data]="[123, 276, 310, 212, 240, 156, 98]"
+          >
+          </kendo-chart-series-item>
+          <kendo-chart-series-item
+            type="bar"
+            [data]="[165, 210, 287, 144, 190, 167, 212]"
+          >
+          </kendo-chart-series-item>
+          <kendo-chart-series-item
+            type="bar"
+            [data]="[56, 140, 195, 46, 123, 78, 95]"
+          >
+          </kendo-chart-series-item>
+        </kendo-chart-series>
+      </kendo-chart>
+    </section>
+  </div>
+</div>

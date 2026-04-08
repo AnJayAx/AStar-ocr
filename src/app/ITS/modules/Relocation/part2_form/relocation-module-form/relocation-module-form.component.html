@@ -1,0 +1,92 @@
+<div>
+  <div class="row mt-2" *ngIf="relocationTags.length > 0">
+    <app-deletable-tags-view
+      style="max-height: 30vh;"
+      [isExpanded]="false"
+      [tags]="relocationTags"
+      (dialogExpanded)="toggleExpandedDialog($event)"
+      (tagDeleted)="onDeleteTags([$event])"
+      (tagsDeleted)="onDeleteTags($event)"
+    ></app-deletable-tags-view>
+  </div>
+    
+  <div class="row mt-4">
+    <form class="k-form" [formGroup]="relocForm">
+      <fieldset class="k-form-fieldset">
+        <legend class="k-form-legend">Location</legend>
+        <kendo-formfield>
+          <div class="d-flex align-items-center">
+            <div style="flex: 2">
+              <app-location-search-dropdown 
+                formControlName="loc" 
+                [isRequired]="true" 
+                [selectedLocation]="relocForm.controls['loc'].value"
+              ></app-location-search-dropdown>
+            </div>
+            <button kendoButton (click)="toQRPage()" id="qr-btn" *ngIf="isCameraValid$ | async"><kendo-svg-icon [icon]="qrCodeIcon"></kendo-svg-icon>&nbsp;QR Scan</button>
+          </div>
+          <kendo-formerror>Error: Location is required</kendo-formerror>
+        </kendo-formfield>
+
+        <kendo-formfield>
+          <legend class="k-form-legend">Doc No</legend>
+          <input
+            formControlName="docNo"
+            kendoTextArea
+            #docNo
+            required
+            class="form-control"
+            readonly
+          />
+        </kendo-formfield>
+        <kendo-formfield>
+          <legend class="k-form-legend">PIC</legend>
+          <input
+            formControlName="pic"
+            kendoTextArea
+            #pic
+            required
+            class="form-control"
+          />
+        </kendo-formfield>
+        <kendo-formfield>
+          <legend class="k-form-legend">Remarks</legend>
+          <input
+            formControlName="rmk"
+            kendoTextArea
+            #rmk
+            class="form-control"
+          />
+        </kendo-formfield>
+    </fieldset>
+    </form>
+  </div>
+
+  <div class="row mt-4">
+    <button kendoButton [primary]="true" (click)="pressSubmit()">Submit</button>
+  </div>
+
+</div>
+
+<ng-container *ngIf="showExpandedDialog" class="container-fluid vh-100">
+  <kendo-dialog class="p-0" [style.width.%]="100" [style.height.%]="100" (close)="toggleExpandedDialog(false)">
+      <app-deletable-tags-view 
+          [isExpanded]="true"
+          [tags]="relocationTags"
+          (tagDeleted)="onDeleteTags([$event])"
+          (tagsDeleted)="onDeleteTags($event)"
+      ></app-deletable-tags-view>
+      <kendo-dialog-actions>
+          <button kendoButton [primary]="true" [style.width.%]="100" (click)="toggleExpandedDialog(false)">Done</button>
+      </kendo-dialog-actions>
+  </kendo-dialog>
+</ng-container>
+
+
+<div *ngIf="showSubmissionPanel" class="container-fluid" style="min-height: 100%">
+  <app-submission-dialog 
+    [dialogTitle]="'Submit Relocation'" 
+    [transactionNo]="relocForm.get('docNo').value"
+    (closeSelected)="onClose($event)"
+  ></app-submission-dialog>
+</div>

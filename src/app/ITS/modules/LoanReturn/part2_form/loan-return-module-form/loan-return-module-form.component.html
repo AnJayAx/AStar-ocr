@@ -1,0 +1,107 @@
+
+<div>
+  <app-deletable-tags-view
+    style="max-height: 30vh;"
+    [isExpanded]="false"
+    [tags]="loanReturnTags"
+    (dialogExpanded)="toggleExpandedDialog($event)"
+    (tagDeleted)="onDeleteTags([$event])"
+    (tagsDeleted)="onDeleteTags($event)"
+  ></app-deletable-tags-view>
+
+  <div class="row d-flex justify-content-center mt-4">
+    Choose one:
+    <p class="k-block d-flex justify-content-center mt-2">
+      <button kendoButton class="col-6"
+        id="onlineLogin"
+        [selected]="returning"
+        [toggleable]="true"
+        [disabled]="disabled === 'Return'"
+        [class.toggled]="returning === true"
+        (click)="switchMode('Return')"
+      ><span class="d-flex align-items-center"><kendo-svg-icon [icon]="returnIcon" size="medium"></kendo-svg-icon>&nbsp;Return</span></button>
+      &nbsp;
+      <button
+        kendoButton class="col-6"
+        id="offlineLogin"
+        (click)="switchMode('Loan')"
+        [selected]="!returning"
+        [disabled]="disabled === 'Loan'"
+        [class.toggled]="returning === false"
+        [toggleable]="true"
+      ><span class="d-flex align-items-center"><kendo-svg-icon [icon]="loanIcon" size="medium"></kendo-svg-icon>&nbsp;Loan</span></button>
+    </p>    
+    <form class="k-form mt-2" [formGroup]="lrForm">
+        <fieldset class="k-form-fieldset">
+        <kendo-formfield>
+          <legend class="k-form-legend">DocNo</legend>
+          <input
+            formControlName="docNo"
+            kendoTextArea
+            #docNo
+            required
+            class="form-control"
+            readonly
+          />
+        </kendo-formfield>
+        <kendo-formfield>
+          <legend class="k-form-legend compulsory-field">Location*</legend>
+          <app-location-search-dropdown formControlName="loc" [isRequired]="true"></app-location-search-dropdown>
+          <kendo-formerror>Error: Location is required</kendo-formerror>
+        </kendo-formfield>
+        <kendo-formfield>
+          <legend class="k-form-legend">PIC</legend>
+          <input
+            formControlName="pic"
+            kendoTextArea
+            #pic
+            required
+            class="form-control"
+          />
+        </kendo-formfield>
+        <div class="mt-2" *ngIf="!returning">
+          <legend class="k-form-legend">Lease End Date:</legend>
+          <kendo-datepicker
+            format="dd-MMM-yyyy"
+            [value]="leaseEndDate"
+          ></kendo-datepicker>
+        </div>
+        <kendo-formfield>
+          <legend class="k-form-legend">Remarks</legend>
+          <input
+            formControlName="rmk"
+            kendoTextArea
+            #rmk
+            class="form-control"
+          />
+        </kendo-formfield>
+      </fieldset>
+    </form>
+    <div class="row mt-4">
+      <button kendoButton [primary]="true" (click)="pressSubmit()">Submit</button>
+    </div>
+  </div>
+
+</div>
+
+<ng-container *ngIf="showExpandedDialog" class="container-fluid vh-100">
+  <kendo-dialog class="p-0" [style.width.%]="100" [style.height.%]="100" (close)="toggleExpandedDialog(false)">
+      <app-deletable-tags-view 
+          [isExpanded]="true"
+          [tags]="loanReturnTags"
+          (tagDeleted)="onDeleteTags([$event])"
+          (tagsDeleted)="onDeleteTags($event)"
+      ></app-deletable-tags-view>
+      <kendo-dialog-actions>
+          <button kendoButton [primary]="true" [style.width.%]="100" (click)="toggleExpandedDialog(false)">Done</button>
+      </kendo-dialog-actions>
+  </kendo-dialog>
+</ng-container>
+
+<div *ngIf="showSubmissionPanel" class="container-fluid" style="min-height: 100%">
+  <app-submission-dialog 
+    [dialogTitle]="'Submit Loan/Return'"
+    [transactionNo]="lrForm.get('docNo').value" 
+    (closeSelected)="onClose($event)"
+  ></app-submission-dialog>
+</div>

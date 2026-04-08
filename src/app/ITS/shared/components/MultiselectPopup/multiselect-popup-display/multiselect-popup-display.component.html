@@ -1,0 +1,32 @@
+<div class="mb-4">
+    <div class="row mt-0 mb-0 p-0 col-12">
+        <kendo-label *ngIf="!required">{{ fieldName }}</kendo-label>
+        <kendo-label *ngIf="required"><strong>{{ fieldName }}*</strong></kendo-label>
+    </div>
+    <span *ngIf="!!selectionsList && !!currentView" class="chip-wrapper" (click)="onClickDisplayList()">
+        <span [ngSwitch]="currentView">
+            <div *ngSwitchCase="ViewTypes.DataSomeSelections">
+                <kendo-chip *ngFor="let chip of selectionsList"
+                    class="chip-item"
+                    [label]="chip.label" [removable]="false"
+                ></kendo-chip>
+            </div>
+            <div *ngSwitchCase="ViewTypes.DataAllSelections">
+                <kendo-chip class="chip-item" [label]="'All'" [removable]="false"></kendo-chip>
+            </div>
+            <div *ngSwitchCase="ViewTypes.DataNoSelections">
+                <span style="color: grey; font-style: italic;">
+                    {{ noSelectionsMsg }}
+                </span>
+            </div>
+            <div *ngSwitchCase="ViewTypes.NoDataNoSelections">
+                <span style="color: grey; font-style: italic;">
+                    {{ noDataMsg }}
+                </span>
+            </div>
+            <div *ngSwitchDefault>
+                <i>Invalid view type detected</i>
+            </div>
+        </span>
+    </span>    
+</div>

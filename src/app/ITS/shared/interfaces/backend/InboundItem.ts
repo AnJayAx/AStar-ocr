@@ -1,0 +1,37 @@
+export interface IInboundItem {
+    "IsIndividual": string;
+    "Category": string;
+    "Description": string;
+    "EPC_ID": string;
+    "Asset_No": string;
+    "Date_of_Purchase": string;
+    "Date_of_Scrap": string;
+    "Cost": string;
+    "PIC": string;
+    "Asset_Location_ID": string;
+    "Yearly_Depreciation": string;
+    "Current_Value": string;
+    "Remarks": string;
+    "Ref_No": string;
+    "Minor_Category": string;
+    "Vendor_Name": string;
+    "SKU": string;
+    "UOM": string;
+    "BatchNo": string;
+    "Remarks5": string;
+    "Remarks6": string;
+    "Warranty_Expiry_Date": string;
+    "Calibration_Date": string;
+    "Remarks2": string;
+    "Date_of_Expire": string;
+    "LastBal": string;
+    "Remarks3": string;
+    "Remarks4": string;
+    "Vendor_Invoice": string;
+    "Useful_Life": string;
+    "Edit_Time": string;
+    "EditTime": string;
+    "ImageName": string;
+    "IsPrint": string;
+    "Image_ID": number;
+}

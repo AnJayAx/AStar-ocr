@@ -1,0 +1,69 @@
+<div class="container-fluid float-container">
+
+    <div class="d-flex align-items-center row">
+        <span class="col-10 d-flex">
+            <kendo-textbox 
+                placeholder="Enter item keyword..."
+                [clearButton]="true"
+                [(ngModel)]="keyword"
+            ></kendo-textbox>
+            <button kendoButton
+                [primary]="true"
+                class="send-button"
+                icon="search"
+                (click)="onClickSearch()"
+                [disabled]="keyword?.length <= 0"
+            ></button>
+        </span>
+        <span class="col-2 d-flex justify-content-center">
+            <app-scan-settings-btn></app-scan-settings-btn>
+        </span>
+    </div>
+
+    <i class="subtitle">Search by EPC_ID, Description, SKU, Ref_No, BatchNo, Location & Status</i>
+
+    <hr />
+
+    <kendo-listview #listview *ngIf="itemInfoList.length > 0"
+        [kendoListViewBinding]="itemInfoList"
+        [pageable]="pagerSettings"
+        [pageSize]="pageSize"
+        containerClass="k-d-flex k-flex-col k-flex-nowrap"
+    >
+        <ng-template kendoListViewHeaderTemplate>
+            <div class="d-flex justify-content-end">
+                {{ itemInfoList.length }} record(s) found.
+            </div>
+        </ng-template>
+        <ng-template kendoListViewItemTemplate let-dataItem="dataItem" let-index="index">
+            <span (click)="onSelectItem(dataItem)">
+                <app-item-card 
+                    [item]="dataItem"
+                    [isDeletionDisabled]="true"
+                    [isSelected]="isSelectedItem(dataItem)"
+                ></app-item-card>
+            </span>
+        </ng-template>
+        <ng-template kendoListViewFooterTemplate>
+            <div class="decorated-footer">
+                <span class="decorated-footer-text">End of List</span>
+            </div>
+        </ng-template>
+    </kendo-listview>
+
+    <ng-template #noItemInfoList>
+        <div class="vh-80 d-flex align-items-center">
+            <span class="d-flex justify-content-center">
+                Entering the item keyword or scan for a list of nearby items.
+            </span>
+        </div>
+    </ng-template>
+
+</div>
+
+<div class="float">
+    <button kendoButton (click)="onClickClear()">Clear</button>
+    <app-scanrfid-btn></app-scanrfid-btn>
+    <button kendoButton [primary]="true" (click)="onClickLocate()">Locate</button>
+</div>
+

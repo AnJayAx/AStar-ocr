@@ -1,0 +1,72 @@
+<form class="k-form" [formGroup]="partForm">
+    <fieldset class="k-form-fieldset">
+        <div class="d-flex justify-content-start align-items-center">
+            <span class="custom-label-wrapper">PART NO.</span>
+            <span class="field-value-wrapper">
+                <kendo-textbox
+                    [style.width.%]="100"
+                    formControlName="partNumber"
+                    #partNumber
+                    class="form-control"
+                ></kendo-textbox>
+            </span>
+        </div>
+
+        <kendo-formfield>
+            <span class="d-flex justify-content-start">DESCRIPTION</span>
+            <span class="field-value-wrapper">
+                <kendo-textarea
+                    formControlName="description"
+                    [rows]="5"
+                    #description
+                    style="height: 90px;"
+                ></kendo-textarea>            
+            </span>
+        </kendo-formfield>
+
+        <div class="d-flex justify-content-start align-items-center mt-2">
+            <span class="custom-label-wrapper">UNIT PRICE</span>
+            <span class="field-value-wrapper">
+                $&nbsp;
+                <kendo-numerictextbox
+                    [spinners]="false"
+                    [format]="'n2'"
+                    [decimals]="'2'"
+                    [autoCorrect]="true"
+                    formControlName="unitPrice"
+                    #unitPrice
+                    class="form-control"
+                ></kendo-numerictextbox>
+            </span>
+        </div>
+
+        <div class="d-flex justify-content-start align-items-center mt-2">
+            <span class="custom-label-wrapper">QUANTITY</span>
+            <span class="field-value-wrapper">
+                <kendo-numerictextbox
+                    [style.width.%]="100"
+                    [spinners]="false"
+                    [format]="'n0'"
+                    [decimals]="'0'"
+                    [min]="1"
+                    [autoCorrect]="true"
+                    formControlName="quantity"
+                    #quantity
+                    class="form-control"
+                ></kendo-numerictextbox>
+            </span>
+        </div>
+
+        <div class="mt-4 d-flex justify-content-start align-items-center">
+            <span class="custom-label-wrapper">TOTAL AMOUNT</span>
+            <span class="field-value-wrapper"><strong style="font-size: 1.2rem;">$&nbsp;{{ partAmountDisplay?.toFixed(2) }}</strong></span>
+            
+        </div>
+    </fieldset>
+</form>
+
+<div class="mt-2 d-flex align-items-center">
+    <button kendoButton (click)="onCancelPartUpdate()" [style.width.%]="100">Cancel</button>
+    <button kendoButton (click)="onConfirmPartUpdate()" [primary]="true" [style.width.%]="100">Confirm</button>
+</div>
+

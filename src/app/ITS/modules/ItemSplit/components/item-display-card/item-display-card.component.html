@@ -1,0 +1,21 @@
+<div class="card">
+    <div class="card-image d-flex align-items-center">
+        <div>
+            <kendo-loader *ngIf="isLoading && !imageUrl"></kendo-loader>
+            <img *ngIf="!isLoading && imageUrl"[src]="imageUrl" alt="Item Image" height="110" width="110"/>
+            <img *ngIf="!isLoading && !imageUrl" [src]="PLACEHOLDER_URL" height="110" width="110" />
+        </div>
+    
+    </div>
+    <div class="card-details">
+        <div class="details-wrapper">
+            <div class="item-name">
+                <app-sm-indicator [sm]="tagItem.SM"></app-sm-indicator>{{ printEPC }}
+            </div>
+            <div class="item-category">{{ tagItem.Category }}</div>
+            <div>{{ tagItem.Description }}</div>
+            <div class="item-location">{{ tagItem.Asset_LocationLocation }}</div>
+            <div class="item-balance">Last Balance:&nbsp;{{ tagItem.LastBal }}</div>
+        </div>
+    </div>
+</div>

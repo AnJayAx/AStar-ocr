@@ -1,0 +1,10 @@
+<div style="min-height: 100%;">
+    <div class="row">
+        <app-st-listview *ngIf="listItemsIsAvailable()" [listData]="listItems"></app-st-listview>
+        <ng-container *ngIf="!listItemsIsAvailable()">
+            <div class="d-flex justify-content-center align-items-center">
+                No results found.
+            </div>
+        </ng-container>
+    </div>
+</div>

@@ -1,0 +1,54 @@
+@import "its-variables";
+
+.float {
+    @include float;
+}
+
+.float-container {
+    @include float-container;
+}
+
+.first-op-checkbox {
+    width: 1.5rem;
+    height: 1.5rem;
+    outline: 1px solid black;
+}
+
+.field-container {
+    background-color: #EEEEEE; 
+    padding: 0.5rem 1rem; 
+    border-radius: 3px;
+}
+
+#qr-btn {
+    margin: 0 0.5rem 0 1rem;
+}
+
+.icon-container {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+
+    .responsive-icon {
+        height: 100%;
+        width: 100%;
+
+        :nth-child(1) {
+            height: 100%;
+            width: 100%;
+        }
+    }
+}
+.info-row {
+    display: flex;
+    margin-bottom: 0.1rem;
+
+    .property {
+        flex: 1;
+    }
+    .value {
+        flex: 5;
+        font-weight: bolder;
+    }
+}

@@ -1,0 +1,36 @@
+    <kendo-dialog
+        title="{{ dialogTitle }}"
+        (close)="close(DialogCloseEventType.Cancel)"
+    >
+        <div class="submission-content-wrapper">
+            <div class="mt-2 d-flex justify-content-between align-items-center">
+                <button kendoButton [primary]="true" (click)="onClickUploadPhoto()">
+                    <span class="d-flex align-items-center justify-content-around">
+                        <span class="k-icon k-i-camera"></span>&nbsp;Upload Photo
+                    </span>
+                </button>
+                <span>
+                    <strong [ngClass]="{ 'warning': photoLimitExceeded() }">{{ photoBase64List.length }}</strong>&nbsp;photo(s) selected.<br/>
+                    <span class="d-flex justify-content-end subtitle">Max:&nbsp;<strong>{{ photoCountLimit }}</strong></span>
+                </span>
+            </div>
+            <div class="mt-2 photo-scroll" *ngIf="photoBase64List.length > 0">
+                <span class="image-container" *ngFor="let data of photoBase64List">
+                    <img [src]="Utils.getImageBase64Source(data)" (click)="onSelectImage(data)"/>
+                    <span class="image-overlay d-flex justify-content-around align-items-center" *ngIf="showDeleteOption(data)">
+                        <fa-icon [icon]="faTrash" class="delete-icon" (click)="deleteImage(data)"></fa-icon>
+                        &nbsp;
+                        <fa-icon [icon]="faCancel" class="cancel-icon" (click)="deselectImage(data)"></fa-icon>
+                    </span>
+                </span>
+            </div>
+
+            <div class="mt-4">
+                <app-signature-field class="mt-4" #surface (updatedSignature)="getUpdatedSignature($event)"></app-signature-field>
+            </div> 
+        </div>
+        <kendo-dialog-actions class="d-flex justify-content-between actions-wrapper">
+            <button kendoButton (click)="close(DialogCloseEventType.Cancel)">Cancel</button>
+            <button kendoButton (click)="close(DialogCloseEventType.Submit)" themeColor="primary">Submit</button>
+        </kendo-dialog-actions>
+    </kendo-dialog>    

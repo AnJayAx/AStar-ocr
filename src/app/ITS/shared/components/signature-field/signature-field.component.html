@@ -1,0 +1,13 @@
+<div>
+    <div class="d-flex justify-content-between align-items-center">
+        <p class="mt-0 mb-0">Enter signature:</p>
+        <button kendoButton look="outline" (click)="clear()" [disabled]="!_signature">
+            <span class="d-flex justify-content-between align-items-center">
+                <span class="k-icon k-i-trash"></span>&nbsp;Clear
+            </span>
+        </button>
+    </div>
+    <div class="mt-2">
+        <signature-pad #sig [options]="options" (drawStart)="drawStart($event)" (drawEnd)="drawComplete($event)"></signature-pad>
+    </div>
+</div>
