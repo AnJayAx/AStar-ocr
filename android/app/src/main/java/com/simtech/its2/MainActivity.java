@@ -18,6 +18,7 @@ import com.example.app.plugin.DWUtilities.DWUtilitiesPlugin;
 import com.example.app.plugin.BarcodePlugin.barcodepluginPlugin;
 import com.example.app.plugin.MLKitOCR.MLKitOCRPlugin;
 import com.example.app.plugin.CameraXOCR.CameraXOCRPlugin;
+import com.example.app.plugin.PaddleOCR.PaddleOCRPlugin;
 
 public class MainActivity extends BridgeActivity {
 
@@ -35,6 +36,7 @@ public class MainActivity extends BridgeActivity {
     registerPlugin(barcodepluginPlugin.class);
     registerPlugin(MLKitOCRPlugin.class);
     registerPlugin(CameraXOCRPlugin.class);
+    registerPlugin(PaddleOCRPlugin.class);
 
     super.onCreate(savedInstanceState);
 

@@ -10,6 +10,7 @@ import { ItsServiceService } from '@its/shared/services/its-service.service';
 import { Wheel, WheelFormat, Block } from '@its/shared/interfaces/backend/Wheel';
 import CameraXOCR, { CameraXOCRPreviewFrame, CameraXOCRResult } from '@its/shared/interfaces/plugins/CameraXOCRPlugin';
 import MLKitOCR, { MLKitOCRResult } from '@its/shared/interfaces/plugins/MLKitOCRPlugin';
+import PaddleOCR from '@its/shared/interfaces/plugins/PaddleOCRPlugin';
 
 @Component({
   selector: 'app-ocr',
@@ -36,6 +37,10 @@ export class OCRComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // ===== Scanning state =====
   ocrSwitchedOn = false;
+
+  // ===== OCR Engine =====
+  ocrEngine: 'mlkit' | 'paddleocr' = 'mlkit';
+  private paddleOcrUnavailableNotified = false;
 
   // ===== OCR Results =====
   wheelFormat: RegExp | null = null;
@@ -216,17 +221,43 @@ export class OCRComponent implements OnInit, AfterViewInit, OnDestroy {
 
       // Note: using a dataURL keeps the plugin-side decoding simple
       const jpegDataUrl = this.cropCanvas.toDataURL('image/jpeg', 0.85);
-      const result: MLKitOCRResult = await MLKitOCR.recognizeText({ imageBase64: jpegDataUrl });
-      this.handleMlkitOcrResult(result);
+
+      let result: MLKitOCRResult;
+      if (this.ocrEngine === 'paddleocr') {
+        // PaddleOCR is integrated via a separate Capacitor plugin.
+        // It should return the same `{ lines: [...] }` shape as MLKitOCR.
+        result = await PaddleOCR.recognizeText({ imageBase64: jpegDataUrl });
+      } else {
+        result = await MLKitOCR.recognizeText({ imageBase64: jpegDataUrl });
+      }
+
+      this.handleOcrResult(result);
     } catch (e) {
-      // Keep best-effort. If ML Kit rejects, just skip this frame.
+      // Keep best-effort. If an engine rejects, just skip this frame.
+      // PaddleOCR may not be bundled in some builds; show a one-time notice and fall back.
+      if (this.ocrEngine === 'paddleocr' && !this.paddleOcrUnavailableNotified) {
+        const details = (e && (e as any)?.message) ? String((e as any).message) : (e ? String(e) : '');
+        const isAbiOrJniIssue = /UnsatisfiedLinkError|dlopen failed|libpaddle_lite_jni\.so/i.test(details);
+        this.paddleOcrUnavailableNotified = true;
+        this.ocrEngine = 'mlkit';
+        this._customDialog
+          .message(
+            'Info',
+            isAbiOrJniIssue
+              ? 'PaddleOCR cannot run on this emulator/device (native Paddle Lite library is missing for this CPU ABI). Use an ARM device or ARM emulator. Falling back to ML Kit.'
+              : 'PaddleOCR is not available in this build yet. Falling back to ML Kit.',
+            [{ text: 'Close', primary: true }],
+            'info'
+          )
+          .subscribe();
+      }
     } finally {
       this.ocrInFlight = false;
     }
   }
 
   // ================= OCR result handler (ROI only) =================
-  private handleMlkitOcrResult(result: MLKitOCRResult): void {
+  private handleOcrResult(result: MLKitOCRResult): void {
     this.detectedLines = this._ocrService.detectedLines;
 
     const ocrRes: Block = this._ocrService.processOcrLines(result.lines);
@@ -276,6 +307,14 @@ export class OCRComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     setTimeout(() => { this.alertContainer.hidden = true; }, 1500);
+  }
+
+  onOcrEngineChange(engine: string): void {
+    if (engine === 'paddleocr' || engine === 'mlkit') {
+      this.ocrEngine = engine;
+    } else {
+      this.ocrEngine = 'mlkit';
+    }
   }
 
   private stopScanningAfterMatch() {

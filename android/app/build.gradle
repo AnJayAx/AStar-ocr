@@ -20,6 +20,14 @@ android {
             ignoreAssetsPattern '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
+
+    // Paddle Lite JNI libraries will be staged into buildDir and added as a JNI lib source.
+    sourceSets {
+        main {
+            jniLibs.srcDirs += ["$buildDir/paddlelite/jniLibs"]
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -27,6 +35,85 @@ android {
         }
     }
 }
+
+// ---- Paddle Lite (bundled) ----
+// This task downloads the Paddle Lite Java + JNI prebuilt libs and stages them into buildDir
+// so they get packaged into the APK/AAB. Model files are bundled separately as assets.
+def paddleLiteTag = 'v2.14-rc'
+def paddleLiteBaseUrl = "https://github.com/PaddlePaddle/Paddle-Lite/releases/download/${paddleLiteTag}"
+def paddleLiteArm64Archive = "inference_lite_lib.android.armv8.clang.c++_shared.with_extra.tar.gz"
+def paddleLiteArmv7Archive = "inference_lite_lib.android.armv7.clang.c++_shared.with_extra.tar.gz"
+
+def paddleLiteDownloadsDir = file("$rootDir/build/paddlelite-downloads")
+def paddleLiteStageDir = file("$buildDir/paddlelite")
+def paddleLiteJarOut = file("$paddleLiteStageDir/jar/PaddlePredictor.jar")
+
+tasks.register('preparePaddleLite') {
+    outputs.file(paddleLiteJarOut)
+
+    doLast {
+        paddleLiteDownloadsDir.mkdirs()
+        paddleLiteStageDir.mkdirs()
+
+        def arm64Path = file("$paddleLiteDownloadsDir/${paddleLiteArm64Archive}")
+        def armv7Path = file("$paddleLiteDownloadsDir/${paddleLiteArmv7Archive}")
+
+        if (!arm64Path.exists()) {
+            ant.get(src: "${paddleLiteBaseUrl}/${paddleLiteArm64Archive}", dest: arm64Path, skipexisting: 'true')
+        }
+        if (!armv7Path.exists()) {
+            ant.get(src: "${paddleLiteBaseUrl}/${paddleLiteArmv7Archive}", dest: armv7Path, skipexisting: 'true')
+        }
+
+        // Extract + stage arm64
+        def arm64ExtractDir = file("$paddleLiteStageDir/extracted/arm64")
+        if (!arm64ExtractDir.exists()) {
+            copy {
+                from tarTree(resources.gzip(arm64Path))
+                into arm64ExtractDir
+            }
+        }
+
+        // Extract + stage armv7
+        def armv7ExtractDir = file("$paddleLiteStageDir/extracted/armv7")
+        if (!armv7ExtractDir.exists()) {
+            copy {
+                from tarTree(resources.gzip(armv7Path))
+                into armv7ExtractDir
+            }
+        }
+
+        // Copy JAR (from arm64 package)
+        def jarCandidates = fileTree(arm64ExtractDir).matching { include '**/java/jar/PaddlePredictor.jar' }.files
+        if (jarCandidates.isEmpty()) {
+            throw new GradleException('Paddle Lite jar not found in extracted archive')
+        }
+        file("$paddleLiteStageDir/jar").mkdirs()
+        copy {
+            from jarCandidates.iterator().next()
+            into file("$paddleLiteStageDir/jar")
+        }
+
+        // Copy JNI + core shared libs per ABI
+        def stageAbi = { File extractDir, String abi ->
+            def jniLib = fileTree(extractDir).matching { include '**/java/so/libpaddle_lite_jni.so' }.files
+            def coreLib = fileTree(extractDir).matching { include '**/cxx/lib/libpaddle_light_api_shared.so' }.files
+            if (jniLib.isEmpty() || coreLib.isEmpty()) {
+                throw new GradleException("Paddle Lite .so not found for ${abi}")
+            }
+            def outDir = file("$paddleLiteStageDir/jniLibs/${abi}")
+            outDir.mkdirs()
+            copy { from jniLib; into outDir }
+            copy { from coreLib; into outDir }
+        }
+
+        stageAbi(arm64ExtractDir, 'arm64-v8a')
+        stageAbi(armv7ExtractDir, 'armeabi-v7a')
+    }
+}
+
+// Ensure Paddle Lite is prepared before compiling.
+preBuild.dependsOn tasks.named('preparePaddleLite')
 
 repositories {
     flatDir{
@@ -36,6 +123,7 @@ repositories {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation files(paddleLiteJarOut)
     implementation "androidx.appcompat:appcompat:$androidxAppCompatVersion"
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation project(':capacitor-android')
@@ -46,7 +134,7 @@ dependencies {
 
 
 
-  
+
     implementation fileTree(dir: '../libs', include: ['*.aar'])
     // compileOnly 'com.symbol:emdk:9.1+'
 

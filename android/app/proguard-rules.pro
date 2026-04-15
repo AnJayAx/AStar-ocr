@@ -19,3 +19,9 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# Paddle Lite (Java API + JNI)
+-keep class com.baidu.paddle.lite.** { *; }
+
+# Capacitor plugins
+-keep class com.example.app.plugin.PaddleOCR.** { *; }

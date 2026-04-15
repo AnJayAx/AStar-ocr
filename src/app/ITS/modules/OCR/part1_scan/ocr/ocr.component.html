@@ -141,6 +141,21 @@
       </div>
     </div>
 
+    <div class="mt-2">
+      <legend class="k-form-legend">OCR Engine</legend>
+      <div class="d-flex align-items-center">
+        <select
+          class="form-select"
+          [value]="ocrEngine"
+          (change)="onOcrEngineChange($any($event.target).value)"
+          aria-label="OCR Engine"
+        >
+          <option value="mlkit">ML Kit</option>
+          <option value="paddleocr">PaddleOCR (PP-OCRv5 Mobile)</option>
+        </select>
+      </div>
+    </div>
+
     <div class="view" id="results-view">
       <legend class="k-form-legend">Scan Result</legend>
       <div id="verify-list">
