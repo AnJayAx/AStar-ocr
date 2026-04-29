@@ -23,6 +23,10 @@ export const environment = {
   isMobile: true,
   production: true,
   // production: false, /* Set to false to disable KeyCloakService */
+
+  /** Gemini Smart Suggester (VlmOcrService). Paste rotated key locally — DO NOT COMMIT. */
+  GEMINI_API_KEY: 'AIzaSyBPt2eOoVVL3UysVLP_ECimXgyAewt3dHw',
+  GEMINI_MODEL: 'gemini-2.5-flash-lite',
   DEV_TEST_USER: {
     id: 'Dev User 1',
     username: 'devuser1',

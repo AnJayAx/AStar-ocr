@@ -141,41 +141,28 @@
       </div>
     </div>
 
-    <div class="mt-2">
-      <legend class="k-form-legend">OCR Engine</legend>
-      <div class="d-flex align-items-center">
-        <select
-          class="form-select"
-          [value]="ocrEngine"
-          (change)="onOcrEngineChange($any($event.target).value)"
-          aria-label="OCR Engine"
-        >
-          <option value="mlkit">ML Kit</option>
-          <option value="paddleocr">PaddleOCR (PP-OCRv5 Mobile)</option>
-        </select>
-      </div>
-    </div>
-
     <div class="view" id="results-view">
       <legend class="k-form-legend">Scan Result</legend>
-      <div id="verify-list">
-        <div *ngIf="currRes" class="card p-20" id="resultText">
-          {{ currRes }}
-        </div>
-      </div>
-    </div>
-
-    <div class="view" id="detected-lines-view" *ngIf="detectedLines.length > 0">
-      <legend class="k-form-legend">Detected Text</legend>
-      <div id="detected-lines-list">
+      <div id="vlm-result-grid">
         <div
-          *ngFor="let line of detectedLines"
-          class="detected-line"
-          [class.detected-line--match]="line === currRes || line.includes(currRes)"
+          class="vlm-row"
+          [class.vlm-row--ok]="serialNo && serialOk"
+          [class.vlm-row--warn]="serialNo && !serialOk"
+          [class.vlm-row--idle]="!serialNo"
         >
-          {{ line }}
+          <span class="vlm-row__label">S/N</span>
+          <span class="vlm-row__value">{{ serialNo || '—' }}</span>
+        </div>
+        <div
+          class="vlm-row"
+          [class.vlm-row--ok]="partNo"
+          [class.vlm-row--idle]="!partNo"
+        >
+          <span class="vlm-row__label">P/N</span>
+          <span class="vlm-row__value">{{ partNo || '—' }}</span>
         </div>
       </div>
+      <div *ngIf="vlmStatus" class="vlm-status">{{ vlmStatus }}</div>
     </div>
     <div id="submit-btn-container">
       <button

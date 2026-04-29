@@ -6,11 +6,10 @@ import { NativeAudio } from '@capacitor-community/native-audio';
 import { CustomDialogService } from '@dis/services/message/custom-dialog.service';
 import { Router } from '@angular/router';
 import { OcrService } from '../../ocr.service';
+import { VlmOcrService } from '../../vlm-ocr.service';
 import { ItsServiceService } from '@its/shared/services/its-service.service';
-import { Wheel, WheelFormat, Block } from '@its/shared/interfaces/backend/Wheel';
-import CameraXOCR, { CameraXOCRPreviewFrame, CameraXOCRResult } from '@its/shared/interfaces/plugins/CameraXOCRPlugin';
-import MLKitOCR, { MLKitOCRResult } from '@its/shared/interfaces/plugins/MLKitOCRPlugin';
-import PaddleOCR from '@its/shared/interfaces/plugins/PaddleOCRPlugin';
+import { Wheel, WheelFormat } from '@its/shared/interfaces/backend/Wheel';
+import CameraXOCR, { CameraXOCRPreviewFrame } from '@its/shared/interfaces/plugins/CameraXOCRPlugin';
 
 @Component({
   selector: 'app-ocr',
@@ -26,8 +25,9 @@ export class OCRComponent implements OnInit, AfterViewInit, OnDestroy {
   roiRect: HTMLDivElement | null = null;
 
   private ocrInFlight = false;
-  private lastOcrAtMs = 0;
-  private readonly ocrThrottleMs = 650;
+  /** True between "trigger pressed" and "OCR call dispatched". */
+  private triggerPending = false;
+  private hwTriggerListener?: () => void;
 
   // ===== Camera / preview =====
   previewParent = 'camera-preview-host';
@@ -38,17 +38,19 @@ export class OCRComponent implements OnInit, AfterViewInit, OnDestroy {
   // ===== Scanning state =====
   ocrSwitchedOn = false;
 
-  // ===== OCR Engine =====
-  ocrEngine: 'mlkit' | 'paddleocr' = 'mlkit';
-  private paddleOcrUnavailableNotified = false;
-
   // ===== OCR Results =====
   wheelFormat: RegExp | null = null;
   resultsDisplayed = true;
   menuContainer: HTMLDivElement | null = null;
   resultsDetected = false;
   currRes = '';
-  detectedLines: string[] = [];
+
+  // ===== Gemini OCR result (driven by OCR Scan toggle) =====
+  serialNo = '';
+  partNo   = '';
+  vlmStatus = '';
+  /** True iff the returned serial passed the wheel-format regex (lock-in gate). */
+  serialOk = false;
 
   // ===== Lights =====
   lightSwitchedOn = false;
@@ -64,8 +66,10 @@ export class OCRComponent implements OnInit, AfterViewInit, OnDestroy {
     private _customDialog: CustomDialogService,
     private router: Router,
     private _ocrService: OcrService,
+    private _vlmOcrService: VlmOcrService,
     private _itsService: ItsServiceService,
   ) {}
+
 
   // ================= ROI helpers =================
   private getRoiRectInPreviewCanvasPixels(): { x: number; y: number; w: number; h: number } | null {
@@ -196,17 +200,16 @@ export class OCRComponent implements OnInit, AfterViewInit, OnDestroy {
   private async maybeRunOcrFromPreviewCanvas(): Promise<void> {
     if (!this.ocrSwitchedOn) return;
     if (this.ocrInFlight) return;
+    if (!this.triggerPending) return;          // press-to-scan: only run on hardware trigger
     if (!this.previewCanvas || !this.canvasElement) return;
-
-    const now = Date.now();
-    if (now - this.lastOcrAtMs < this.ocrThrottleMs) return;
 
     const roi = this.getRoiRectInPreviewCanvasPixels();
     if (!roi) return;
 
+    const pipelineStart = performance.now();
     try {
       this.ocrInFlight = true;
-      this.lastOcrAtMs = now;
+      this.triggerPending = false;             // consume the trigger
 
       // Crop the ROI region from the preview canvas into an offscreen canvas
       if (!this.cropCanvas) this.cropCanvas = document.createElement('canvas');
@@ -219,102 +222,73 @@ export class OCRComponent implements OnInit, AfterViewInit, OnDestroy {
       cropCtx.clearRect(0, 0, roi.w, roi.h);
       cropCtx.drawImage(this.previewCanvas, roi.x, roi.y, roi.w, roi.h, 0, 0, roi.w, roi.h);
 
-      // Note: using a dataURL keeps the plugin-side decoding simple
+      const cropDoneAt = performance.now();
       const jpegDataUrl = this.cropCanvas.toDataURL('image/jpeg', 0.85);
+      const encodeDoneAt = performance.now();
 
-      let result: MLKitOCRResult;
-      if (this.ocrEngine === 'paddleocr') {
-        // PaddleOCR is integrated via a separate Capacitor plugin.
-        // It should return the same `{ lines: [...] }` shape as MLKitOCR.
-        result = await PaddleOCR.recognizeText({ imageBase64: jpegDataUrl });
-      } else {
-        result = await MLKitOCR.recognizeText({ imageBase64: jpegDataUrl });
-      }
+      const result = await this._vlmOcrService.extract(jpegDataUrl, 'image/jpeg');
 
-      this.handleOcrResult(result);
+      const cropMs   = Math.round(cropDoneAt   - pipelineStart);
+      const encodeMs = Math.round(encodeDoneAt - cropDoneAt);
+      const totalMs  = Math.round(performance.now() - pipelineStart);
+      this.handleVlmResult(result, { totalMs, cropMs, encodeMs });
     } catch (e) {
-      // Keep best-effort. If an engine rejects, just skip this frame.
-      // PaddleOCR may not be bundled in some builds; show a one-time notice and fall back.
-      if (this.ocrEngine === 'paddleocr' && !this.paddleOcrUnavailableNotified) {
-        const details = (e && (e as any)?.message) ? String((e as any).message) : (e ? String(e) : '');
-        const isAbiOrJniIssue = /UnsatisfiedLinkError|dlopen failed|libpaddle_lite_jni\.so/i.test(details);
-        this.paddleOcrUnavailableNotified = true;
-        this.ocrEngine = 'mlkit';
-        this._customDialog
-          .message(
-            'Info',
-            isAbiOrJniIssue
-              ? 'PaddleOCR cannot run on this emulator/device (native Paddle Lite library is missing for this CPU ABI). Use an ARM device or ARM emulator. Falling back to ML Kit.'
-              : 'PaddleOCR is not available in this build yet. Falling back to ML Kit.',
-            [{ text: 'Close', primary: true }],
-            'info'
-          )
-          .subscribe();
-      }
+      console.warn('Gemini OCR call failed for frame:', e);
     } finally {
       this.ocrInFlight = false;
     }
   }
 
-  // ================= OCR result handler (ROI only) =================
-  private handleOcrResult(result: MLKitOCRResult): void {
-    this.detectedLines = this._ocrService.detectedLines;
+  // ================= Gemini result handler (ROI only) =================
+  private handleVlmResult(
+    result: { serial: string; partNumber: string; raw: string; latencyMs: number; timedOut: boolean },
+    timing: { totalMs: number; cropMs: number; encodeMs: number },
+  ): void {
+    if (this.alertContainer) this.alertContainer.hidden = false;
 
-    const ocrRes: Block = this._ocrService.processOcrLines(result.lines);
-    this.detectedLines = this._ocrService.detectedLines;
+    const apiMs = result.latencyMs;
+    const overheadMs = Math.max(0, timing.totalMs - apiMs);
+    const timingLabel = `total ${timing.totalMs}ms · api ${apiMs}ms · prep ${overheadMs}ms (crop ${timing.cropMs}, encode ${timing.encodeMs})`;
+    console.log(`[OCR pipeline] ${timingLabel}`);
 
-    this.alertContainer.hidden = false;
+    // Aborted / nothing useful detected — keep scanning.
+    if (result.timedOut || (!result.serial && !result.partNumber)) {
+      this.resultsDetected = false;
+      this.vlmStatus = result.timedOut
+        ? `Timed out · ${timing.totalMs}ms`
+        : `${timing.totalMs}ms — nothing detected`;
+      setTimeout(() => { if (this.alertContainer) this.alertContainer.hidden = true; }, 1500);
+      return;
+    }
 
-    if (ocrRes) {
-      // Draw bounding box on canvas
-      const outCtx = this.canvasElement.getContext('2d');
-      if (outCtx) {
-        const dpr = window.devicePixelRatio || 1;
-        const roiRect = this.roiRect?.getBoundingClientRect();
-        if (roiRect) {
-          this.canvasElement.width  = Math.round(roiRect.width  * dpr);
-          this.canvasElement.height = Math.round(roiRect.height * dpr);
-        }
-        outCtx.setTransform(1, 0, 0, 1, 0, 0);
-        outCtx.clearRect(0, 0, this.canvasElement.width, this.canvasElement.height);
+    this.serialNo = result.serial;
+    this.partNo   = result.partNumber;
 
-        const { cornerPoints } = ocrRes;
-        const { topLeft, topRight, bottomRight, bottomLeft } = cornerPoints;
-        const pts = [topLeft, topRight, bottomRight, bottomLeft].map((p) => ({
-          x: (p.x / 1000) * this.canvasElement.width,
-          y: (p.y / 1000) * this.canvasElement.height,
-        }));
+    // Lock-in gate: if a serial was returned, it must satisfy the wheel-format
+    // regex (when loaded). If only a part number was returned, trust Gemini.
+    const wheelRegex = this._ocrService.originalRegexFormat;
+    const serialPresent = !!result.serial;
+    const serialPasses  = serialPresent && (wheelRegex ? wheelRegex.test(result.serial) : true);
 
-        outCtx.lineWidth   = 8;
-        outCtx.strokeStyle = 'green';
-        outCtx.lineJoin    = 'round';
-        outCtx.lineCap     = 'round';
-        outCtx.beginPath();
-        outCtx.moveTo(pts[0].x, pts[0].y);
-        outCtx.lineTo(pts[1].x, pts[1].y);
-        outCtx.lineTo(pts[2].x, pts[2].y);
-        outCtx.lineTo(pts[3].x, pts[3].y);
-        outCtx.closePath();
-        outCtx.stroke();
-      }
+    this.serialOk = serialPasses;
 
+    const lockIn = serialPasses || (!serialPresent && !!result.partNumber);
+
+    const status = `${timing.totalMs}ms total · api ${apiMs}ms`;
+
+    if (lockIn) {
       NativeAudio.play({ assetId: 'ocr-scan' });
-      this.currRes = ocrRes.text;
+      this.currRes = result.serial || result.partNumber; // submit flow keys off currRes (serial)
       this.resultsDetected = true;
+      this.vlmStatus = status;
       this.stopScanningAfterMatch();
     } else {
+      // Show what we got but keep scanning for a clean read.
       this.resultsDetected = false;
+      this.vlmStatus = `${status} — verify manually`;
     }
 
-    setTimeout(() => { this.alertContainer.hidden = true; }, 1500);
-  }
-
-  onOcrEngineChange(engine: string): void {
-    if (engine === 'paddleocr' || engine === 'mlkit') {
-      this.ocrEngine = engine;
-    } else {
-      this.ocrEngine = 'mlkit';
-    }
+    setTimeout(() => { if (this.alertContainer) this.alertContainer.hidden = true; }, 1500);
   }
 
   private stopScanningAfterMatch() {
@@ -333,7 +307,14 @@ export class OCRComponent implements OnInit, AfterViewInit, OnDestroy {
       if (outCtx) outCtx.clearRect(0, 0, this.canvasElement.width, this.canvasElement.height);
       this.alertContainer.hidden = true;
       this.resultsDetected = false;
-      this.lastOcrAtMs = 0;
+      this.serialNo = '';
+      this.partNo   = '';
+      this.vlmStatus = 'Aim and press trigger to scan';
+      this.serialOk = false;
+      this.triggerPending = false;
+    } else {
+      this.vlmStatus = '';
+      this.triggerPending = false;
     }
 
     // Native analysis is intentionally disabled; OCR runs from the ROI crop.
@@ -380,7 +361,7 @@ export class OCRComponent implements OnInit, AfterViewInit, OnDestroy {
       else { if (substring.length > 0) expressions.push(substring); }
       if (expressions.length > 0) allExpressions.push(expressions.join(''));
     }
-    return new RegExp(`^(?:(?:S\\/N|P\\/N)\\s*:?\\s*)?(?:${allExpressions.join('|')})$`);
+    return new RegExp(`^(?:(?:S\\/N|SN|P\\/N|PN)\\s*:?\\s*)?(?:${allExpressions.join('|')})$`);
   }
 
   loadWheelFormats() {
@@ -487,12 +468,35 @@ export class OCRComponent implements OnInit, AfterViewInit, OnDestroy {
     } catch (e) {
       // best-effort; OCR can still function without a preview
     }
+
+    // Listen for the TC2205 hardware trigger. MainActivity.dispatchKeyEvent
+    // forwards trigger key presses as a window CustomEvent.
+    this.hwTriggerListener = () => this.onHardwareTrigger();
+    window.addEventListener('ocrHardwareTrigger', this.hwTriggerListener);
+  }
+
+  /**
+   * Called when the TC2205 hardware trigger is pressed. If the OCR Scan toggle
+   * is on and no call is in flight, arm the next preview frame to run Gemini.
+   */
+  private onHardwareTrigger(): void {
+    if (!this.ocrSwitchedOn) return;
+    if (this.ocrInFlight) return;
+    this.triggerPending = true;
+    this.vlmStatus = 'Scanning…';
+    // The next previewFrame tick will call maybeRunOcrFromPreviewCanvas and
+    // consume the pending flag.
   }
 
   async ngOnDestroy(): Promise<void> {
     // Restore body background so other pages are unaffected
     document.body.style.removeProperty('background-color');
     document.documentElement.style.removeProperty('background-color');
+
+    if (this.hwTriggerListener) {
+      window.removeEventListener('ocrHardwareTrigger', this.hwTriggerListener);
+      this.hwTriggerListener = undefined;
+    }
 
     NativeAudio.unload({ assetId: 'ocr-scan' });
     this.currRes = '';

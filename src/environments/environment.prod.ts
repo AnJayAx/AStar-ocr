@@ -8,6 +8,7 @@ const KEYCLOAK_URL = keycloakUrl + ':8080/';
 export const environment = {
   isMobile: false,
   production: true,
+  /** Optional: HTTP endpoint for VLM-based OCR (e.g., Qwen3-VL). Leave empty to use on-device ML Kit only. */
   DEV_TEST_USER: {
     id: 'Dev User 1',
     username: 'devuser1',

@@ -159,6 +159,60 @@
   pointer-events: none;
 }
 
+// Gemini OCR result grid — high-contrast, factory-floor readable
+#vlm-result-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.vlm-row {
+  display: grid;
+  grid-template-columns: 60px 1fr;
+  align-items: center;
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: 3px solid transparent;
+  background: #1a1a1a;
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  min-height: 64px;
+
+  &__label {
+    font-size: 14px;
+    font-weight: 700;
+    color: #aaa;
+    letter-spacing: 0.1em;
+  }
+
+  &__value {
+    font-size: 30px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    color: #fff;
+    word-break: break-all;
+    text-align: right;
+  }
+
+  &--ok {
+    background: #003d1a;
+    border-color: #00c853;
+    .vlm-row__value { color: #b9f6ca; }
+  }
+  &--warn {
+    background: #3d1f00;
+    border-color: #ff9800;
+    .vlm-row__value { color: #ffe0b2; }
+  }
+  &--idle .vlm-row__value { color: #555; }
+}
+
+.vlm-status {
+  font-size: 12px;
+  color: #555;
+  margin-top: 6px;
+  text-align: center;
+}
+
 // Detected text lines panel
 #detected-lines-view {
   margin-top: 8px;

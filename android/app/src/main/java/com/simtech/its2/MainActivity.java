@@ -3,6 +3,8 @@ package com.example.app;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.KeyEvent;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -18,7 +20,6 @@ import com.example.app.plugin.DWUtilities.DWUtilitiesPlugin;
 import com.example.app.plugin.BarcodePlugin.barcodepluginPlugin;
 import com.example.app.plugin.MLKitOCR.MLKitOCRPlugin;
 import com.example.app.plugin.CameraXOCR.CameraXOCRPlugin;
-import com.example.app.plugin.PaddleOCR.PaddleOCRPlugin;
 
 public class MainActivity extends BridgeActivity {
 
@@ -36,7 +37,6 @@ public class MainActivity extends BridgeActivity {
     registerPlugin(barcodepluginPlugin.class);
     registerPlugin(MLKitOCRPlugin.class);
     registerPlugin(CameraXOCRPlugin.class);
-    registerPlugin(PaddleOCRPlugin.class);
 
     super.onCreate(savedInstanceState);
 
@@ -70,5 +70,44 @@ public class MainActivity extends BridgeActivity {
     }
   }
 
+  /**
+   * Forwards Zebra TC2x hardware trigger presses to the WebView as a JS
+   * 'ocrHardwareTrigger' event. The OCR component listens for this event and
+   * runs a single Gemini call when the OCR Scan toggle is on.
+   *
+   * We always pass the event to super so DataWedge / barcode plugin still see it.
+   * If your TC2205 trigger keycode differs, watch logcat for the line below
+   * and add the keycode to TRIGGER_KEYCODES.
+   */
+  private static final int[] TRIGGER_KEYCODES = new int[] {
+    KeyEvent.KEYCODE_FOCUS,        // 80
+    KeyEvent.KEYCODE_BUTTON_L1,    // 102 — Zebra left scan key (TC2x default)
+    KeyEvent.KEYCODE_BUTTON_R1,    // 103 — Zebra right scan key
+    280, 287, 293                  // common Zebra programmable trigger codes
+  };
 
+  @Override
+  public boolean dispatchKeyEvent(KeyEvent event) {
+    if (event.getAction() == KeyEvent.ACTION_DOWN && event.getRepeatCount() == 0) {
+      int code = event.getKeyCode();
+      Log.d(TAG, "dispatchKeyEvent: keycode=" + code + " (" + KeyEvent.keyCodeToString(code) + ")");
+
+      for (int trigger : TRIGGER_KEYCODES) {
+        if (code == trigger) {
+          dispatchOcrTrigger();
+          break;
+        }
+      }
+    }
+    return super.dispatchKeyEvent(event);
+  }
+
+  private void dispatchOcrTrigger() {
+    if (getBridge() == null || getBridge().getWebView() == null) return;
+    getBridge().getWebView().post(() ->
+      getBridge().getWebView().evaluateJavascript(
+        "window.dispatchEvent(new CustomEvent('ocrHardwareTrigger'))", null
+      )
+    );
+  }
 }

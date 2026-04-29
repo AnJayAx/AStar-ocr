@@ -332,21 +332,40 @@ public class CameraXOCRPlugin extends Plugin {
             int n = previewCounter.incrementAndGet();
             // ~10fps if analyzer gets ~30fps
             if (n % 3 == 0) {
+                Bitmap bmp = null;
+                Bitmap rotated = null;
+                Bitmap scaled = null;
                 try {
-                    Bitmap bmp = imageProxy.toBitmap();
+                    bmp = imageProxy.toBitmap();
                     if (bmp != null) {
-                        Bitmap rotated = rotateBitmap(bmp, rotation);
-                        Bitmap scaled = scaleToMax(rotated, 720);
-                        String jpegB64 = bitmapToJpegBase64(scaled, 65);
+                        rotated = rotateBitmapSafe(bmp, rotation);
+                        if (rotated != null) {
+                            // Keep preview payload small to avoid memory churn.
+                            scaled = scaleToMax(rotated, 640);
+                            String jpegB64 = bitmapToJpegBase64(scaled, 60);
 
-                        JSObject frame = new JSObject();
-                        frame.put("jpegBase64", jpegB64);
-                        frame.put("width", scaled.getWidth());
-                        frame.put("height", scaled.getHeight());
-                        notifyListeners("previewFrame", frame);
+                            JSObject frame = new JSObject();
+                            frame.put("jpegBase64", jpegB64);
+                            frame.put("width", scaled.getWidth());
+                            frame.put("height", scaled.getHeight());
+                            notifyListeners("previewFrame", frame);
+                        }
                     }
+                } catch (OutOfMemoryError oom) {
+                    Log.w(TAG, "previewFrame OOM; skipping frame");
                 } catch (Exception e) {
                     Log.w(TAG, "previewFrame failed: " + e.getMessage());
+                } finally {
+                    // Recycle temporary bitmaps to avoid leaks/churn on emulator.
+                    if (scaled != null && scaled != rotated && !scaled.isRecycled()) {
+                        scaled.recycle();
+                    }
+                    if (rotated != null && rotated != bmp && !rotated.isRecycled()) {
+                        rotated.recycle();
+                    }
+                    if (bmp != null && !bmp.isRecycled()) {
+                        bmp.recycle();
+                    }
                 }
             }
         }
@@ -418,12 +437,19 @@ public class CameraXOCRPlugin extends Plugin {
         return Base64.encodeToString(bytes, Base64.NO_WRAP);
     }
 
-    private static Bitmap rotateBitmap(Bitmap bitmap, int degrees) {
+    private static Bitmap rotateBitmapSafe(Bitmap bitmap, int degrees) {
+        if (bitmap == null) return null;
         if (degrees == 0) return bitmap;
-        Matrix matrix = new Matrix();
-        matrix.postRotate(degrees);
-        return Bitmap.createBitmap(
-                bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+        try {
+            Matrix matrix = new Matrix();
+            matrix.postRotate(degrees);
+            return Bitmap.createBitmap(
+                    bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+        } catch (OutOfMemoryError oom) {
+            return null;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     // ── Debug frame saving ───────────────────────────────────────────────────
