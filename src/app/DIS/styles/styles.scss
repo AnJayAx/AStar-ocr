@@ -618,8 +618,9 @@ $bootstrap-blue: #0257d5;
   background-color: $bootstrap-blue;
 }
 
-body.scanner { 
-  display: contents; 
+body.scanner {
+  background-color: transparent !important;
+  overflow: hidden;
 }
 
 .scan-btn {

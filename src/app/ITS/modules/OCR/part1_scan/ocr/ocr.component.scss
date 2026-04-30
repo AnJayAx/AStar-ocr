@@ -1,11 +1,26 @@
 @import "its-variables";
 @import "variables";
 
+:host {
+  display: block;
+  height: 100%;
+  overflow: hidden;
+}
+
+.content {
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
 #camera-preview-host {
-  width: 90vw;
-  height: 40vh;
+  width: 100%;
+  flex: 0 0 40%;
+  min-height: 170px;
   position: relative;
-  margin: 0 auto;
+  margin: 0;
   display: flex;
   background-color: transparent !important;
   justify-content: center;
@@ -21,8 +36,9 @@
 }
 
 #alert-container {
-  height: 60px;
-  margin: 0 auto;
+  flex: 0 0 auto;
+  height: 52px;
+  margin: 0;
   background: black;
   opacity: 0.8;
 }
@@ -32,7 +48,7 @@
   display: block;
   text-align: center;
   align-content: center;
-  padding: 1rem 1rem;
+  padding: 0.6rem 0.75rem;
   border-radius: $border-radius;
   height: 100%;
   width: 100%;
@@ -56,9 +72,16 @@
 // }
 
 #results-view {
-  margin-top: 20px;
+  flex: 1 1 auto;
+  min-height: 0;
+  margin-top: 6px;
   position: relative;
   background-color: transparent;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding-bottom: 8px;
 }
 
 .k-i-trash,
@@ -99,13 +122,17 @@
 }
 
 .ocr-menu {
+  flex: 1 1 auto;
+  min-height: 0;
   background: white;
-  display: grid;
-  // 47px = navbar
-  // 100px = original height
-  // 30vh = taken by camera view
-  height: calc(100vh - 47px - 100px - 40vh + 40px);
-  padding: 5px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 8px 10px;
+}
+
+.ocr-controls {
+  flex: 0 0 auto;
 }
 #camera-canvas {
   width: 100%;
@@ -113,8 +140,11 @@
 }
 #submit-btn-container {
   display: flex;
-  margin-left: 5px;
-  margin-right: 5px;
+  flex: 0 0 auto;
+  margin: 8px -10px 0 -10px;
+  padding: 8px 10px calc(8px + env(safe-area-inset-bottom)) 10px;
+  background: white;
+  border-top: $border-100;
 }
 #ocr-submit {
   width: 100%;
@@ -163,34 +193,36 @@
 #vlm-result-grid {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
+  flex: 0 0 auto;
 }
 
 .vlm-row {
   display: grid;
   grid-template-columns: 60px 1fr;
   align-items: center;
-  padding: 12px 14px;
+  padding: 10px 12px;
   border-radius: 8px;
   border: 3px solid transparent;
   background: #1a1a1a;
   font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-  min-height: 64px;
+  min-height: 56px;
 
   &__label {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 700;
     color: #aaa;
     letter-spacing: 0.1em;
   }
 
   &__value {
-    font-size: 30px;
+    font-size: 24px;
     font-weight: 800;
     letter-spacing: 0.06em;
     color: #fff;
     word-break: break-all;
     text-align: right;
+    line-height: 1.05;
   }
 
   &--ok {
@@ -211,6 +243,54 @@
   color: #555;
   margin-top: 6px;
   text-align: center;
+}
+
+// "Other detected" candidate list — operator assigns each to S/N or P/N
+#vlm-candidates {
+  margin-top: 10px;
+  padding: 8px 10px;
+  background: #fff8e1;
+  border: 2px dashed #ffb300;
+  border-radius: 8px;
+  flex: 0 0 auto;
+  overflow: visible;
+}
+
+.vlm-candidates__hint {
+  font-size: 12px;
+  font-weight: 600;
+  color: #6d4c00;
+  margin-bottom: 6px;
+}
+
+.vlm-candidate {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 4px 0;
+  border-top: 1px solid #ffe082;
+
+  &:first-of-type {
+    border-top: none;
+  }
+
+  &__value {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 15px;
+    font-weight: 700;
+    color: #222;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+  }
+
+  &__actions {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+  }
 }
 
 // Detected text lines panel

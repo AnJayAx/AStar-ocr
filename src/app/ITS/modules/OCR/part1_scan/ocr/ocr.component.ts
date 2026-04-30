@@ -10,6 +10,8 @@ import { VlmOcrService } from '../../vlm-ocr.service';
 import { ItsServiceService } from '@its/shared/services/its-service.service';
 import { Wheel, WheelFormat } from '@its/shared/interfaces/backend/Wheel';
 import CameraXOCR, { CameraXOCRPreviewFrame } from '@its/shared/interfaces/plugins/CameraXOCRPlugin';
+import MLKitOCR from '@its/shared/interfaces/plugins/MLKitOCRPlugin';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-ocr',
@@ -20,6 +22,7 @@ export class OCRComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // ===== ROI =====
   cropCanvas: HTMLCanvasElement | null = null;
+  private tightCanvas: HTMLCanvasElement | null = null;
   canvasElement: HTMLCanvasElement | null = null;
   previewCanvas: HTMLCanvasElement | null = null;
   roiRect: HTMLDivElement | null = null;
@@ -48,6 +51,8 @@ export class OCRComponent implements OnInit, AfterViewInit, OnDestroy {
   // ===== Gemini OCR result (driven by OCR Scan toggle) =====
   serialNo = '';
   partNo   = '';
+  /** Unlabeled codes Gemini detected — operator can assign them to S/N or P/N. */
+  candidates: string[] = [];
   vlmStatus = '';
   /** True iff the returned serial passed the wheel-format regex (lock-in gate). */
   serialOk = false;
@@ -223,15 +228,86 @@ export class OCRComponent implements OnInit, AfterViewInit, OnDestroy {
       cropCtx.drawImage(this.previewCanvas, roi.x, roi.y, roi.w, roi.h, 0, 0, roi.w, roi.h);
 
       const cropDoneAt = performance.now();
-      const jpegDataUrl = this.cropCanvas.toDataURL('image/jpeg', 0.85);
-      const encodeDoneAt = performance.now();
 
-      const result = await this._vlmOcrService.extract(jpegDataUrl, 'image/jpeg');
+      const rawAutoRoi = (environment as any).GEMINI_USE_MLKIT_AUTO_ROI;
+      const useAutoRoi = this.coerceBoolean(rawAutoRoi, false);
+      console.log(`[OCR config] autoRoi=${useAutoRoi} raw=${String(rawAutoRoi)}`);
+      let jpegDataUrlForGemini = '';
+      let geminiImgW = 0;
+      let geminiImgH = 0;
+      let geminiPayloadKb = 0;
 
-      const cropMs   = Math.round(cropDoneAt   - pipelineStart);
-      const encodeMs = Math.round(encodeDoneAt - cropDoneAt);
-      const totalMs  = Math.round(performance.now() - pipelineStart);
-      this.handleVlmResult(result, { totalMs, cropMs, encodeMs });
+      let encodeForMlKitMs: number | undefined;
+      let mlkitMs: number | undefined;
+      let refineMs: number | undefined;
+      let encodeMs = 0;
+
+      if (useAutoRoi) {
+        // Downscale early to reduce ML Kit cost and upload payload.
+        const mlkitMaxDim = this.coercePositiveInt((environment as any).GEMINI_MLKIT_MAX_DIM as any, 720, 320, 1280);
+        const scaledForMlKit = this.scaleCanvasToMax(this.cropCanvas, mlkitMaxDim);
+
+        // Encode once for ML Kit (native plugin decodes JPEG → bitmap)
+        const encode1Start = performance.now();
+        const jpegForMlKit = scaledForMlKit.toDataURL('image/jpeg', 0.70);
+        const encode1Done = performance.now();
+        encodeForMlKitMs = Math.round(encode1Done - encode1Start);
+
+        // Run ML Kit on the ROI crop to get tighter text bounding boxes
+        const mlStart = performance.now();
+        const ml = await MLKitOCR.recognizeText({ imageBase64: jpegForMlKit });
+        const mlDone = performance.now();
+        mlkitMs = Math.round(mlDone - mlStart);
+
+        const refineStart = performance.now();
+        const refined = this.cropCanvasToMlKitTextBounds(scaledForMlKit, ml?.lines ?? []);
+        const refineDone = performance.now();
+        refineMs = Math.round(refineDone - refineStart);
+
+        // If ML Kit didn't produce a meaningful tighter crop, reuse the same JPEG
+        // (avoid a second encode step entirely).
+        if (!refined) {
+          jpegDataUrlForGemini = jpegForMlKit;
+          geminiImgW = scaledForMlKit.width;
+          geminiImgH = scaledForMlKit.height;
+          encodeMs = 0;
+        } else {
+          const geminiMaxDim = this.coercePositiveInt((environment as any).GEMINI_GEMINI_MAX_DIM as any, 1024, 320, 1600);
+          const scaledCanvas = this.scaleCanvasToMax(refined, geminiMaxDim);
+          const encode2Start = performance.now();
+          jpegDataUrlForGemini = scaledCanvas.toDataURL('image/jpeg', 0.75);
+          const encode2Done = performance.now();
+          encodeMs = Math.round(encode2Done - encode2Start);
+          geminiImgW = scaledCanvas.width;
+          geminiImgH = scaledCanvas.height;
+        }
+      } else {
+        const encodeStart = performance.now();
+        jpegDataUrlForGemini = this.cropCanvas.toDataURL('image/jpeg', 0.85);
+        const encodeDone = performance.now();
+        encodeMs = Math.round(encodeDone - encodeStart);
+        geminiImgW = this.cropCanvas.width;
+        geminiImgH = this.cropCanvas.height;
+      }
+
+      geminiPayloadKb = Math.round(this.approxDataUrlBytes(jpegDataUrlForGemini) / 1024);
+      console.log(`[OCR image] gemini ${geminiImgW}x${geminiImgH} ~${geminiPayloadKb}KB`);
+
+      const result = await this._vlmOcrService.extract(jpegDataUrlForGemini, 'image/jpeg');
+
+      const cropMs = Math.round(cropDoneAt - pipelineStart);
+      const totalMs = Math.round(performance.now() - pipelineStart);
+      this.handleVlmResult(result, {
+        totalMs,
+        cropMs,
+        encodeMs,
+        encodeForMlKitMs,
+        mlkitMs,
+        refineMs,
+        geminiImgW,
+        geminiImgH,
+        geminiPayloadKb,
+      });
     } catch (e) {
       console.warn('Gemini OCR call failed for frame:', e);
     } finally {
@@ -241,19 +317,41 @@ export class OCRComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // ================= Gemini result handler (ROI only) =================
   private handleVlmResult(
-    result: { serial: string; partNumber: string; raw: string; latencyMs: number; timedOut: boolean },
-    timing: { totalMs: number; cropMs: number; encodeMs: number },
+    result: { serial: string; partNumber: string; candidates: string[]; raw: string; latencyMs: number; timedOut: boolean },
+    timing: {
+      totalMs: number;
+      cropMs: number;
+      encodeMs: number;
+      encodeForMlKitMs?: number;
+      mlkitMs?: number;
+      refineMs?: number;
+      geminiImgW?: number;
+      geminiImgH?: number;
+      geminiPayloadKb?: number;
+    },
   ): void {
     if (this.alertContainer) this.alertContainer.hidden = false;
 
     const apiMs = result.latencyMs;
     const overheadMs = Math.max(0, timing.totalMs - apiMs);
-    const timingLabel = `total ${timing.totalMs}ms · api ${apiMs}ms · prep ${overheadMs}ms (crop ${timing.cropMs}, encode ${timing.encodeMs})`;
-    console.log(`[OCR pipeline] ${timingLabel}`);
+    const extra =
+      timing.mlkitMs != null
+        ? ` · mlkit ${timing.mlkitMs}ms · refine ${timing.refineMs ?? 0}ms · enc1 ${timing.encodeForMlKitMs ?? 0}ms`
+        : '';
+    const img =
+      timing.geminiPayloadKb != null
+        ? ` · img ${timing.geminiImgW ?? 0}x${timing.geminiImgH ?? 0} ~${timing.geminiPayloadKb}KB`
+        : '';
+    console.log(
+      `[OCR pipeline] total ${timing.totalMs}ms · api ${apiMs}ms · prep ${overheadMs}ms (crop ${timing.cropMs}, encode ${timing.encodeMs})${extra}${img}`
+    );
 
-    // Aborted / nothing useful detected — keep scanning.
-    if (result.timedOut || (!result.serial && !result.partNumber)) {
+    // Aborted / nothing useful detected anywhere.
+    if (result.timedOut || (!result.serial && !result.partNumber && result.candidates.length === 0)) {
       this.resultsDetected = false;
+      this.serialNo = '';
+      this.partNo   = '';
+      this.candidates = [];
       this.vlmStatus = result.timedOut
         ? `Timed out · ${timing.totalMs}ms`
         : `${timing.totalMs}ms — nothing detected`;
@@ -261,34 +359,66 @@ export class OCRComponent implements OnInit, AfterViewInit, OnDestroy {
       return;
     }
 
-    this.serialNo = result.serial;
-    this.partNo   = result.partNumber;
+    this.serialNo   = result.serial;
+    this.partNo     = result.partNumber;
+    this.candidates = result.candidates.slice();
 
-    // Lock-in gate: if a serial was returned, it must satisfy the wheel-format
-    // regex (when loaded). If only a part number was returned, trust Gemini.
     const wheelRegex = this._ocrService.originalRegexFormat;
-    const serialPresent = !!result.serial;
-    const serialPasses  = serialPresent && (wheelRegex ? wheelRegex.test(result.serial) : true);
+    this.serialOk = !!this.serialNo && (wheelRegex ? wheelRegex.test(this.serialNo) : true);
 
-    this.serialOk = serialPasses;
-
-    const lockIn = serialPasses || (!serialPresent && !!result.partNumber);
-
-    const status = `${timing.totalMs}ms total · api ${apiMs}ms`;
-
-    if (lockIn) {
-      NativeAudio.play({ assetId: 'ocr-scan' });
-      this.currRes = result.serial || result.partNumber; // submit flow keys off currRes (serial)
-      this.resultsDetected = true;
-      this.vlmStatus = status;
-      this.stopScanningAfterMatch();
-    } else {
-      // Show what we got but keep scanning for a clean read.
-      this.resultsDetected = false;
-      this.vlmStatus = `${status} — verify manually`;
-    }
+    this.vlmStatus = `${timing.totalMs}ms total · api ${apiMs}ms`;
+    this.evaluateLockIn();
 
     setTimeout(() => { if (this.alertContainer) this.alertContainer.hidden = true; }, 1500);
+  }
+
+  /**
+   * Lock in the result (beep + stop scanning) only when there's nothing
+   * ambiguous left for the operator to resolve. If unlabeled candidates exist
+   * AND a labeled field is missing, hold off — the operator picks via the UI.
+   */
+  private evaluateLockIn(): void {
+    const hasSerial = !!this.serialNo;
+    const hasPart   = !!this.partNo;
+    const ambiguous = this.candidates.length > 0 && (!hasSerial || !hasPart);
+
+    if (!hasSerial && !hasPart) {
+      this.resultsDetected = false;
+      return;
+    }
+
+    if (ambiguous) {
+      // Wait for operator to assign a candidate or hit Submit explicitly.
+      this.resultsDetected = false;
+      return;
+    }
+
+    // Both labeled fields present (or one is present and there's nothing else
+    // unassigned to consider). Lock in.
+    if (hasSerial && !this.serialOk) {
+      // Serial exists but failed wheel-format regex — surface but don't beep.
+      this.resultsDetected = false;
+      this.vlmStatus = `${this.vlmStatus} — verify serial format`;
+      return;
+    }
+
+    NativeAudio.play({ assetId: 'ocr-scan' });
+    this.currRes = this.serialNo || this.partNo;
+    this.resultsDetected = true;
+    this.stopScanningAfterMatch();
+  }
+
+  /** Operator tapped a candidate → assign it to the named field. */
+  assignCandidate(candidate: string, field: 'serial' | 'part'): void {
+    if (field === 'serial') {
+      this.serialNo = candidate;
+      const wheelRegex = this._ocrService.originalRegexFormat;
+      this.serialOk = wheelRegex ? wheelRegex.test(candidate) : true;
+    } else {
+      this.partNo = candidate;
+    }
+    this.candidates = this.candidates.filter((c) => c !== candidate);
+    this.evaluateLockIn();
   }
 
   private stopScanningAfterMatch() {
@@ -309,6 +439,7 @@ export class OCRComponent implements OnInit, AfterViewInit, OnDestroy {
       this.resultsDetected = false;
       this.serialNo = '';
       this.partNo   = '';
+      this.candidates = [];
       this.vlmStatus = 'Aim and press trigger to scan';
       this.serialOk = false;
       this.triggerPending = false;
@@ -323,6 +454,7 @@ export class OCRComponent implements OnInit, AfterViewInit, OnDestroy {
 
   initialiseROI() {
     this.cropCanvas     = document.createElement('canvas');
+    this.tightCanvas    = document.createElement('canvas');
     this.alertContainer = document.getElementById('alert-notif') as HTMLDivElement;
     this.alertContainer.hidden = true;
     this.canvasElement  = document.getElementById('camera-canvas') as HTMLCanvasElement;
@@ -330,6 +462,123 @@ export class OCRComponent implements OnInit, AfterViewInit, OnDestroy {
     this.previewCtx     = this.previewCanvas?.getContext('2d') || null;
     this.previewContainer = document.getElementById(this.previewParent) as HTMLDivElement;
     this.roiRect        = document.getElementById('roiRect') as HTMLDivElement;
+  }
+
+  // ================= ML Kit auto-ROI =================
+  private cropCanvasToMlKitTextBounds(
+    source: HTMLCanvasElement,
+    lines: Array<{ text: string; left: number; top: number; right: number; bottom: number }>,
+  ): HTMLCanvasElement | null {
+    if (!lines || lines.length === 0) return null;
+    if (!this.tightCanvas) this.tightCanvas = document.createElement('canvas');
+
+    const w = source.width;
+    const h = source.height;
+
+    // Prefer lines that look like they contain codes (SN/PN or long alphanumerics)
+    const preferred = lines.filter((l) => this.isLikelyCodeLine(l.text));
+    const chosen = preferred.length > 0 ? preferred : lines;
+
+    let left = w;
+    let top = h;
+    let right = 0;
+    let bottom = 0;
+
+    for (const line of chosen) {
+      const l = Math.floor((Math.max(0, Math.min(1000, line.left)) / 1000) * w);
+      const t = Math.floor((Math.max(0, Math.min(1000, line.top)) / 1000) * h);
+      const r = Math.ceil((Math.max(0, Math.min(1000, line.right)) / 1000) * w);
+      const b = Math.ceil((Math.max(0, Math.min(1000, line.bottom)) / 1000) * h);
+      left = Math.min(left, l);
+      top = Math.min(top, t);
+      right = Math.max(right, r);
+      bottom = Math.max(bottom, b);
+    }
+
+    if (right <= left || bottom <= top) return null;
+
+    // Expand bbox a bit so we don't clip characters
+    const bw = right - left;
+    const bh = bottom - top;
+    const padX = Math.round(bw * 0.15);
+    const padY = Math.round(bh * 0.15);
+
+    const x = Math.max(0, left - padX);
+    const y = Math.max(0, top - padY);
+    const x2 = Math.min(w, right + padX);
+    const y2 = Math.min(h, bottom + padY);
+    const cw = Math.max(1, x2 - x);
+    const ch = Math.max(1, y2 - y);
+
+    // If the crop doesn't shrink meaningfully, skip it.
+    const area = w * h;
+    const cropArea = cw * ch;
+    if (cropArea / area > 0.90) return null;
+
+    this.tightCanvas.width = cw;
+    this.tightCanvas.height = ch;
+    const ctx = this.tightCanvas.getContext('2d');
+    if (!ctx) return null;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, cw, ch);
+    ctx.drawImage(source, x, y, cw, ch, 0, 0, cw, ch);
+    return this.tightCanvas;
+  }
+
+  private isLikelyCodeLine(text: string): boolean {
+    const t = (text ?? '').toUpperCase();
+    if (!t) return false;
+    if (/(?:\bS\/?N\b|\bSN\b|\bSERIAL\b|\bP\/?N\b|\bPN\b|\bPART\b)/.test(t)) return true;
+    // Long-ish alphanumeric sequences tend to be item codes / serials.
+    return /[A-Z0-9]{6,}/.test(t.replace(/\s+/g, ''));
+  }
+
+  private scaleCanvasToMax(source: HTMLCanvasElement, maxDim: number): HTMLCanvasElement {
+    const w = source.width;
+    const h = source.height;
+    const max = Math.max(w, h);
+    if (max <= maxDim) return source;
+
+    const scale = maxDim / max;
+    const nw = Math.max(1, Math.round(w * scale));
+    const nh = Math.max(1, Math.round(h * scale));
+
+    const out = document.createElement('canvas');
+    out.width = nw;
+    out.height = nh;
+    const ctx = out.getContext('2d');
+    if (!ctx) return source;
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+    ctx.drawImage(source, 0, 0, w, h, 0, 0, nw, nh);
+    return out;
+  }
+
+  private approxDataUrlBytes(dataUrl: string): number {
+    if (!dataUrl) return 0;
+    const idx = dataUrl.indexOf(',');
+    const b64 = idx >= 0 ? dataUrl.slice(idx + 1) : dataUrl;
+    // base64 length → bytes (approx; ignores padding)
+    return Math.floor((b64.length * 3) / 4);
+  }
+
+  private coercePositiveInt(value: any, fallback: number, min: number, max: number): number {
+    const n = typeof value === 'number' ? value : typeof value === 'string' ? parseInt(value, 10) : NaN;
+    if (!Number.isFinite(n) || n <= 0) return fallback;
+    return Math.max(min, Math.min(max, Math.trunc(n)));
+  }
+
+  private coerceBoolean(value: any, fallback: boolean): boolean {
+    if (typeof value === 'boolean') return value;
+    if (typeof value === 'number') return value !== 0;
+    if (typeof value === 'string') {
+      const v = value.trim().toLowerCase();
+      if (v === '') return fallback;
+      if (['true', '1', 'yes', 'y', 'on'].includes(v)) return true;
+      if (['false', '0', 'no', 'n', 'off'].includes(v)) return false;
+      return fallback;
+    }
+    return fallback;
   }
 
   // ================= Formats =================

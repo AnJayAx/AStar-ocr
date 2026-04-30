@@ -7,10 +7,11 @@
         <h3 class="mt-0 mb-0">Scan Barcodes</h3>
     </div> -->
     
-    <span class="vh-80 d-flex flex-column justify-content-between">
+    <div class="scan-layout d-flex flex-column">
         <div class="scan-status-wrapper">
             <div class="d-flex justify-content-start align-items-center">
-                <span class="title" style="margin-right: 0.5rem;">Last Scanned:</span>{{ lastScannedCode }}
+                <span class="title" style="margin-right: 0.5rem;">Last Scanned:</span>
+                <span class="last-scanned" title="{{ lastScannedCode }}">{{ lastScannedCode }}</span>
             </div>
             <div class="d-flex justify-content-start align-items-start">
                 <span class="title-list">Scanned&nbsp;<b>({{ scannedBarcodes.length }})</b>:</span>
@@ -18,20 +19,20 @@
             </div>
         </div>
         <div class="scan-page-wrapper">
-            <div class="barcode-scanner-area--container">
+            <div class="barcode-scanner--area--container">
                 <div class="square surround-cover">
-                    <div class="barcode-scanner-area--outer surround-cover">
-                        <div class="barcode-scanner-area--inner"></div>
+                    <div class="barcode-scanner--area--outer surround-cover">
+                        <div class="barcode-scanner--area--inner"></div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="d-flex justify-content-center">
+        <div class="scan-footer d-flex justify-content-center">
             <button kendoButton (click)="stopScan()" class="red-btn">
                 <span class="d-flex align-items-center"><span class="k-icon k-i-kpi-status-open"></span>&nbsp;Stop Scan</span>
             </button>
         </div>
-    </span>
+    </div>
 
     <!-- <span *ngIf="!isScanning" class="mt-2 vh-80 d-flex flex-column justify-content-between">
         <kendo-card [style.height.%]="100" [style.width.%]="100">

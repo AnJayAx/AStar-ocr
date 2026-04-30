@@ -21,7 +21,7 @@
   </div>
 
   <div class="ocr-menu" id="ocr-menu-container">
-    <div class="mt-2 d-flex justify-content-between">
+    <div class="ocr-controls mt-2 d-flex justify-content-between">
       <div class="">
         <legend class="k-form-legend">Lights</legend>
         <div class="d-flex align-items-center">
@@ -162,6 +162,35 @@
           <span class="vlm-row__value">{{ partNo || '—' }}</span>
         </div>
       </div>
+
+      <div *ngIf="candidates.length > 0" id="vlm-candidates">
+        <div class="vlm-candidates__hint">
+          <ng-container *ngIf="!serialNo || !partNo">
+            Other detected — assign which is which:
+          </ng-container>
+          <ng-container *ngIf="serialNo && partNo">
+            Other detected:
+          </ng-container>
+        </div>
+        <div *ngFor="let c of candidates" class="vlm-candidate">
+          <span class="vlm-candidate__value">{{ c }}</span>
+          <div class="vlm-candidate__actions">
+            <button
+              *ngIf="!serialNo"
+              kendoButton
+              size="small"
+              (click)="assignCandidate(c, 'serial')"
+            >Set as S/N</button>
+            <button
+              *ngIf="!partNo"
+              kendoButton
+              size="small"
+              (click)="assignCandidate(c, 'part')"
+            >Set as P/N</button>
+          </div>
+        </div>
+      </div>
+
       <div *ngIf="vlmStatus" class="vlm-status">{{ vlmStatus }}</div>
     </div>
     <div id="submit-btn-container">

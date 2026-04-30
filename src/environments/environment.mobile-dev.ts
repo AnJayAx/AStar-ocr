@@ -25,8 +25,14 @@ export const environment = {
   // production: false, /* Set to false to disable KeyCloakService */
 
   /** Gemini Smart Suggester (VlmOcrService). Paste rotated key locally — DO NOT COMMIT. */
-  GEMINI_API_KEY: 'AIzaSyBPt2eOoVVL3UysVLP_ECimXgyAewt3dHw',
+  GEMINI_API_KEY: 'AIzaSyDVTwATnxAozmSCUf70t7kF7LL6D0GSgHA',
   GEMINI_MODEL: 'gemini-2.5-flash-lite',
+  /** Abort Gemini requests after this many ms (default is 3000). */
+  GEMINI_LATENCY_BUDGET_MS: 6000,
+  /** Keep small to reduce latency (default is 100). */
+  GEMINI_MAX_OUTPUT_TOKENS: 80,
+  /** If true, uses on-device ML Kit to auto-tighten the ROI crop before sending to Gemini (faster/smaller payload). */
+  GEMINI_USE_MLKIT_AUTO_ROI: false,
   DEV_TEST_USER: {
     id: 'Dev User 1',
     username: 'devuser1',

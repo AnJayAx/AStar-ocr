@@ -130,9 +130,18 @@ public class RFIDPlugin extends Plugin implements Readers.RFIDReaderEventHandler
     }
     Log.d(TAG, "setRFIDPowerLevel :"+powerLevel);
 
+    if (reader == null || reader.Config == null || reader.Config.Antennas == null) {
+      Log.w(TAG, "setRFIDPowerLevel: reader config not ready (Config/Antenna is null)");
+      return "RFID reader config not ready";
+    }
+
     try {
       Antennas.AntennaRfConfig config = null;
       config = reader.Config.Antennas.getAntennaRfConfig(1);
+      if (config == null) {
+        Log.w(TAG, "setRFIDPowerLevel: getAntennaRfConfig(1) returned null");
+        return "RFID antenna config not ready";
+      }
       config.setTransmitPowerIndex(powerLevel);
       // config.setrfModeTableIndex(0);
       // config.setTari(0);
@@ -152,17 +161,27 @@ public class RFIDPlugin extends Plugin implements Readers.RFIDReaderEventHandler
 
   public String getRFIDPowerLevel() {
 
+    if (reader == null || reader.Config == null || reader.Config.Antennas == null) {
+      Log.w(TAG, "getRFIDPowerLevel: reader config not ready (Config/Antenna is null)");
+      return "";
+    }
+
     try {
-      Antennas.AntennaRfConfig config = null;
-      config = reader.Config.Antennas.getAntennaRfConfig(1);
+      Antennas.AntennaRfConfig config = reader.Config.Antennas.getAntennaRfConfig(1);
+      if (config == null) {
+        Log.w(TAG, "getRFIDPowerLevel: getAntennaRfConfig(1) returned null");
+        return "";
+      }
       Integer powerLevel = config.getTransmitPowerIndex();
-      return Integer.toString(powerLevel);
+      return powerLevel != null ? Integer.toString(powerLevel) : "";
 
     } catch (InvalidUsageException e) {
-      e.printStackTrace();
+      Log.e(TAG, "getRFIDPowerLevel | InvalidUsageException", e);
     } catch (OperationFailureException e) {
-      e.printStackTrace();
-      return e.getResults().toString() + " " + e.getVendorMessage();
+      Log.e(TAG, "getRFIDPowerLevel | OperationFailureException", e);
+    } catch (RuntimeException e) {
+      // Defensive: prevent a plugin call from taking down the app.
+      Log.e(TAG, "getRFIDPowerLevel | RuntimeException", e);
     }
 
     return "";
@@ -832,19 +851,27 @@ private void connectAsync(ConnectCallback cb) {
       return;
     }
 
-    if (getRFIDPowerLevel().length() == 0) {
+    String levelStr = getRFIDPowerLevel();
+    if (levelStr == null || levelStr.trim().length() == 0) {
       JSObject ret = new JSObject();
       ret.put("value", String.valueOf("Failed to retrieve RFID power level"));
       call.resolve(ret);
       return;
     }
 
-    int powerLevel = Integer.parseInt(getRFIDPowerLevel());
-    Log.d(TAG, "getPowerLevel " + powerLevel);
+    try {
+      int powerLevel = Integer.parseInt(levelStr.trim());
+      Log.d(TAG, "getPowerLevel " + powerLevel);
 
-    JSObject ret = new JSObject();
-    ret.put("value", String.valueOf(powerLevel));
-    call.resolve(ret);
+      JSObject ret = new JSObject();
+      ret.put("value", String.valueOf(powerLevel));
+      call.resolve(ret);
+    } catch (NumberFormatException nfe) {
+      Log.w(TAG, "getRFIDPowerLevel: Non-numeric response: " + levelStr);
+      JSObject ret = new JSObject();
+      ret.put("value", levelStr);
+      call.resolve(ret);
+    }
   }
 
   @PluginMethod()

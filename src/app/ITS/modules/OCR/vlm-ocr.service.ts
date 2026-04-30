@@ -2,10 +2,12 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 
 export interface VlmOcrResult {
-  /** Cleaned/upper-cased serial number, or empty string if not present on the label. */
+  /** Cleaned/upper-cased serial number — only set when explicitly labeled (S/N, Serial). */
   serial: string;
-  /** Cleaned/upper-cased part number, or empty string if not present on the label. */
+  /** Cleaned/upper-cased part number — only set when explicitly labeled (P/N, Part). */
   partNumber: string;
+  /** Other alphanumeric codes detected on the label that weren't labeled as S/N or P/N. */
+  candidates: string[];
   /** Raw model JSON output (for debugging). */
   raw: string;
   /** Total request/response latency in ms (network + decode). */
@@ -35,26 +37,33 @@ interface GeminiResponse {
  */
 @Injectable({ providedIn: 'root' })
 export class VlmOcrService {
-  /** Hard upper bound on a single round-trip. Gemini Flash-Lite from SEA
-   *  typically lands at 1.2–2.5s; 3s gives headroom without hanging the UI. */
-  private static readonly LATENCY_BUDGET_MS = 3000;
+  private static readonly DEFAULT_LATENCY_BUDGET_MS = 3000;
+  private static readonly DEFAULT_MAX_OUTPUT_TOKENS = 100;
 
   private static readonly SYSTEM_PROMPT =
-    'You are an industrial label reader. Extract the SERIAL NUMBER and PART NUMBER from the image. ' +
-    'Labels often prefix them with "S/N", "SN", "Serial No.", "P/N", "PN", "Part No.". ' +
-    'Verify ambiguous characters carefully (0 vs O, 1 vs I, 5 vs S, 8 vs B). ' +
-    'Return ONLY a JSON object with keys "serial" and "partNumber". ' +
-    'Use an empty string "" for any field that is not visibly present on the label. ' +
-    'Do not invent values. Do not include the prefix in the returned strings.';
+    'You are an industrial label reader. Read every alphanumeric code on the label and classify each one.\n' +
+    '\n' +
+    'Return a JSON object with three keys:\n' +
+    '- "serial": the value labeled with "S/N", "SN", "Serial", "Serial No." etc. Empty string "" if not explicitly labeled.\n' +
+    '- "partNumber": the value labeled with "P/N", "PN", "Part", "Part No." etc. Empty string "" if not explicitly labeled.\n' +
+    '- "candidates": an array of any OTHER alphanumeric codes visible on the label that are NOT labeled as serial or part number. Could be model codes, batch numbers, lot codes, etc. Empty array [] if none.\n' +
+    '\n' +
+    'Rules:\n' +
+    '- Only assign a value to "serial" or "partNumber" if the label clearly prefixes it. If a code has no prefix, put it in "candidates" instead.\n' +
+    '- Do not include the prefix (S/N, P/N, etc.) in the returned strings.\n' +
+    '- Verify ambiguous characters (0 vs O, 1 vs I, 5 vs S, 8 vs B).\n' +
+    '- Do not invent values. If unsure, omit.\n' +
+    '- Ignore short text fragments under 4 characters and pure dictionary words.';
 
   private static readonly RESPONSE_SCHEMA = {
     type: 'object',
     properties: {
-      serial:     { type: 'string' },
+      serial: { type: 'string' },
       partNumber: { type: 'string' },
+      candidates: { type: 'array', items: { type: 'string' } },
     },
-    required: ['serial', 'partNumber'],
-    propertyOrdering: ['serial', 'partNumber'],
+    required: ['serial', 'partNumber', 'candidates'],
+    propertyOrdering: ['serial', 'partNumber', 'candidates'],
   };
 
   /**
@@ -65,14 +74,28 @@ export class VlmOcrService {
    */
   async extract(imageBase64: string, mimeType = 'image/jpeg'): Promise<VlmOcrResult> {
     const apiKey = (environment as any).GEMINI_API_KEY as string | undefined;
-    const model  = ((environment as any).GEMINI_MODEL as string | undefined) || 'gemini-2.5-flash-lite';
+    const model = ((environment as any).GEMINI_MODEL as string | undefined) || 'gemini-2.5-flash-lite';
 
     if (!apiKey) {
       throw new Error(
         'VlmOcrService: GEMINI_API_KEY is not configured in environment.*.ts. ' +
-        'Add the rotated key to environment.mobile-dev.ts / environment.mobile-prod.ts.'
+          'Add the rotated key to environment.mobile-dev.ts / environment.mobile-prod.ts.'
       );
     }
+
+    const latencyBudgetMs = this.coercePositiveInt(
+      (environment as any).GEMINI_LATENCY_BUDGET_MS as number | string | undefined,
+      VlmOcrService.DEFAULT_LATENCY_BUDGET_MS,
+      1_000,
+      30_000
+    );
+
+    const maxOutputTokens = this.coercePositiveInt(
+      (environment as any).GEMINI_MAX_OUTPUT_TOKENS as number | string | undefined,
+      VlmOcrService.DEFAULT_MAX_OUTPUT_TOKENS,
+      20,
+      512
+    );
 
     const data = this.stripDataUrlPrefix(imageBase64);
     if (!data) throw new Error('VlmOcrService: empty image payload');
@@ -86,25 +109,20 @@ export class VlmOcrService {
       contents: [
         {
           role: 'user',
-          parts: [
-            { inline_data: { mime_type: mimeType, data } },
-          ],
+          parts: [{ inline_data: { mime_type: mimeType, data } }],
         },
       ],
       generationConfig: {
         temperature: 0.0,
-        maxOutputTokens: 100,
+        maxOutputTokens,
         responseMimeType: 'application/json',
         responseSchema: VlmOcrService.RESPONSE_SCHEMA,
-        // Force non-thinking mode. No-op on Lite (already off); critical on Flash
-        // where thinking is on by default and would blow the latency budget.
         thinkingConfig: { thinkingBudget: 0 },
       },
     };
 
     const controller = new AbortController();
-    const timeoutHandle = setTimeout(() => controller.abort(), VlmOcrService.LATENCY_BUDGET_MS);
-
+    const timeoutHandle = setTimeout(() => controller.abort(), latencyBudgetMs);
     const startedAt = performance.now();
 
     try {
@@ -133,20 +151,27 @@ export class VlmOcrService {
 
       const raw = this.firstText(json).trim();
       const parsed = this.parseStructured(raw);
-      const serial     = this.cleanToken(parsed.serial);
+      const serial = this.cleanToken(parsed.serial);
       const partNumber = this.cleanToken(parsed.partNumber);
+      const candidates = (parsed.candidates ?? [])
+        .map((c) => this.cleanToken(c))
+        .filter((c) => c.length >= 4)
+        .filter((c) => c !== serial && c !== partNumber);
 
-      if (latencyMs > VlmOcrService.LATENCY_BUDGET_MS) {
-        console.warn(`[VlmOcrService] Latency ${latencyMs}ms exceeded ${VlmOcrService.LATENCY_BUDGET_MS}ms budget.`);
+      if (latencyMs > latencyBudgetMs) {
+        console.warn(`[VlmOcrService] Latency ${latencyMs}ms exceeded ${latencyBudgetMs}ms budget.`);
       }
-      console.log(`[VlmOcrService] ${latencyMs}ms — serial="${serial}" partNumber="${partNumber}"`);
 
-      return { serial, partNumber, raw, latencyMs, timedOut: false };
+      console.log(
+        `[VlmOcrService] ${latencyMs}ms — serial="${serial}" partNumber="${partNumber}" candidates=[${candidates.join(', ')}]`
+      );
+
+      return { serial, partNumber, candidates, raw, latencyMs, timedOut: false };
     } catch (err: any) {
       const latencyMs = Math.round(performance.now() - startedAt);
       if (err?.name === 'AbortError') {
-        console.warn(`[VlmOcrService] Aborted after ${latencyMs}ms (budget ${VlmOcrService.LATENCY_BUDGET_MS}ms).`);
-        return { serial: '', partNumber: '', raw: '', latencyMs, timedOut: true };
+        console.warn(`[VlmOcrService] Aborted after ${latencyMs}ms (budget ${latencyBudgetMs}ms).`);
+        return { serial: '', partNumber: '', candidates: [], raw: '', latencyMs, timedOut: true };
       }
       throw err;
     } finally {
@@ -170,22 +195,21 @@ export class VlmOcrService {
     return '';
   }
 
-  /**
-   * Gemini in JSON mode returns a JSON string. Parse defensively — if the model
-   * stutters and wraps it in code fences, strip those before parsing.
-   */
-  private parseStructured(raw: string): { serial?: string; partNumber?: string } {
+  private parseStructured(raw: string): { serial?: string; partNumber?: string; candidates?: string[] } {
     if (!raw) return {};
     let text = raw.trim();
-    // Strip ``` fences just in case.
     if (text.startsWith('```')) {
       text = text.replace(/^```(?:json)?\s*/i, '').replace(/```\s*$/i, '').trim();
     }
     try {
       const obj = JSON.parse(text);
+      const candidates = Array.isArray(obj?.candidates)
+        ? obj.candidates.filter((c: any): c is string => typeof c === 'string')
+        : [];
       return {
-        serial:     typeof obj?.serial === 'string'     ? obj.serial     : '',
+        serial: typeof obj?.serial === 'string' ? obj.serial : '',
         partNumber: typeof obj?.partNumber === 'string' ? obj.partNumber : '',
+        candidates,
       };
     } catch {
       console.warn('[VlmOcrService] Could not parse JSON output:', text);
@@ -193,21 +217,26 @@ export class VlmOcrService {
     }
   }
 
-  /**
-   * Defensive cleanup of an extracted token: uppercase, strip surrounding
-   * quotes/whitespace, and remove any "S/N:"-style prefix the model may have
-   * left in despite instructions.
-   */
   private cleanToken(value: string | undefined): string {
     if (!value) return '';
     return value
       .toUpperCase()
       .replace(/^["'`\s]+|["'`\s.]+$/g, '')
-      .replace(/^(?:S\/N|SN|P\/N|PN|SERIAL(?:\s*NO\.?)?|PART(?:\s*NO\.?)?)[\s:.-]*/i, '')
+      .replace(/^(?:S\/N|SN|P\/N|PN|SERIAL(?:\s*NO\.?)*|PART(?:\s*NO\.?)?)[\s:.-]*/i, '')
       .trim();
   }
 
   private async safeReadText(r: Response): Promise<string> {
-    try { return (await r.text()).slice(0, 500); } catch { return ''; }
+    try {
+      return (await r.text()).slice(0, 500);
+    } catch {
+      return '';
+    }
+  }
+
+  private coercePositiveInt(value: number | string | undefined, fallback: number, min: number, max: number): number {
+    const n = typeof value === 'number' ? value : typeof value === 'string' ? parseInt(value, 10) : NaN;
+    if (!Number.isFinite(n) || n <= 0) return fallback;
+    return Math.max(min, Math.min(max, Math.trunc(n)));
   }
 }
